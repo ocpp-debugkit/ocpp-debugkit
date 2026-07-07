@@ -69,7 +69,7 @@ report exported. CLI and web inspector.
 - ✅ `packages/core/src/types.ts` — updated with `Failure`, `Scenario`, `SessionSummary`, `ValidationResult` types
 - ✅ 78 unit tests (46 normalizer + 32 parser)
 
-### Core Package — Timeline + Detection + Summarizer + Validator (in progress — this PR)
+### Core Package — Timeline + Detection + Summarizer + Validator (PR #34)
 
 - ✅ `packages/core/src/timeline.ts` — `buildSessionTimeline()` correlating events by `transactionId` (ADR-0006)
 - ✅ `packages/core/src/detection.ts` — `detectFailures()` with 3 rules: `FAILED_AUTHORIZATION`, `CONNECTOR_FAULT`, `STATION_OFFLINE_DURING_SESSION`
@@ -77,11 +77,19 @@ report exported. CLI and web inspector.
 - ✅ `packages/core/src/validator.ts` — `validateMessage()` / `validateMessages()` checking OCPP 1.6 JSON structural compliance
 - ✅ 40 additional tests (10 timeline + 11 detection + 5 summarizer + 14 validator)
 
+### Core Package — Public API Export + Package Config (in progress — this PR)
+
+- ✅ Barrel export complete (types, schemas, parser, normalizer, timeline, detection, summarizer, validator, fixtures)
+- ✅ `sideEffects: false` for tree-shaking
+- ✅ `files` field limits published content to `dist/` + docs
+- ✅ `keywords`, `repository`, `homepage`, `bugs` fields for npm discoverability
+- ✅ Package is npm-publish-ready (`access: public`)
+
 ## What's Next
 
 1. **Issue #20** → complete (PR #33): data model + parser + normalizer
-2. **Issue #21** (this PR) → complete: timeline + detection + summarizer + validator
-3. **Issue #22**: Core public API export + package config
+2. **Issue #21** → complete (PR #34): timeline + detection + summarizer + validator
+3. **Issue #22** (this PR) → complete: public API export + package config
 4. **Issue #23**: Scenarios package (format + 5 initial scenarios)
 5. **Issue #24**: Reporter package (Markdown report generator)
 6. **Issue #25**: CLI package (scaffold + inspect + report + scenario commands)
@@ -94,7 +102,7 @@ report exported. CLI and web inspector.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/core` | in progress (parser + timeline + detection + summarizer + validator) | 0.0.0 |
+| `@ocpp-debugkit/core` | in progress (package config finalized, ready for downstream) | 0.0.0 |
 | `@ocpp-debugkit/scenarios` | not started | — |
 | `@ocpp-debugkit/reporter` | not started | — |
 | `@ocpp-debugkit/cli` | not started | — |
