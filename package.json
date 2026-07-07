@@ -16,7 +16,7 @@
     "typecheck": "turbo run typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "changeset": "changeset add",
+    "changeset": "changeset",
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
