@@ -25,5 +25,17 @@ export {
   extractErrorDescription,
 } from './normalizer.js';
 
+// Timeline
+export { buildSessionTimeline } from './timeline.js';
+
+// Detection
+export { detectFailures } from './detection.js';
+
+// Summarizer
+export { summarizeSession, summarizeSessions } from './summarizer.js';
+
+// Validator
+export { validateMessage, validateMessages } from './validator.js';
+
 // Fixtures
 export * from './fixtures/index.js';
