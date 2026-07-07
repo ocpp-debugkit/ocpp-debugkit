@@ -99,12 +99,24 @@ report exported. CLI and web inspector.
 - ✅ Each scenario's `expectedFailures` aligns with v0.1 detection rules
 - ✅ 21 tests (registry, engine integration, synthetic data policy)
 
-### Reporter Package (in progress — this PR)
+### Reporter Package (PR #40)
 
 - ✅ `packages/reporter/` — new package
 - ✅ `generateMarkdownReport()` — session overview, timeline summary, failures, suggested steps, event appendix
 - ✅ `AnalysisResult` input type
 - ✅ 11 tests (structure, failure inclusion, readability, metadata, severity)
+
+### CLI Package (in progress — this PR)
+
+- ✅ `packages/cli/` — new package
+- ✅ `ocpp-debugkit inspect <file>` — parse + analyze + output
+- ✅ `ocpp-debugkit report <file>` — generate Markdown report (stdout or file)
+- ✅ `ocpp-debugkit scenario list` — list all 5 scenarios
+- ✅ `ocpp-debugkit scenario run <name>` — run scenario through analysis engine, compare detected vs expected
+- ✅ Path safety: validated file paths, size limits
+- ✅ Input validation: safe parsing, non-sensitive errors
+- ✅ 17 integration tests (execa-based)
+- ✅ Converted JSON fixtures to TS modules (fixes Node.js ESM JSON import issue)
 
 ## What's Next
 
@@ -112,8 +124,11 @@ report exported. CLI and web inspector.
 2. **Issue #21** → complete (PR #34): timeline + detection + summarizer + validator
 3. **Issue #22** → complete (PR #35): public API export + package config
 4. **Issue #23** → complete (PR #39): scenarios package (format + 5 initial scenarios)
-5. **Issue #24** (this PR) → complete: reporter package (Markdown report generator)
-6. **Issue #25**: CLI package (scaffold + inspect + report + scenario commands)
+5. **Issue #24** → complete (PR #40): reporter package (Markdown report generator)
+6. **Issue #25** (this PR) → complete: CLI package (scaffold + inspect + report + scenario commands)
+7. **Issue #26**: Next.js app scaffold (Next.js + Nextra + Tailwind + Shadcn)
+8. **Issue #27**: Landing page
+9. **Issue #28**: Inspector (trace input + timeline + message inspector)
 
 ## Known Blockers / Decisions Pending
 
@@ -126,7 +141,7 @@ report exported. CLI and web inspector.
 | `@ocpp-debugkit/core` | in progress (package config finalized, ready for downstream) | 0.0.0 |
 | `@ocpp-debugkit/scenarios` | in progress (5 scenarios + registry) | 0.0.0 |
 | `@ocpp-debugkit/reporter` | in progress (Markdown generator) | 0.0.0 |
-| `@ocpp-debugkit/cli` | not started | — |
+| `@ocpp-debugkit/cli` | in progress (inspect + report + scenario) | 0.0.0 |
 | `@ocpp-debugkit/replay` | not started | — |
 | `@ocpp-debugkit/react` | not started | — |
 | `apps/web` | not started | — |
