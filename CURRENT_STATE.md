@@ -8,11 +8,10 @@
 
 ## Active Milestone
 
-**M0.5 — Protocol & Trace-Format Design Phase**
+**v0.1.0 — Inspector MVP**
 
-Design spike resolving all foundational design decisions before core
-implementation. Produces ADRs, trace format specification, and synthetic
-trace fixtures that validate the proposed internal event model.
+Building the first usable release: trace → timeline → failures detected →
+report exported. CLI and web inspector.
 
 ## What's Done
 
@@ -20,7 +19,7 @@ trace fixtures that validate the proposed internal event model.
 
 - ✅ GitHub milestones created (M0, M0.5, v0.1.0, v0.2.0, v0.3.0, v1.0.0)
 - ✅ GitHub labels created (type, package, priority, workflow)
-- ✅ Tracking issues created for M0 and M0.5
+- ✅ Tracking issues created for M0, M0.5, and v0.1.0 (#20–#32)
 
 ### Monorepo & Tooling (PR #12)
 
@@ -55,37 +54,31 @@ trace fixtures that validate the proposed internal event model.
 - ✅ `README.md` (description, badges, architecture, quickstart, support, links)
 - ✅ `SECURITY.md` (vulnerability reporting, security principles)
 
-### Protocol & Trace-Format Design (in progress — this PR)
+### Protocol & Trace-Format Design (PR #19)
 
-- ✅ 9 ADRs covering all design decisions:
-  - ADR-0001: OCPP version scope (1.6 JSON primary)
-  - ADR-0002: Input trace formats (JSON Object + JSONL)
-  - ADR-0003: Canonical internal event model
-  - ADR-0004: Message direction representation
-  - ADR-0005: Timestamp normalization
-  - ADR-0006: Session correlation strategy
-  - ADR-0007: Malformed trace handling
-  - ADR-0008: Browser-local processing & privacy
-  - ADR-0009: Future protocol-version extensibility
+- ✅ 9 ADRs covering all design decisions
 - ✅ `docs/trace-format-spec.md` — full trace format specification
-- ✅ 3 synthetic trace fixtures in `packages/core/src/__fixtures__/`:
-  - `normal-session.json` — complete charging session (no failures)
-  - `failed-auth.json` — failed authorization (expects `FAILED_AUTHORIZATION`)
-  - `connector-fault.json` — connector fault during session (expects `CONNECTOR_FAULT`)
-- ✅ `packages/core/src/types.ts` — proposed canonical types (`Event`, `Trace`, `Session`, etc.)
-- ✅ `packages/core/src/fixtures/index.ts` — fixture registry
-- ✅ `packages/core/src/fixtures.test.ts` — 28 validation tests proving fixtures conform to the proposed event model
+- ✅ 3 synthetic trace fixtures in `packages/core/src/__fixtures__/`
+- ✅ Proposed canonical types and fixture validation tests
+
+### Core Package — Data Model + Parser + Normalizer (in progress — this PR)
+
+- ✅ `packages/core/src/schemas.ts` — Zod schemas for all input types
+- ✅ `packages/core/src/normalizer.ts` — `normalizeEvents()`, direction inference (ADR-0004), timestamp normalization (ADR-0005)
+- ✅ `packages/core/src/parser.ts` — `parseTrace()` accepting JSON Object, JSONL, bare array
+- ✅ `packages/core/src/types.ts` — updated with `Failure`, `Scenario`, `SessionSummary`, `ValidationResult` types
+- ✅ `packages/core/src/normalizer.test.ts` — 46 tests
+- ✅ `packages/core/src/parser.test.ts` — 32 tests
+- ✅ Untrusted-input handling: safe JSON parsing, size limits (10 MB), event count limits (10,000), prototype pollution protection, malformed event skip-and-flag
 
 ## What's Next
 
-1. **M0.5 complete** → maintainer reviews and merges this PR
-2. Proceed to v0.1.0 (Inspector MVP):
-   - Issue #13: Core data model + trace parser + event normalizer
-   - Issue #14: Core timeline + failure detection + summarizer + validator
-   - Issue #15: Core public API export + package config
-   - Issue #16: Scenarios package (format + 5 initial scenarios)
-   - Issue #17: Reporter package (Markdown report generator)
-   - Issue #18: CLI package (scaffold + inspect + report + scenario commands)
+1. **Issue #20** (this PR) → complete: data model + parser + normalizer
+2. **Issue #21**: Core timeline + failure detection + summarizer + validator
+3. **Issue #22**: Core public API export + package config
+4. **Issue #23**: Scenarios package (format + 5 initial scenarios)
+5. **Issue #24**: Reporter package (Markdown report generator)
+6. **Issue #25**: CLI package (scaffold + inspect + report + scenario commands)
 
 ## Known Blockers / Decisions Pending
 
@@ -95,7 +88,7 @@ trace fixtures that validate the proposed internal event model.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/core` | in progress (types + fixtures) | 0.0.0 |
+| `@ocpp-debugkit/core` | in progress (parser + normalizer done) | 0.0.0 |
 | `@ocpp-debugkit/scenarios` | not started | — |
 | `@ocpp-debugkit/reporter` | not started | — |
 | `@ocpp-debugkit/cli` | not started | — |
