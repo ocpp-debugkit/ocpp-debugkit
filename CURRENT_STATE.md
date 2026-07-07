@@ -91,7 +91,7 @@ report exported. CLI and web inspector.
 - ✅ Pinned `changesets/action` to `v1.9.0`
 - ✅ Fixed root `changeset` script: `"changeset add"` → `"changeset"` (was causing release workflow failures)
 
-### Scenarios Package (in progress — this PR)
+### Scenarios Package (PR #39)
 
 - ✅ `packages/scenarios/` — new package
 - ✅ 5 scenarios: normal-session, failed-auth, connector-fault, station-offline, unexpected-stop-reason
@@ -99,13 +99,20 @@ report exported. CLI and web inspector.
 - ✅ Each scenario's `expectedFailures` aligns with v0.1 detection rules
 - ✅ 21 tests (registry, engine integration, synthetic data policy)
 
+### Reporter Package (in progress — this PR)
+
+- ✅ `packages/reporter/` — new package
+- ✅ `generateMarkdownReport()` — session overview, timeline summary, failures, suggested steps, event appendix
+- ✅ `AnalysisResult` input type
+- ✅ 11 tests (structure, failure inclusion, readability, metadata, severity)
+
 ## What's Next
 
 1. **Issue #20** → complete (PR #33): data model + parser + normalizer
 2. **Issue #21** → complete (PR #34): timeline + detection + summarizer + validator
 3. **Issue #22** → complete (PR #35): public API export + package config
-4. **Issue #23** (this PR) → complete: scenarios package (format + 5 initial scenarios)
-5. **Issue #24**: Reporter package (Markdown report generator)
+4. **Issue #23** → complete (PR #39): scenarios package (format + 5 initial scenarios)
+5. **Issue #24** (this PR) → complete: reporter package (Markdown report generator)
 6. **Issue #25**: CLI package (scaffold + inspect + report + scenario commands)
 
 ## Known Blockers / Decisions Pending
@@ -118,7 +125,7 @@ report exported. CLI and web inspector.
 |---------|--------|---------|
 | `@ocpp-debugkit/core` | in progress (package config finalized, ready for downstream) | 0.0.0 |
 | `@ocpp-debugkit/scenarios` | in progress (5 scenarios + registry) | 0.0.0 |
-| `@ocpp-debugkit/reporter` | not started | — |
+| `@ocpp-debugkit/reporter` | in progress (Markdown generator) | 0.0.0 |
 | `@ocpp-debugkit/cli` | not started | — |
 | `@ocpp-debugkit/replay` | not started | — |
 | `@ocpp-debugkit/react` | not started | — |
