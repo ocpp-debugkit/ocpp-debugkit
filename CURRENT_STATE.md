@@ -106,7 +106,7 @@ report exported. CLI and web inspector.
 - ✅ `AnalysisResult` input type
 - ✅ 11 tests (structure, failure inclusion, readability, metadata, severity)
 
-### CLI Package (in progress — this PR)
+### CLI Package (PR #41)
 
 - ✅ `packages/cli/` — new package
 - ✅ `ocpp-debugkit inspect <file>` — parse + analyze + output
@@ -118,6 +118,14 @@ report exported. CLI and web inspector.
 - ✅ 17 integration tests (execa-based)
 - ✅ Converted JSON fixtures to TS modules (fixes Node.js ESM JSON import issue)
 
+### Next.js App Scaffold (in progress — this PR)
+
+- ✅ `apps/web/` — single Next.js app (App Router)
+- ✅ Tailwind CSS initialized
+- ✅ Routes: `/` (placeholder), `/inspector` (placeholder), `/docs` (placeholder)
+- ✅ Workspace dependencies on `@ocpp-debugkit/core`, `scenarios`, `reporter`
+- ✅ `"private": true` (never publishable to npm)
+
 ## What's Next
 
 1. **Issue #20** → complete (PR #33): data model + parser + normalizer
@@ -125,9 +133,9 @@ report exported. CLI and web inspector.
 3. **Issue #22** → complete (PR #35): public API export + package config
 4. **Issue #23** → complete (PR #39): scenarios package (format + 5 initial scenarios)
 5. **Issue #24** → complete (PR #40): reporter package (Markdown report generator)
-6. **Issue #25** (this PR) → complete: CLI package (scaffold + inspect + report + scenario commands)
-7. **Issue #26**: Next.js app scaffold (Next.js + Nextra + Tailwind + Shadcn)
-8. **Issue #27**: Landing page
+6. **Issue #25** → complete (PR #41): CLI package (scaffold + inspect + report + scenario commands)
+7. **Issue #26** (this PR) → complete: Next.js app scaffold (Next.js + Tailwind, routes for /, /inspector, /docs)
+8. **Issue #27**: Landing page (hero, features, architecture, quick start, footer)
 9. **Issue #28**: Inspector (trace input + timeline + message inspector)
 
 ## Known Blockers / Decisions Pending
@@ -144,4 +152,4 @@ report exported. CLI and web inspector.
 | `@ocpp-debugkit/cli` | in progress (inspect + report + scenario) | 0.0.0 |
 | `@ocpp-debugkit/replay` | not started | — |
 | `@ocpp-debugkit/react` | not started | — |
-| `apps/web` | not started | — |
+| `apps/web` | in progress (scaffold + routes) | — |
