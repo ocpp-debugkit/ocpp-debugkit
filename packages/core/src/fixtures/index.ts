@@ -7,9 +7,9 @@
  * @see docs/trace-format-spec.md
  */
 
-import normalSession from '../__fixtures__/normal-session.json';
-import failedAuth from '../__fixtures__/failed-auth.json';
-import connectorFault from '../__fixtures__/connector-fault.json';
+import normalSession from '../__fixtures__/normal-session.js';
+import failedAuth from '../__fixtures__/failed-auth.js';
+import connectorFault from '../__fixtures__/connector-fault.js';
 
 export { normalSession, failedAuth, connectorFault };
 

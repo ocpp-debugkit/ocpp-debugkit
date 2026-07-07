@@ -8,8 +8,8 @@
 import type { Scenario, Trace } from '@ocpp-debugkit/core';
 import { fixtures } from '@ocpp-debugkit/core';
 
-import stationOffline from './__scenarios__/station-offline.json';
-import unexpectedStopReason from './__scenarios__/unexpected-stop-reason.json';
+import stationOffline from './__scenarios__/station-offline.js';
+import unexpectedStopReason from './__scenarios__/unexpected-stop-reason.js';
 
 // ---------------------------------------------------------------------------
 // Scenarios derived from core fixtures
