@@ -61,20 +61,26 @@ report exported. CLI and web inspector.
 - ✅ 3 synthetic trace fixtures in `packages/core/src/__fixtures__/`
 - ✅ Proposed canonical types and fixture validation tests
 
-### Core Package — Data Model + Parser + Normalizer (in progress — this PR)
+### Core Package — Data Model + Parser + Normalizer (PR #33)
 
 - ✅ `packages/core/src/schemas.ts` — Zod schemas for all input types
 - ✅ `packages/core/src/normalizer.ts` — `normalizeEvents()`, direction inference (ADR-0004), timestamp normalization (ADR-0005)
 - ✅ `packages/core/src/parser.ts` — `parseTrace()` accepting JSON Object, JSONL, bare array
 - ✅ `packages/core/src/types.ts` — updated with `Failure`, `Scenario`, `SessionSummary`, `ValidationResult` types
-- ✅ `packages/core/src/normalizer.test.ts` — 46 tests
-- ✅ `packages/core/src/parser.test.ts` — 32 tests
-- ✅ Untrusted-input handling: safe JSON parsing, size limits (10 MB), event count limits (10,000), prototype pollution protection, malformed event skip-and-flag
+- ✅ 78 unit tests (46 normalizer + 32 parser)
+
+### Core Package — Timeline + Detection + Summarizer + Validator (in progress — this PR)
+
+- ✅ `packages/core/src/timeline.ts` — `buildSessionTimeline()` correlating events by `transactionId` (ADR-0006)
+- ✅ `packages/core/src/detection.ts` — `detectFailures()` with 3 rules: `FAILED_AUTHORIZATION`, `CONNECTOR_FAULT`, `STATION_OFFLINE_DURING_SESSION`
+- ✅ `packages/core/src/summarizer.ts` — `summarizeSession()` / `summarizeSessions()` producing overview stats
+- ✅ `packages/core/src/validator.ts` — `validateMessage()` / `validateMessages()` checking OCPP 1.6 JSON structural compliance
+- ✅ 40 additional tests (10 timeline + 11 detection + 5 summarizer + 14 validator)
 
 ## What's Next
 
-1. **Issue #20** (this PR) → complete: data model + parser + normalizer
-2. **Issue #21**: Core timeline + failure detection + summarizer + validator
+1. **Issue #20** → complete (PR #33): data model + parser + normalizer
+2. **Issue #21** (this PR) → complete: timeline + detection + summarizer + validator
 3. **Issue #22**: Core public API export + package config
 4. **Issue #23**: Scenarios package (format + 5 initial scenarios)
 5. **Issue #24**: Reporter package (Markdown report generator)
@@ -88,7 +94,7 @@ report exported. CLI and web inspector.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/core` | in progress (parser + normalizer done) | 0.0.0 |
+| `@ocpp-debugkit/core` | in progress (parser + timeline + detection + summarizer + validator) | 0.0.0 |
 | `@ocpp-debugkit/scenarios` | not started | — |
 | `@ocpp-debugkit/reporter` | not started | — |
 | `@ocpp-debugkit/cli` | not started | — |
