@@ -118,13 +118,24 @@ report exported. CLI and web inspector.
 - ✅ 17 integration tests (execa-based)
 - ✅ Converted JSON fixtures to TS modules (fixes Node.js ESM JSON import issue)
 
-### Next.js App Scaffold (in progress — this PR)
+### Next.js App Scaffold (PR #42)
 
 - ✅ `apps/web/` — single Next.js app (App Router)
 - ✅ Tailwind CSS initialized
 - ✅ Routes: `/` (placeholder), `/inspector` (placeholder), `/docs` (placeholder)
 - ✅ Workspace dependencies on `@ocpp-debugkit/core`, `scenarios`, `reporter`
 - ✅ `"private": true` (never publishable to npm)
+
+### Landing Page + Inspector (in progress — this PR)
+
+- ✅ Landing page: hero, features, what-it's-not, architecture, quick start, footer
+- ✅ Inspector: trace paste textarea + file upload + sample scenario selector
+- ✅ Inspector: session timeline (click events to inspect)
+- ✅ Inspector: message inspector panel (raw + normalized fields)
+- ✅ Inspector: failure summary (severity, description, suggested steps)
+- ✅ Inspector: Markdown report export (download)
+- ✅ Inspector: loading/empty/error states
+- ✅ Browser-local processing only (all parsing client-side)
 
 ## What's Next
 
@@ -134,9 +145,11 @@ report exported. CLI and web inspector.
 4. **Issue #23** → complete (PR #39): scenarios package (format + 5 initial scenarios)
 5. **Issue #24** → complete (PR #40): reporter package (Markdown report generator)
 6. **Issue #25** → complete (PR #41): CLI package (scaffold + inspect + report + scenario commands)
-7. **Issue #26** (this PR) → complete: Next.js app scaffold (Next.js + Tailwind, routes for /, /inspector, /docs)
-8. **Issue #27**: Landing page (hero, features, architecture, quick start, footer)
-9. **Issue #28**: Inspector (trace input + timeline + message inspector)
+7. **Issue #26** → complete (PR #42): Next.js app scaffold (Next.js + Tailwind, routes for /, /inspector, /docs)
+8. **Issue #27** (this PR) → complete: Landing page (hero, features, architecture, quick start, footer)
+9. **Issue #28** (this PR) → complete: Inspector (trace input + timeline + message inspector + failures + report export)
+10. **Issue #29**: Inspector polish (responsive, keyboard nav, loading states)
+11. **Issue #30**: Playwright smoke tests
 
 ## Known Blockers / Decisions Pending
 
@@ -152,4 +165,4 @@ report exported. CLI and web inspector.
 | `@ocpp-debugkit/cli` | in progress (inspect + report + scenario) | 0.0.0 |
 | `@ocpp-debugkit/replay` | not started | — |
 | `@ocpp-debugkit/react` | not started | — |
-| `apps/web` | in progress (scaffold + routes) | — |
+| `apps/web` | in progress (landing + inspector) | — |
