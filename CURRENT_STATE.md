@@ -77,7 +77,7 @@ report exported. CLI and web inspector.
 - ✅ `packages/core/src/validator.ts` — `validateMessage()` / `validateMessages()` checking OCPP 1.6 JSON structural compliance
 - ✅ 40 additional tests (10 timeline + 11 detection + 5 summarizer + 14 validator)
 
-### Core Package — Public API Export + Package Config (in progress — this PR)
+### Core Package — Public API Export + Package Config (PR #35)
 
 - ✅ Barrel export complete (types, schemas, parser, normalizer, timeline, detection, summarizer, validator, fixtures)
 - ✅ `sideEffects: false` for tree-shaking
@@ -85,12 +85,26 @@ report exported. CLI and web inspector.
 - ✅ `keywords`, `repository`, `homepage`, `bugs` fields for npm discoverability
 - ✅ Package is npm-publish-ready (`access: public`)
 
+### CI Fixes (PR #36, #37)
+
+- ✅ Bumped `actions/checkout` and `actions/setup-node` to v5 (Node.js 20 deprecation)
+- ✅ Pinned `changesets/action` to `v1.9.0`
+- ✅ Fixed root `changeset` script: `"changeset add"` → `"changeset"` (was causing release workflow failures)
+
+### Scenarios Package (in progress — this PR)
+
+- ✅ `packages/scenarios/` — new package
+- ✅ 5 scenarios: normal-session, failed-auth, connector-fault, station-offline, unexpected-stop-reason
+- ✅ Scenario registry with `getScenario()` lookup
+- ✅ Each scenario's `expectedFailures` aligns with v0.1 detection rules
+- ✅ 21 tests (registry, engine integration, synthetic data policy)
+
 ## What's Next
 
 1. **Issue #20** → complete (PR #33): data model + parser + normalizer
 2. **Issue #21** → complete (PR #34): timeline + detection + summarizer + validator
-3. **Issue #22** (this PR) → complete: public API export + package config
-4. **Issue #23**: Scenarios package (format + 5 initial scenarios)
+3. **Issue #22** → complete (PR #35): public API export + package config
+4. **Issue #23** (this PR) → complete: scenarios package (format + 5 initial scenarios)
 5. **Issue #24**: Reporter package (Markdown report generator)
 6. **Issue #25**: CLI package (scaffold + inspect + report + scenario commands)
 
@@ -103,7 +117,7 @@ report exported. CLI and web inspector.
 | Package | Status | Version |
 |---------|--------|---------|
 | `@ocpp-debugkit/core` | in progress (package config finalized, ready for downstream) | 0.0.0 |
-| `@ocpp-debugkit/scenarios` | not started | — |
+| `@ocpp-debugkit/scenarios` | in progress (5 scenarios + registry) | 0.0.0 |
 | `@ocpp-debugkit/reporter` | not started | — |
 | `@ocpp-debugkit/cli` | not started | — |
 | `@ocpp-debugkit/replay` | not started | — |
