@@ -126,7 +126,7 @@ report exported. CLI and web inspector.
 - ✅ Workspace dependencies on `@ocpp-debugkit/core`, `scenarios`, `reporter`
 - ✅ `"private": true` (never publishable to npm)
 
-### Landing Page + Inspector (in progress — this PR)
+### Landing Page + Inspector (PR #43)
 
 - ✅ Landing page: hero, features, what-it's-not, architecture, quick start, footer
 - ✅ Inspector: trace paste textarea + file upload + sample scenario selector
@@ -134,8 +134,15 @@ report exported. CLI and web inspector.
 - ✅ Inspector: message inspector panel (raw + normalized fields)
 - ✅ Inspector: failure summary (severity, description, suggested steps)
 - ✅ Inspector: Markdown report export (download)
-- ✅ Inspector: loading/empty/error states
-- ✅ Browser-local processing only (all parsing client-side)
+
+### Inspector Polish (in progress — this PR)
+
+- ✅ Loading state with spinner ("Parsing trace…")
+- ✅ Error state improvements (non-sensitive messages, empty input guidance)
+- ✅ Responsive layout (mobile-friendly: flex-wrap, smaller text on small screens)
+- ✅ Keyboard navigation (arrow up/down to move through events)
+- ✅ Sticky header for better UX on long traces
+- ✅ Analyze button shows "Analyzing…" and disables during parsing
 
 ## What's Next
 
@@ -146,9 +153,9 @@ report exported. CLI and web inspector.
 5. **Issue #24** → complete (PR #40): reporter package (Markdown report generator)
 6. **Issue #25** → complete (PR #41): CLI package (scaffold + inspect + report + scenario commands)
 7. **Issue #26** → complete (PR #42): Next.js app scaffold (Next.js + Tailwind, routes for /, /inspector, /docs)
-8. **Issue #27** (this PR) → complete: Landing page (hero, features, architecture, quick start, footer)
-9. **Issue #28** (this PR) → complete: Inspector (trace input + timeline + message inspector + failures + report export)
-10. **Issue #29**: Inspector polish (responsive, keyboard nav, loading states)
+8. **Issue #27** → complete (PR #43): Landing page (hero, features, architecture, quick start, footer)
+9. **Issue #28** → complete (PR #43): Inspector (trace input + timeline + message inspector + failures + report export)
+10. **Issue #29** (this PR) → complete: Inspector polish (loading states, responsive, keyboard nav)
 11. **Issue #30**: Playwright smoke tests
 
 ## Known Blockers / Decisions Pending
