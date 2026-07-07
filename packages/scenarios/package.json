@@ -1,0 +1,55 @@
+{
+  "name": "@ocpp-debugkit/scenarios",
+  "version": "0.0.0",
+  "description": "Predefined OCPP trace scenarios for testing the DebugKit analysis engine.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "NOTICE"
+  ],
+  "keywords": [
+    "ocpp",
+    "ocpp1.6",
+    "ev-charging",
+    "scenarios",
+    "test-fixtures",
+    "trace"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ocpp-debugkit/ocpp-debugkit.git",
+    "directory": "packages/scenarios"
+  },
+  "homepage": "https://github.com/ocpp-debugkit/ocpp-debugkit/tree/main/packages/scenarios",
+  "bugs": {
+    "url": "https://github.com/ocpp-debugkit/ocpp-debugkit/issues"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@ocpp-debugkit/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
