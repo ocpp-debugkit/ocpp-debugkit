@@ -129,6 +129,22 @@ test/<description>             # e.g. test/core-coverage
 See [`CURRENT_STATE.md`](./CURRENT_STATE.md) for what has been built, what is
 in progress, and what is next.
 
+## Design Decisions
+
+The protocol and trace-format design is documented in
+[`docs/adr/`](./docs/adr/) (Architecture Decision Records) and
+[`docs/trace-format-spec.md`](./docs/trace-format-spec.md). Key decisions:
+
+- **OCPP 1.6 JSON** is the primary protocol for v0.1. OCPP 2.0.1 is deferred but the architecture supports it (ADR-0001).
+- **Two trace formats:** JSON Object (metadata + events array) and JSONL (one event per line). Bare arrays accepted as degenerate (ADR-0002).
+- **Canonical `Event` type** with `id`, `messageId`, `timestamp`, `direction`, `messageType`, `action`, `payload`, `rawMessage` (ADR-0003).
+- **Direction** is explicit (`CS_TO_CSMS`, `CSMS_TO_CS`, `UNKNOWN`), inferred from action name when missing (ADR-0004).
+- **Timestamps** normalized to epoch milliseconds. Missing timestamps are `null`. Out-of-order events are flagged, not silently reordered (ADR-0005).
+- **Sessions** derived by correlating `transactionId`, with `connectorId` and `stationId` as secondary groupings (ADR-0006).
+- **Malformed traces:** structural errors fail-fast; event-level errors skip-and-flag; size/count limits enforced (ADR-0007).
+- **Browser-local processing:** all trace processing client-side. No auto-upload. No telemetry on trace content (ADR-0008).
+- **Extensibility:** version-aware, not version-hardcoded. Adding OCPP 2.0.1 is additive (ADR-0009).
+
 ## Contributor Guide
 
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for setup, conventions, and the
