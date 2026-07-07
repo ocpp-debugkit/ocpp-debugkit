@@ -37,11 +37,16 @@ feature code lands.
 - ✅ `.github/workflows/release.yml` — Changesets version PR, npm publish, ecosystem tag + GitHub release
 - ✅ `.changeset/config.json` — public access, base branch main
 
-## What's Next
+### GitHub Templates (in progress — this PR)
+- ✅ `.github/PULL_REQUEST_TEMPLATE.md`
+- ✅ `.github/ISSUE_TEMPLATE/bug_report.md`
+- ✅ `.github/ISSUE_TEMPLATE/feature_request.md`
+- ✅ `.github/ISSUE_TEMPLATE/scenario_request.md`
 
-1. **PR3** (Issues #7–#8): PR template + issue templates
-2. **PR4** (Issues #9–#11): CONTRIBUTING, CODE_OF_CONDUCT, ROADMAP, README
-3. **M0 complete** → proceed to M0.5 (Protocol & Trace-Format Design Phase)
+
+
+1. **PR4** (Issues #9–#11): CONTRIBUTING, CODE_OF_CONDUCT, ROADMAP, README
+2. **M0 complete** → proceed to M0.5 (Protocol & Trace-Format Design Phase)
 
 ## Known Blockers / Decisions Pending
 
