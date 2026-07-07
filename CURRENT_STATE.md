@@ -32,16 +32,16 @@ feature code lands.
 - ✅ `NOTICE` file (Apache 2.0)
 - ✅ `AGENTS.md` + `CURRENT_STATE.md` (initial versions)
 
-## What's In Progress
-
-- **PR #12** (this PR): Monorepo + tooling foundation (Issues #1–#4)
+### CI & Release (in progress — this PR)
+- ✅ `.github/workflows/ci.yml` — lint, format check, typecheck, test, build on PR + push
+- ✅ `.github/workflows/release.yml` — Changesets version PR, npm publish, ecosystem tag + GitHub release
+- ✅ `.changeset/config.json` — public access, base branch main
 
 ## What's Next
 
-1. **PR2** (Issues #5–#6): GitHub Actions CI workflow + Changesets/release workflow
-2. **PR3** (Issues #7–#8): PR template + issue templates
-3. **PR4** (Issues #9–#11): CONTRIBUTING, CODE_OF_CONDUCT, ROADMAP, README
-4. **M0 complete** → proceed to M0.5 (Protocol & Trace-Format Design Phase)
+1. **PR3** (Issues #7–#8): PR template + issue templates
+2. **PR4** (Issues #9–#11): CONTRIBUTING, CODE_OF_CONDUCT, ROADMAP, README
+3. **M0 complete** → proceed to M0.5 (Protocol & Trace-Format Design Phase)
 
 ## Known Blockers / Decisions Pending
 
