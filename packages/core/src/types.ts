@@ -141,3 +141,72 @@ export interface ParseResult {
   events: Event[];
   warnings: ParseWarning[];
 }
+
+// ---------------------------------------------------------------------------
+// Failure Detection (ADR-0003)
+// ---------------------------------------------------------------------------
+
+/** Severity of a detected failure. */
+export type FailureSeverity = 'critical' | 'warning' | 'info';
+
+/** Failure rule codes implemented in v0.1. */
+export type FailureCode =
+  'FAILED_AUTHORIZATION' | 'CONNECTOR_FAULT' | 'STATION_OFFLINE_DURING_SESSION';
+
+/**
+ * A detected failure in a trace.
+ */
+export interface Failure {
+  /** Failure rule code. */
+  code: FailureCode;
+  /** Human-readable description. */
+  description: string;
+  /** Severity level. */
+  severity: FailureSeverity;
+  /** Event IDs associated with the failure. */
+  eventIds: string[];
+  /** Suggested next steps for resolution. */
+  suggestedSteps: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Session Summary
+// ---------------------------------------------------------------------------
+
+/** Summary statistics for a charging session. */
+export interface SessionSummary {
+  sessionId: string;
+  stationId: string;
+  connectorId: number | null;
+  transactionId: number | null;
+  status: 'active' | 'completed' | 'aborted';
+  eventCount: number;
+  durationMs: number | null;
+  failureCount: number;
+  /** Ordered list of actions in the session. */
+  actionSequence: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Validation
+// ---------------------------------------------------------------------------
+
+/** Result of validating a single OCPP message. */
+export interface ValidationResult {
+  valid: boolean;
+  errors: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Scenario
+// ---------------------------------------------------------------------------
+
+/** A scenario fixture for testing the analysis engine. */
+export interface Scenario {
+  name: string;
+  description: string;
+  /** The trace data to analyze. */
+  trace: Trace;
+  /** Failure codes expected to be detected. */
+  expectedFailures: FailureCode[];
+}
