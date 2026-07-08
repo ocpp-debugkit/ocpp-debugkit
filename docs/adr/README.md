@@ -16,6 +16,7 @@ significant architectural decision, its context, and its consequences.
 | [ADR-0007](0007-malformed-trace-handling.md) | Malformed Trace Handling | Accepted |
 | [ADR-0008](0008-browser-local-processing.md) | Browser-Local Processing & Privacy | Accepted |
 | [ADR-0009](0009-protocol-extensibility.md) | Future Protocol-Version Extensibility | Accepted |
+| [ADR-0010](0010-single-package-consolidation.md) | Single Package Consolidation | Accepted |
 
 ## Format
 
