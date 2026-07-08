@@ -10,7 +10,7 @@ import {
   ParseError,
   type Trace,
 } from '../../core/index.js';
-import { generateMarkdownReport } from '../../reporter/index.js';
+import { generateMarkdownReport, generateHtmlReport } from '../../reporter/index.js';
 import { CliError, readTraceFile } from '../utils.js';
 
 export interface ReportOptions {
@@ -58,14 +58,19 @@ export async function reportCommand(file: string, options: ReportOptions): Promi
   const failures = detectFailures(result.events, sessions);
   const summaries = summarizeSessions(sessions, failures);
 
-  const report = generateMarkdownReport({
+  const analysisResult = {
     events: result.events,
     sessions,
     failures,
     summaries,
     warnings: result.warnings,
     metadata,
-  });
+  };
+
+  const report =
+    options.format === 'html'
+      ? generateHtmlReport(analysisResult)
+      : generateMarkdownReport(analysisResult);
 
   if (options.output) {
     const { writeFileSync } = await import('node:fs');
