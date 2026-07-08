@@ -4,13 +4,13 @@
 
 ## Current Version
 
-`0.2.0` — Packaging Consolidation + Scenario Evaluator & Replay (in progress)
+`0.2.1` — Packaging Consolidation + Scenario Evaluator & Replay (ready for release)
 
 ## Active Milestone
 
-**v0.2.0 — Packaging Consolidation + Scenario Evaluator & Replay (in progress)**
+**v0.2.0 — Packaging Consolidation + Scenario Evaluator & Replay (complete — pending release)**
 
-Phase 0: Packaging consolidation — creating `@ocpp-debugkit/toolkit` single package with subpath exports.
+All v0.2.0 features implemented. Ready for release as `@ocpp-debugkit/toolkit@0.2.1`.
 
 ## What's Done
 
@@ -160,7 +160,7 @@ Phase 0: Packaging consolidation — creating `@ocpp-debugkit/toolkit` single pa
 
 - ✅ `packages/toolkit/` — single `@ocpp-debugkit/toolkit` package created (PR #55)
 - ✅ Core, scenarios, reporter, CLI code moved into `src/core/`, `src/scenarios/`, `src/reporter/`, `src/cli/`
-- ✅ `src/replay/` and `src/react/` stub modules added
+- ✅ `src/replay/` and `src/react/` modules added
 - ✅ Subpath exports configured (`/core`, `/scenarios`, `/reporter`, `/replay`, `/react`, `/cli`, `/fixtures`)
 - ✅ CLI binary `ocpp-debugkit` via `package.json#bin`
 - ✅ Old package directories removed
@@ -168,21 +168,25 @@ Phase 0: Packaging consolidation — creating `@ocpp-debugkit/toolkit` single pa
 - ✅ All 196 existing tests pass from new locations
 - ✅ Build, lint, typecheck, format all green
 - ✅ `private: true` set to prevent premature auto-publish (PR #67)
+- ✅ External fixture test + CI (PR #69)
+- ✅ Migration docs + ADR-0010 (PR #71)
+- ✅ Release workflow simplified for single package (PR #72)
 
-### Note on premature 0.2.0 publish
+### v0.2.0 Features (complete)
 
-`@ocpp-debugkit/toolkit@0.2.0` was accidentally auto-published by the release
-workflow when PR #55 merged (Changesets publishes unpublished local versions
-even without a changeset). The package contains only Phase 0 stubs — deprecated
-on npm. The real release will be `0.2.1`. The premature `release-v0.2.0`
-GitHub release and tag were deleted.
+- ✅ Expanded failure detection — 7 new rules (PR #70): TIMEOUT_NO_HEARTBEAT, METER_VALUE_GAP,
+  INVALID_STOP_REASON, UNEXPECTED_START, STATUS_TRANSITION_VIOLATION, DIAGNOSTICS_FAILURE,
+  FIRMWARE_UPDATE_FAILURE
+- ✅ 10 total scenarios + CLI external scenario files (PR #75)
+- ✅ Replay engine implementation + tests (PR #74)
+- ✅ HTML report format + CLI --format html (PR #73)
+- ✅ React components extracted from inspector (PR #76)
+- ✅ App replay UI + report viewer + react refactor (PR #77)
 
 ## What's Next
 
-1. **v0.2.0 remaining** — External fixture test (#56), migration docs (#57),
-   release workflow simplification (#58), expanded failure detection (#59),
-   10 scenarios (#60), replay engine (#61), HTML reports (#62), React
-   components (#63), app replay UI (#64), v0.2 docs (#65), release (#66)
+1. **v0.2.0 release** — Remove `private: true`, add changeset, publish
+   `@ocpp-debugkit/toolkit@0.2.1`, create Git tag `v0.2.1`, deprecate old packages
 2. **v0.3.0** — Integrations & OSS credibility (trace diffing, CI mode,
    anonymize, integration examples)
 3. **v1.0.0** — API stabilization, 20+ scenarios, docs overhaul, contributor
@@ -196,9 +200,9 @@ GitHub release and tag were deleted.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/toolkit` | in progress | 0.2.0 |
-| `@ocpp-debugkit/core` | published (deprecated after v0.2.0) | 0.1.1 |
-| `@ocpp-debugkit/scenarios` | published (deprecated after v0.2.0) | 0.1.1 |
-| `@ocpp-debugkit/reporter` | published (deprecated after v0.2.0) | 0.1.1 |
-| `@ocpp-debugkit/cli` | published (deprecated after v0.2.0) | 0.1.1 |
+| `@ocpp-debugkit/toolkit` | ready for release | 0.2.1 |
+| `@ocpp-debugkit/core` | published (deprecated after release) | 0.1.1 |
+| `@ocpp-debugkit/scenarios` | published (deprecated after release) | 0.1.1 |
+| `@ocpp-debugkit/reporter` | published (deprecated after release) | 0.1.1 |
+| `@ocpp-debugkit/cli` | published (deprecated after release) | 0.1.1 |
 | `apps/web` | deployed | — |

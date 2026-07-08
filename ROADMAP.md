@@ -76,21 +76,24 @@ met.
 
 ---
 
-## v0.2.0 — Scenario Evaluator & Replay
+## v0.2.0 — Packaging Consolidation + Scenario Evaluator & Replay
 
-**Status:** Next up
+**Status:** ✅ Complete (pending release as `@ocpp-debugkit/toolkit@0.2.1`)
 
-Make the tool genuinely useful for developers' daily workflows.
+Consolidated four npm packages into `@ocpp-debugkit/toolkit` with subpath
+exports. Added offline scenario evaluation, replay, expanded detection, HTML
+reports, and reusable React components.
 
-- Expanded failure detection rules (7 new rules)
-- 10 total scenarios
-- Replay engine package
-- Extracted React components package
-- CLI: external scenario files, offline evaluator
-- HTML report format
-- App: replay UI, report viewer, React refactor
+- **Packaging:** Single `@ocpp-debugkit/toolkit` package with subpath exports
+- **Detection:** 10 failure rules (3 v0.1 + 7 new)
+- **Scenarios:** 10 total scenarios + CLI external scenario files
+- **Replay:** Replay engine with step/play/pause/jump
+- **Reports:** Markdown + HTML report formats
+- **React:** Extracted reusable components (SessionTimeline, MessageInspector, etc.)
+- **App:** Replay UI, report viewer, three-tab inspector (Inspect/Replay/Report)
 
-**Exit criteria:** GitHub release `release-v0.2.0`.
+**Exit criteria:** `@ocpp-debugkit/toolkit@0.2.1` published, Git tag `v0.2.1`,
+old packages deprecated.
 
 ---
 
