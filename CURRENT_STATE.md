@@ -156,23 +156,33 @@ Phase 0: Packaging consolidation — creating `@ocpp-debugkit/toolkit` single pa
 - ✅ `/docs` index with navigation sidebar
 - ✅ `/docs/quickstart`, `/docs/glossary`, `/docs/architecture`, `/docs/trace-format`, `/docs/cli`, `/docs/scenarios`
 
-### Packaging Consolidation (v0.2.0 Phase 0 — in progress)
+### Packaging Consolidation (v0.2.0 Phase 0 — complete)
 
-- 🔄 `packages/toolkit/` — single `@ocpp-debugkit/toolkit` package created
-- 🔄 Core, scenarios, reporter, CLI code moved into `src/core/`, `src/scenarios/`, `src/reporter/`, `src/cli/`
-- 🔄 `src/replay/` and `src/react/` stub modules added
-- 🔄 Subpath exports configured (`/core`, `/scenarios`, `/reporter`, `/replay`, `/react`, `/cli`, `/fixtures`)
-- 🔄 CLI binary `ocpp-debugkit` via `package.json#bin`
-- 🔄 Old package directories removed
-- 🔄 Web app updated to consume `@ocpp-debugkit/toolkit`
-- 🔄 All 196 existing tests pass from new locations
-- 🔄 Build, lint, typecheck, format all green
+- ✅ `packages/toolkit/` — single `@ocpp-debugkit/toolkit` package created (PR #55)
+- ✅ Core, scenarios, reporter, CLI code moved into `src/core/`, `src/scenarios/`, `src/reporter/`, `src/cli/`
+- ✅ `src/replay/` and `src/react/` stub modules added
+- ✅ Subpath exports configured (`/core`, `/scenarios`, `/reporter`, `/replay`, `/react`, `/cli`, `/fixtures`)
+- ✅ CLI binary `ocpp-debugkit` via `package.json#bin`
+- ✅ Old package directories removed
+- ✅ Web app updated to consume `@ocpp-debugkit/toolkit`
+- ✅ All 196 existing tests pass from new locations
+- ✅ Build, lint, typecheck, format all green
+- ✅ `private: true` set to prevent premature auto-publish (PR #67)
+
+### Note on premature 0.2.0 publish
+
+`@ocpp-debugkit/toolkit@0.2.0` was accidentally auto-published by the release
+workflow when PR #55 merged (Changesets publishes unpublished local versions
+even without a changeset). The package contains only Phase 0 stubs — deprecated
+on npm. The real release will be `0.2.1`. The premature `release-v0.2.0`
+GitHub release and tag were deleted.
 
 ## What's Next
 
-1. **v0.2.0 remaining** — External fixture test, migration docs, release workflow
-   simplification, expanded failure detection (7 new rules), 10 scenarios, replay
-   engine, React components, HTML reports, app replay UI
+1. **v0.2.0 remaining** — External fixture test (#56), migration docs (#57),
+   release workflow simplification (#58), expanded failure detection (#59),
+   10 scenarios (#60), replay engine (#61), HTML reports (#62), React
+   components (#63), app replay UI (#64), v0.2 docs (#65), release (#66)
 2. **v0.3.0** — Integrations & OSS credibility (trace diffing, CI mode,
    anonymize, integration examples)
 3. **v1.0.0** — API stabilization, 20+ scenarios, docs overhaul, contributor
