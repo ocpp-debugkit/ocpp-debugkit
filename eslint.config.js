@@ -23,6 +23,7 @@ export default tseslint.config(
       '**/.turbo/**',
       '**/coverage/**',
       '**/node_modules/**',
+      '**/tests/external-fixture/**',
     ],
   },
 );

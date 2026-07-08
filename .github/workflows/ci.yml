@@ -57,3 +57,30 @@ jobs:
       - name: E2E tests
         working-directory: apps/web
         run: pnpm test:e2e
+
+  external-fixture:
+    name: External Fixture Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: External fixture test
+        run: pnpm test:external-fixture

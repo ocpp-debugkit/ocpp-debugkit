@@ -1,0 +1,7 @@
+{
+  "name": "toolkit-external-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "External fixture project to verify @ocpp-debugkit/toolkit subpath exports work for real consumers (not workspace symlinks)."
+}
