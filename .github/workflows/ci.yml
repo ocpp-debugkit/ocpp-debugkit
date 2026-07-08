@@ -17,7 +17,7 @@ jobs:
   ci:
     name: Lint, Typecheck, Test, Build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -49,3 +49,11 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - name: Install Playwright browsers
+        working-directory: apps/web
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: E2E tests
+        working-directory: apps/web
+        run: pnpm test:e2e

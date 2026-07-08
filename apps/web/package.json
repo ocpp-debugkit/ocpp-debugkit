@@ -8,17 +8,19 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf .next .turbo"
+    "clean": "rm -rf .next .turbo",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@ocpp-debugkit/core": "workspace:*",
-    "@ocpp-debugkit/scenarios": "workspace:*",
     "@ocpp-debugkit/reporter": "workspace:*",
+    "@ocpp-debugkit/scenarios": "workspace:*",
     "next": "16.2.10",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
