@@ -285,7 +285,7 @@ export default function InspectorPage() {
 
             {/* Failures */}
             {analysis.failures.length > 0 && (
-              <div>
+              <div data-testid="failure-summary">
                 <h2 className="text-base font-semibold text-neutral-900 dark:text-white mb-3 sm:text-lg">
                   Failures ({analysis.failures.length})
                 </h2>
