@@ -37,29 +37,33 @@ validate behavior against known scenarios.
 
 ## Architecture
 
-OCPP DebugKit is a pnpm monorepo with independently versioned packages.
+OCPP DebugKit is a pnpm monorepo. All modules ship in a single npm package,
+`@ocpp-debugkit/toolkit`, exposed via [subpath exports](https://nodejs.org/api/packages.html#subpath-exports).
 
 ```
-        core          ← everything depends on this
-       /  |  \
-  scenarios | reporter | replay
-       \  |  /    |
-          cli       |
-          |         |
-       apps/web (single Next.js app)
+@ocpp-debugkit/toolkit
+├── core        ← data model, parser, normalizer, timeline, failure detection
+├── scenarios   ← predefined trace scenarios (depends on core)
+├── reporter    ← report generators — Markdown, HTML (depends on core)
+├── replay      ← replay engine (depends on core)
+├── react       ← reusable React components (depends on core, scenarios, reporter)
+└── cli         ← command-line interface (depends on core, scenarios, reporter)
+      │
+      └── apps/web (single Next.js app)
 ```
 
-| Package | Description | Version |
-|---------|-------------|---------|
-| `@ocpp-debugkit/core` | Data model, trace parser, event normalizer, timeline, failure detection | [![npm](https://img.shields.io/npm/v/@ocpp-debugkit/core.svg)](https://www.npmjs.com/package/@ocpp-debugkit/core) |
-| `@ocpp-debugkit/scenarios` | Predefined trace scenarios for testing | [![npm](https://img.shields.io/npm/v/@ocpp-debugkit/scenarios.svg)](https://www.npmjs.com/package/@ocpp-debugkit/scenarios) |
-| `@ocpp-debugkit/reporter` | Report generators (Markdown) | [![npm](https://img.shields.io/npm/v/@ocpp-debugkit/reporter.svg)](https://www.npmjs.com/package/@ocpp-debugkit/reporter) |
-| `@ocpp-debugkit/cli` | Command-line interface | [![npm](https://img.shields.io/npm/v/@ocpp-debugkit/cli.svg)](https://www.npmjs.com/package/@ocpp-debugkit/cli) |
-| `@ocpp-debugkit/replay` | Replay engine | _planned (v0.2.0)_ |
-| `@ocpp-debugkit/react` | Reusable React components | _planned (v0.2.0)_ |
-| `apps/web` | Single Next.js app (landing, inspector, docs) | — |
+| Import path | Description |
+|-------------|-------------|
+| `@ocpp-debugkit/toolkit/core` | Data model, trace parser, event normalizer, timeline, failure detection |
+| `@ocpp-debugkit/toolkit/scenarios` | Predefined trace scenarios for testing |
+| `@ocpp-debugkit/toolkit/reporter` | Report generators (Markdown) |
+| `@ocpp-debugkit/toolkit/replay` | Replay engine |
+| `@ocpp-debugkit/toolkit/react` | Reusable React components |
+| `@ocpp-debugkit/toolkit/cli` | Programmatic CLI entry (`bin: ocpp-debugkit`) |
+| `@ocpp-debugkit/toolkit/fixtures` | Trace fixtures for testing |
+| `apps/web` | Single Next.js app (landing, inspector, docs) |
 
-**Build order:** core → scenarios/reporter/replay → cli → app
+**Build order:** toolkit (all internal modules in one `tsc` pass) → app
 
 ## Quickstart
 
@@ -74,11 +78,17 @@ pnpm build
 
 ### CLI
 
-Packages are published to npm under the `@ocpp-debugkit` scope:
+Install the single package globally to get the `ocpp-debugkit` binary:
 
 ```bash
-npm install -g @ocpp-debugkit/cli
+npm install -g @ocpp-debugkit/toolkit
 ocpp-debugkit inspect trace.json
+```
+
+Or use `npx` without installing:
+
+```bash
+npx ocpp-debugkit inspect trace.json
 ```
 
 Other commands:
@@ -88,6 +98,17 @@ ocpp-debugkit report trace.json --output report.md
 ocpp-debugkit scenario list
 ocpp-debugkit scenario run failed-auth
 ```
+
+### Programmatic Usage
+
+```ts
+import { parseTrace, detectFailures } from '@ocpp-debugkit/toolkit/core';
+import { scenarios } from '@ocpp-debugkit/toolkit/scenarios';
+import { generateMarkdownReport } from '@ocpp-debugkit/toolkit/reporter';
+```
+
+See the [Migration Guide](./docs/migration.md) if you are upgrading from the
+old multi-package layout.
 
 ### Web App
 

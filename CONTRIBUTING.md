@@ -32,16 +32,23 @@ pnpm build
 ```
 ocpp-debugkit/
 ├── packages/
-│   ├── core/          # Data model, parser, normalizer, timeline, failure detection
-│   ├── scenarios/     # Predefined trace scenarios for testing
-│   ├── reporter/      # Report generators (Markdown, HTML)
-│   ├── cli/           # Command-line interface
-│   ├── replay/        # Replay engine (v0.2+)
-│   └── react/         # Reusable React components (v0.2+)
+│   └── toolkit/        # Single npm package @ocpp-debugkit/toolkit
+│       └── src/
+│           ├── core/       # Data model, parser, normalizer, timeline, failure detection
+│           ├── scenarios/  # Predefined trace scenarios for testing
+│           ├── reporter/   # Report generators (Markdown, HTML)
+│           ├── replay/     # Replay engine
+│           ├── react/      # Reusable React components
+│           └── cli/        # Command-line interface (bin: ocpp-debugkit)
 ├── apps/
 │   └── web/           # Single Next.js app (landing, inspector, docs, blog)
 └── ...
 ```
+
+All modules ship in a single package, `@ocpp-debugkit/toolkit`, exposed via
+subpath exports (`@ocpp-debugkit/toolkit/core`, `/scenarios`, `/reporter`,
+`/replay`, `/react`, `/cli`, `/fixtures`). See
+[ADR-0010](./docs/adr/0010-single-package-consolidation.md) for the rationale.
 
 See [`AGENTS.md`](./AGENTS.md) for a detailed overview of the architecture,
 build commands, and package dependency graph.
