@@ -4,13 +4,13 @@
 
 ## Current Version
 
-`0.1.0` — Inspector MVP (released)
+`0.2.0` — Packaging Consolidation + Scenario Evaluator & Replay (in progress)
 
 ## Active Milestone
 
-**v0.1.0 — Inspector MVP (complete)**
+**v0.2.0 — Packaging Consolidation + Scenario Evaluator & Replay (in progress)**
 
-All v0.1.0 issues complete. Packages published to npm. Web app deployed.
+Phase 0: Packaging consolidation — creating `@ocpp-debugkit/toolkit` single package with subpath exports.
 
 ## What's Done
 
@@ -156,11 +156,23 @@ All v0.1.0 issues complete. Packages published to npm. Web app deployed.
 - ✅ `/docs` index with navigation sidebar
 - ✅ `/docs/quickstart`, `/docs/glossary`, `/docs/architecture`, `/docs/trace-format`, `/docs/cli`, `/docs/scenarios`
 
+### Packaging Consolidation (v0.2.0 Phase 0 — in progress)
+
+- 🔄 `packages/toolkit/` — single `@ocpp-debugkit/toolkit` package created
+- 🔄 Core, scenarios, reporter, CLI code moved into `src/core/`, `src/scenarios/`, `src/reporter/`, `src/cli/`
+- 🔄 `src/replay/` and `src/react/` stub modules added
+- 🔄 Subpath exports configured (`/core`, `/scenarios`, `/reporter`, `/replay`, `/react`, `/cli`, `/fixtures`)
+- 🔄 CLI binary `ocpp-debugkit` via `package.json#bin`
+- 🔄 Old package directories removed
+- 🔄 Web app updated to consume `@ocpp-debugkit/toolkit`
+- 🔄 All 196 existing tests pass from new locations
+- 🔄 Build, lint, typecheck, format all green
+
 ## What's Next
 
-1. **v0.2.0** — Scenario evaluator & replay (expanded failure rules, replay
-   engine, `@ocpp-debugkit/react`, CLI external scenario files, HTML report
-   format, app replay UI)
+1. **v0.2.0 remaining** — External fixture test, migration docs, release workflow
+   simplification, expanded failure detection (7 new rules), 10 scenarios, replay
+   engine, React components, HTML reports, app replay UI
 2. **v0.3.0** — Integrations & OSS credibility (trace diffing, CI mode,
    anonymize, integration examples)
 3. **v1.0.0** — API stabilization, 20+ scenarios, docs overhaul, contributor
@@ -174,10 +186,9 @@ All v0.1.0 issues complete. Packages published to npm. Web app deployed.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/core` | published | 0.1.1 |
-| `@ocpp-debugkit/scenarios` | published | 0.1.1 |
-| `@ocpp-debugkit/reporter` | published | 0.1.1 |
-| `@ocpp-debugkit/cli` | published | 0.1.1 |
-| `@ocpp-debugkit/replay` | not started | — |
-| `@ocpp-debugkit/react` | not started | — |
+| `@ocpp-debugkit/toolkit` | in progress | 0.2.0 |
+| `@ocpp-debugkit/core` | published (deprecated after v0.2.0) | 0.1.1 |
+| `@ocpp-debugkit/scenarios` | published (deprecated after v0.2.0) | 0.1.1 |
+| `@ocpp-debugkit/reporter` | published (deprecated after v0.2.0) | 0.1.1 |
+| `@ocpp-debugkit/cli` | published (deprecated after v0.2.0) | 0.1.1 |
 | `apps/web` | deployed | — |

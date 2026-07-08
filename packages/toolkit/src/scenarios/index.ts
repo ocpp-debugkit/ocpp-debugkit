@@ -5,8 +5,8 @@
  * transaction IDs, idTag values, or personal data.
  */
 
-import type { Scenario, Trace } from '@ocpp-debugkit/core';
-import { fixtures } from '@ocpp-debugkit/core';
+import type { Scenario, Trace } from '../core/index.js';
+import { fixtures } from '../core/index.js';
 
 import stationOffline from './__scenarios__/station-offline.js';
 import unexpectedStopReason from './__scenarios__/unexpected-stop-reason.js';

@@ -4,7 +4,7 @@
 
 import { readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { MAX_INPUT_SIZE_BYTES } from '@ocpp-debugkit/core';
+import { MAX_INPUT_SIZE_BYTES } from '../core/index.js';
 
 /** Maximum file size for trace input (10 MB). */
 const MAX_FILE_SIZE = MAX_INPUT_SIZE_BYTES;

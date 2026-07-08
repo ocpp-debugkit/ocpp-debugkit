@@ -9,8 +9,8 @@ import {
   summarizeSessions,
   ParseError,
   type Trace,
-} from '@ocpp-debugkit/core';
-import { generateMarkdownReport } from '@ocpp-debugkit/reporter';
+} from '../../core/index.js';
+import { generateMarkdownReport } from '../../reporter/index.js';
 import { CliError, readTraceFile } from '../utils.js';
 
 export interface ReportOptions {

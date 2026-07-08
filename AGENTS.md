@@ -21,12 +21,14 @@ infrastructure developers.
 ```
 ocpp-debugkit/
 ├── packages/
-│   ├── core/          # Data model, parser, normalizer, timeline, failure detection
-│   ├── scenarios/     # Predefined trace scenarios for testing
-│   ├── reporter/      # Report generators (Markdown, HTML)
-│   ├── cli/           # Command-line interface
-│   ├── replay/        # Replay engine (v0.2+)
-│   └── react/         # Reusable React components (v0.2+)
+│   └── toolkit/        # Single npm package @ocpp-debugkit/toolkit
+│       └── src/
+│           ├── core/       # Data model, parser, normalizer, timeline, failure detection
+│           ├── scenarios/  # Predefined trace scenarios for testing
+│           ├── reporter/   # Report generators (Markdown, HTML)
+│           ├── replay/     # Replay engine
+│           ├── react/      # Reusable React components
+│           └── cli/        # Command-line interface (bin: ocpp-debugkit)
 ├── apps/
 │   └── web/           # Single Next.js app (landing, inspector, docs, blog)
 ├── turbo.json          # Turborepo task pipeline
@@ -52,16 +54,20 @@ pnpm changeset        # Add a changeset for release
 ## Package Dependency Graph
 
 ```
-        core          ← everything depends on this
-       /  |  \
-  scenarios | reporter | replay
-       \  |  /    |
-          cli       |
-          |         |
-       apps/web (single Next.js app)
+@ocpp-debugkit/toolkit (single package, subpath exports)
+  src/
+    core         ← internal modules depend on this
+    scenarios    ← depends on core (internal)
+    reporter     ← depends on core (internal)
+    replay       ← depends on core (internal)
+    react        ← depends on core, scenarios, reporter, replay (internal)
+    cli          ← depends on core, scenarios, reporter (internal; Node-only)
+
+apps/web (single Next.js app)
+  imports: @ocpp-debugkit/toolkit/core, /scenarios, /reporter, /react, /replay
 ```
 
-**Build order:** core → scenarios/reporter/replay → cli → app
+**Build order:** toolkit (all internal modules in one tsc pass) → app
 
 ## Testing Conventions
 

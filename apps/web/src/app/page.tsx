@@ -73,13 +73,13 @@ export default function HomePage() {
           Architecture
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-center text-neutral-600 dark:text-neutral-400">
-          A modular monorepo with independent packages. Use only what you need.
+          A single package with modular subpath exports. Use only what you need.
         </p>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <PackageCard name="@ocpp-debugkit/core" desc="Parser, normalizer, timeline, detection" />
-          <PackageCard name="@ocpp-debugkit/scenarios" desc="5 predefined test scenarios" />
-          <PackageCard name="@ocpp-debugkit/reporter" desc="Markdown report generator" />
-          <PackageCard name="@ocpp-debugkit/cli" desc="Command-line interface" />
+          <PackageCard name="/core" desc="Parser, normalizer, timeline, detection" />
+          <PackageCard name="/scenarios" desc="Predefined test scenarios" />
+          <PackageCard name="/reporter" desc="Markdown + HTML report generator" />
+          <PackageCard name="/replay" desc="Replay engine" />
         </div>
       </section>
 
@@ -91,7 +91,7 @@ export default function HomePage() {
         <div className="mt-8 rounded-lg bg-neutral-900 p-6 dark:bg-neutral-900">
           <pre className="overflow-x-auto text-sm text-neutral-100">
             <code>{`# Install the CLI
-npm install -g @ocpp-debugkit/cli
+npm install -g @ocpp-debugkit/toolkit
 
 # Inspect a trace
 ocpp-debugkit inspect trace.json

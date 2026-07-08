@@ -6,7 +6,7 @@
  * detectFailures pipeline.
  */
 
-import type { Event, Failure, Session, SessionSummary } from '@ocpp-debugkit/core';
+import type { Event, Failure, Session, SessionSummary } from '../core/index.js';
 
 /** Analysis result passed to report generators. */
 export interface AnalysisResult {

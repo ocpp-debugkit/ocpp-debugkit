@@ -9,7 +9,7 @@ import {
   stationOfflineScenario,
   unexpectedStopReasonScenario,
 } from './index.js';
-import { parseTrace, buildSessionTimeline, detectFailures } from '@ocpp-debugkit/core';
+import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.js';
 
 // ---------------------------------------------------------------------------
 // Registry tests
