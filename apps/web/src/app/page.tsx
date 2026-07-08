@@ -129,7 +129,7 @@ ocpp-debugkit scenario run failed-auth`}</code>
               GitHub
             </a>
             <a
-              href="https://www.npmjs.com/org/ocpp-debugkit"
+              href="https://www.npmjs.com/package/@ocpp-debugkit/toolkit"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-white"

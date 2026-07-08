@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useCallback, useMemo, useRef } from 'react';
 import {
   parseTrace,
@@ -257,9 +258,15 @@ export default function InspectorPage() {
       {/* Header */}
       <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
         <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 flex items-center justify-between">
-          <h1 className="text-lg font-bold text-neutral-900 dark:text-white sm:text-xl">
-            OCPP Inspector
-          </h1>
+          <div className="flex items-baseline gap-2">
+            <Link
+              href="/"
+              className="text-lg font-bold text-neutral-900 dark:text-white sm:text-xl"
+            >
+              OCPP DebugKit
+            </Link>
+            <span className="text-sm text-neutral-500">Inspector</span>
+          </div>
           {analysis && analysis.events.length > 0 && (
             <div className="flex items-center gap-2">
               <select

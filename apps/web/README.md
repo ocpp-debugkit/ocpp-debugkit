@@ -19,8 +19,7 @@ and documentation.
 
 All trace processing happens client-side in the browser — no trace data is
 uploaded to a server. The app uses workspace dependencies on
-`@ocpp-debugkit/core`, `@ocpp-debugkit/scenarios`, and
-`@ocpp-debugkit/reporter` for parsing, analysis, and report generation.
+`@ocpp-debugkit/toolkit` for parsing, analysis, and report generation.
 
 ## Development
 

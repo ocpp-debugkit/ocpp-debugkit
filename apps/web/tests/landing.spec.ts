@@ -50,7 +50,8 @@ test.describe('Navigation', () => {
     await page.goto('/');
     await page.getByRole('link', { name: 'Try Inspector' }).click();
     await expect(page).toHaveURL('/inspector');
-    await expect(page.getByText('OCPP Inspector')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'OCPP DebugKit' })).toBeVisible();
+    await expect(page.getByText('Inspector')).toBeVisible();
   });
 
   test('can navigate to docs', async ({ page }) => {

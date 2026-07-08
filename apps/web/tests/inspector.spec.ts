@@ -3,7 +3,8 @@ import { test, expect } from '@playwright/test';
 test.describe('Inspector', () => {
   test('page loads with empty state', async ({ page }) => {
     await page.goto('/inspector');
-    await expect(page.getByText('OCPP Inspector')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'OCPP DebugKit' })).toBeVisible();
+    await expect(page.getByText('Inspector')).toBeVisible();
     await expect(page.getByText('Paste OCPP Trace')).toBeVisible();
     await expect(page.getByText('Sample Scenarios')).toBeVisible();
     // Empty state message
