@@ -135,7 +135,7 @@ report exported. CLI and web inspector.
 - ✅ Inspector: failure summary (severity, description, suggested steps)
 - ✅ Inspector: Markdown report export (download)
 
-### Inspector Polish (in progress — this PR)
+### Inspector Polish (PR #44)
 
 - ✅ Loading state with spinner ("Parsing trace…")
 - ✅ Error state improvements (non-sensitive messages, empty input guidance)
@@ -143,6 +143,14 @@ report exported. CLI and web inspector.
 - ✅ Keyboard navigation (arrow up/down to move through events)
 - ✅ Sticky header for better UX on long traces
 - ✅ Analyze button shows "Analyzing…" and disables during parsing
+
+### Playwright Smoke Tests (in progress — this PR)
+
+- ✅ `playwright.config.ts` — chromium, auto-start dev server
+- ✅ Landing page tests: page loads, hero, CTA links, features, footer
+- ✅ Navigation tests: landing → inspector, landing → docs
+- ✅ Inspector tests: empty state, sample scenario → timeline, failures, event click → message inspector, export button, invalid input error
+- ✅ CI workflow updated: install browsers + run E2E after unit tests
 
 ## What's Next
 
@@ -155,8 +163,10 @@ report exported. CLI and web inspector.
 7. **Issue #26** → complete (PR #42): Next.js app scaffold (Next.js + Tailwind, routes for /, /inspector, /docs)
 8. **Issue #27** → complete (PR #43): Landing page (hero, features, architecture, quick start, footer)
 9. **Issue #28** → complete (PR #43): Inspector (trace input + timeline + message inspector + failures + report export)
-10. **Issue #29** (this PR) → complete: Inspector polish (loading states, responsive, keyboard nav)
-11. **Issue #30**: Playwright smoke tests
+10. **Issue #29** → complete (PR #44): Inspector polish (loading states, responsive, keyboard nav)
+11. **Issue #30** (this PR) → complete: Playwright smoke tests
+12. **Issue #31**: Docs content (quickstart, glossary, architecture, CLI reference, API reference)
+13. **Issue #32**: Release v0.1.0
 
 ## Known Blockers / Decisions Pending
 
