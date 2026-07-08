@@ -193,6 +193,14 @@ integration examples, and contributor onboarding.
 - ✅ Docs updated for v0.2 content (PR #78)
 - ✅ Web app fixes — npm links, inspector nav, docs prose styling (PR #80, #81)
 
+### v0.3.0 — In Progress
+
+- ✅ Toolkit package README improved (PR #93, Issue #82)
+- ✅ Post-v0.2.1 milestone boundary audit (PR #94, Issue #83)
+- ✅ v0.3 failure detection rules — 5 new rules (Issue #84):
+  `SUSPICIOUS_SESSION_DURATION`, `SLOW_RESPONSE`, `HEARTBEAT_INTERVAL_VIOLATION`,
+  `METER_VALUE_ANOMALY`, `UNRESPONSIVE_CSMS` (15 total rules)
+
 ## What's Next
 
 1. **v0.3.0 — Integrations & OSS Credibility** — Trace diffing, rich scenario
