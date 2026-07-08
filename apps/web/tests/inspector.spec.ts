@@ -40,9 +40,10 @@ test.describe('Inspector', () => {
     await page.getByRole('button', { name: 'Analyze' }).click();
 
     // Wait for failure to appear — scope to the failures section to avoid
-    // matching the trace JSON in the textarea
+    // matching the trace JSON in the textarea. Use .first() because the
+    // failed-auth fixture produces multiple FAILED_AUTHORIZATION failures.
     await expect(
-      page.locator('[data-testid="failure-summary"]').getByText('FAILED_AUTHORIZATION'),
+      page.locator('[data-testid="failure-summary"]').getByText('FAILED_AUTHORIZATION').first(),
     ).toBeVisible({
       timeout: 10000,
     });
