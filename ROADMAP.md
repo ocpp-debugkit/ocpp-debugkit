@@ -78,7 +78,9 @@ met.
 
 ## v0.2.0 — Packaging Consolidation + Scenario Evaluator & Replay
 
-**Status:** ✅ Complete (pending release as `@ocpp-debugkit/toolkit@0.2.1`)
+**Status:** ✅ Complete — published as `@ocpp-debugkit/toolkit@0.2.1` on npm,
+Git tag `v0.2.1`, GitHub release `v0.2.1`. Old v0.1.1 packages deprecated.
+Web app deployed at ocppdebugkit.com.
 
 Consolidated four npm packages into `@ocpp-debugkit/toolkit` with subpath
 exports. Added offline scenario evaluation, replay, expanded detection, HTML
@@ -99,7 +101,7 @@ old packages deprecated.
 
 ## v0.3.0 — Integrations & OSS Credibility
 
-**Status:** Not started
+**Status:** In progress
 
 Connect to real ecosystem workflows. Attract external engagement.
 

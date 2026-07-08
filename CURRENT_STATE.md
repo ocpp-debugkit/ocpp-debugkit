@@ -4,13 +4,15 @@
 
 ## Current Version
 
-`0.2.1` — Packaging Consolidation + Scenario Evaluator & Replay (ready for release)
+`0.2.1` — Packaging Consolidation + Scenario Evaluator & Replay (published)
 
 ## Active Milestone
 
-**v0.2.0 — Packaging Consolidation + Scenario Evaluator & Replay (complete — pending release)**
+**v0.3.0 — Integrations & OSS Credibility (in progress)**
 
-All v0.2.0 features implemented. Ready for release as `@ocpp-debugkit/toolkit@0.2.1`.
+v0.2.1 is published to npm. Old v0.1.1 packages are deprecated. v0.3.0 adds
+trace diffing, rich scenario assertions, CI/anonymize/diff CLI commands,
+integration examples, and contributor onboarding.
 
 ## What's Done
 
@@ -183,13 +185,20 @@ All v0.2.0 features implemented. Ready for release as `@ocpp-debugkit/toolkit@0.
 - ✅ React components extracted from inspector (PR #76)
 - ✅ App replay UI + report viewer + react refactor (PR #77)
 
+### v0.2.1 Release
+
+- ✅ `@ocpp-debugkit/toolkit@0.2.1` published to npm (PR #79)
+- ✅ Old v0.1.1 packages (`@ocpp-debugkit/core`, `scenarios`, `reporter`, `cli`) deprecated on npm
+- ✅ Git tag `v0.2.1` + GitHub release `v0.2.1` created
+- ✅ Docs updated for v0.2 content (PR #78)
+- ✅ Web app fixes — npm links, inspector nav, docs prose styling (PR #80, #81)
+
 ## What's Next
 
-1. **v0.2.0 release** — Remove `private: true`, add changeset, publish
-   `@ocpp-debugkit/toolkit@0.2.1`, create Git tag `v0.2.1`, deprecate old packages
-2. **v0.3.0** — Integrations & OSS credibility (trace diffing, CI mode,
-   anonymize, integration examples)
-3. **v1.0.0** — API stabilization, 20+ scenarios, docs overhaul, contributor
+1. **v0.3.0 — Integrations & OSS Credibility** — Trace diffing, rich scenario
+   assertions, CI/anonymize/diff CLI commands, integration examples, contributor
+   onboarding (Issues #82–#92)
+2. **v1.0.0** — API stabilization, 20+ scenarios, docs overhaul, contributor
    onboarding
 
 ## Known Blockers / Decisions Pending
@@ -200,9 +209,9 @@ All v0.2.0 features implemented. Ready for release as `@ocpp-debugkit/toolkit@0.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/toolkit` | ready for release | 0.2.1 |
-| `@ocpp-debugkit/core` | published (deprecated after release) | 0.1.1 |
-| `@ocpp-debugkit/scenarios` | published (deprecated after release) | 0.1.1 |
-| `@ocpp-debugkit/reporter` | published (deprecated after release) | 0.1.1 |
-| `@ocpp-debugkit/cli` | published (deprecated after release) | 0.1.1 |
+| `@ocpp-debugkit/toolkit` | published | 0.2.1 |
+| `@ocpp-debugkit/core` | deprecated | 0.1.1 |
+| `@ocpp-debugkit/scenarios` | deprecated | 0.1.1 |
+| `@ocpp-debugkit/reporter` | deprecated | 0.1.1 |
+| `@ocpp-debugkit/cli` | deprecated | 0.1.1 |
 | `apps/web` | deployed | — |

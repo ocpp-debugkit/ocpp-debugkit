@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/ocpp-debugkit/ocpp-debugkit/actions/workflows/ci.yml/badge.svg)](https://github.com/ocpp-debugkit/ocpp-debugkit/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/ocpp-debugkit/ocpp-debugkit/blob/main/LICENSE)
-[![npm](https://img.shields.io/badge/npm-%40ocpp--debugkit-blue.svg)](https://www.npmjs.com/package/@ocpp-debugkit/toolkit)
+[![npm version](https://img.shields.io/npm/v/@ocpp-debugkit/toolkit.svg)](https://www.npmjs.com/package/@ocpp-debugkit/toolkit)
 
 OCPP DebugKit is a developer toolkit for inspecting, analyzing, and debugging
 OCPP (Open Charge Point Protocol) charging session traces. It helps EV charging
@@ -15,18 +15,22 @@ validate behavior against known scenarios.
 
 - **Trace Inspector** — Load OCPP traces, view session timelines, inspect
   individual messages, and identify failures.
-- **Failure Detection** — Automatically detect common session failure patterns
-  (failed authorization, connector faults, station offline).
-- **Scenario Library** — 5 predefined trace scenarios with expected failure
-  outcomes for testing the analysis engine.
-- **Report Generation** — Export session analysis as Markdown reports.
-- **CLI** — Analyze traces from the command line.
+- **Failure Detection** — 10 detection rules covering common failure patterns
+  (failed authorization, connector faults, station offline, heartbeat timeout,
+  meter value gaps, invalid stop reasons, status transition violations,
+  diagnostics failures, firmware update failures, unexpected starts).
+- **Scenario Evaluator** — 10 predefined scenarios with expected failure
+  outcomes for testing the analysis engine. Supports external scenario files.
+- **Replay Engine** — Deterministic, pure replay engine with step forward/back,
+  jump-to-event, and configurable playback speed.
+- **Report Generation** — Export session analysis as Markdown or HTML reports.
+- **React Components** — Reusable, SSR-safe components for building custom
+  inspector UIs (SessionTimeline, MessageInspector, FailureSummary,
+  ReportViewer, ReplayControls).
+- **CLI** — Analyze traces, generate reports, and run scenarios from the
+  command line.
 - **Browser-Local** — All trace processing happens in your browser. No data
   leaves your machine when using the web app.
-
-> **Scenario Evaluator & Replay** (comparing detected vs expected failures,
-> replay engine, extracted React components) is planned for v0.2.0. See the
-> [Roadmap](./ROADMAP.md).
 
 ## What It's Not
 
@@ -56,7 +60,7 @@ OCPP DebugKit is a pnpm monorepo. All modules ship in a single npm package,
 |-------------|-------------|
 | `@ocpp-debugkit/toolkit/core` | Data model, trace parser, event normalizer, timeline, failure detection |
 | `@ocpp-debugkit/toolkit/scenarios` | Predefined trace scenarios for testing |
-| `@ocpp-debugkit/toolkit/reporter` | Report generators (Markdown) |
+| `@ocpp-debugkit/toolkit/reporter` | Report generators (Markdown, HTML) |
 | `@ocpp-debugkit/toolkit/replay` | Replay engine |
 | `@ocpp-debugkit/toolkit/react` | Reusable React components |
 | `@ocpp-debugkit/toolkit/cli` | Programmatic CLI entry (`bin: ocpp-debugkit`) |
