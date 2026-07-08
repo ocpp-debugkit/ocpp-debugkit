@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/ocpp-debugkit/ocpp-debugkit/actions/workflows/ci.yml/badge.svg)](https://github.com/ocpp-debugkit/ocpp-debugkit/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/ocpp-debugkit/ocpp-debugkit/blob/main/LICENSE)
-[![npm](https://img.shields.io/badge/npm-%40ocpp--debugkit-blue.svg)](https://www.npmjs.com/org/ocpp-debugkit)
+[![npm](https://img.shields.io/badge/npm-%40ocpp--debugkit-blue.svg)](https://www.npmjs.com/package/@ocpp-debugkit/toolkit)
 
 OCPP DebugKit is a developer toolkit for inspecting, analyzing, and debugging
 OCPP (Open Charge Point Protocol) charging session traces. It helps EV charging
@@ -119,7 +119,7 @@ load a trace directly in your browser — no installation required.
 
 - [Documentation](https://ocppdebugkit.com/docs)
 - [GitHub](https://github.com/ocpp-debugkit/ocpp-debugkit)
-- [npm](https://www.npmjs.com/org/ocpp-debugkit)
+- [npm](https://www.npmjs.com/package/@ocpp-debugkit/toolkit)
 - [Roadmap](./ROADMAP.md)
 - [Contributing](./CONTRIBUTING.md)
 
