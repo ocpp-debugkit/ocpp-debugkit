@@ -39,8 +39,11 @@ test.describe('Inspector', () => {
     await page.getByRole('button', { name: 'failed-auth' }).click();
     await page.getByRole('button', { name: 'Analyze' }).click();
 
-    // Wait for failure to appear
-    await expect(page.getByText('FAILED_AUTHORIZATION')).toBeVisible({
+    // Wait for failure to appear — scope to the failures section to avoid
+    // matching the trace JSON in the textarea
+    await expect(
+      page.locator('[data-testid="failure-summary"]').getByText('FAILED_AUTHORIZATION'),
+    ).toBeVisible({
       timeout: 10000,
     });
   });
