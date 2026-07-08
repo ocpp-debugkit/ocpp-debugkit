@@ -54,29 +54,20 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create ecosystem tag and GitHub release
+      - name: Create tag and GitHub release
         if: steps.changesets.outputs.published == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Determine the ecosystem tag from the latest published version
-          LATEST_TAG=""
-          for pkg in packages/*/; do
-            if [ -f "$pkg/package.json" ]; then
-              VERSION=$(node -p "require('./$pkg/package.json').version" 2>/dev/null || echo "")
-              if [ -n "$VERSION" ]; then
-                # Extract major.minor for ecosystem tag (e.g. 0.1.0 -> v0.1.0)
-                TAG="release-v$(echo "$VERSION" | cut -d. -f1-2).0"
-                LATEST_TAG="$TAG"
-              fi
-            fi
-          done
+          # Derive the release tag from the single published package version.
+          VERSION=$(node -p "require('./packages/toolkit/package.json').version")
+          TAG="v${VERSION}"
 
-          if [ -n "$LATEST_TAG" ] && ! gh release view "$LATEST_TAG" >/dev/null 2>&1; then
-            echo "Creating GitHub release: $LATEST_TAG"
-            gh release create "$LATEST_TAG" \
-              --title "$LATEST_TAG" \
-              --generate-notes
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists; skipping release creation"
           else
-            echo "Tag $LATEST_TAG already exists or no packages published"
+            echo "Creating GitHub release: $TAG"
+            gh release create "$TAG" \
+              --title "$TAG" \
+              --generate-notes
           fi
