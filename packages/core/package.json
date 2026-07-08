@@ -1,6 +1,6 @@
 {
   "name": "@ocpp-debugkit/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Core data model, parser, normalizer, timeline, and failure detection for OCPP DebugKit.",
   "license": "Apache-2.0",
   "type": "module",
