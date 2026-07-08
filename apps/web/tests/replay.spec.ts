@@ -16,15 +16,15 @@ test.describe('Replay UI', () => {
     await expect(page.getByTestId('replay-view')).toBeVisible();
 
     // Check initial state — 1 / N events
-    await expect(page.getByText('1 /')).toBeVisible();
+    await expect(page.getByTestId('replay-view').getByText('1 /')).toBeVisible();
 
     // Step forward
     await page.getByRole('button', { name: 'Forward →' }).click();
-    await expect(page.getByText('2 /')).toBeVisible();
+    await expect(page.getByTestId('replay-view').getByText('2 /')).toBeVisible();
 
     // Step back
     await page.getByRole('button', { name: '← Back' }).click();
-    await expect(page.getByText('1 /')).toBeVisible();
+    await expect(page.getByTestId('replay-view').getByText('1 /')).toBeVisible();
   });
 
   test('replay shows event payload when stepping', async ({ page }) => {
@@ -50,16 +50,13 @@ test.describe('Replay UI', () => {
     await page.getByRole('button', { name: 'Analyze' }).click();
     await expect(page.getByText('Event Timeline')).toBeVisible({ timeout: 10000 });
 
+    // Select HTML format in the header
+    const formatSelect = page.locator('header select').first();
+    await formatSelect.selectOption('html');
+
     // Switch to report tab
     await page.getByRole('button', { name: 'report' }).click();
     await expect(page.getByTestId('report-view')).toBeVisible();
-
-    // Select HTML format
-    const formatSelect = page.locator('select').first();
-    await formatSelect.selectOption('html');
-
-    // Switch back to report view to see the iframe
-    await page.getByRole('button', { name: 'report' }).click();
     await expect(page.locator('[data-testid="report-view"] iframe')).toBeVisible({
       timeout: 10000,
     });
