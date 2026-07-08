@@ -1,5 +1,13 @@
 # @ocpp-debugkit/reporter
 
+## 0.1.1
+
+### Patch Changes
+
+- 38618c7: Add package READMEs for npm discoverability.
+- Updated dependencies [38618c7]
+  - @ocpp-debugkit/core@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

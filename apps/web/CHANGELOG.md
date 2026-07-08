@@ -1,5 +1,14 @@
 # web
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [38618c7]
+  - @ocpp-debugkit/core@0.1.1
+  - @ocpp-debugkit/scenarios@0.1.1
+  - @ocpp-debugkit/reporter@0.1.1
+
 ## 0.1.1
 
 ### Patch Changes

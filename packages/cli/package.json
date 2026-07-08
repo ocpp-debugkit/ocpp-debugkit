@@ -1,6 +1,6 @@
 {
   "name": "@ocpp-debugkit/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Command-line interface for OCPP DebugKit — inspect traces, generate reports, run scenarios.",
   "license": "Apache-2.0",
   "type": "module",
