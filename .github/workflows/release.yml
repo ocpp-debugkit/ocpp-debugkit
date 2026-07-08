@@ -76,7 +76,6 @@ jobs:
             echo "Creating GitHub release: $LATEST_TAG"
             gh release create "$LATEST_TAG" \
               --title "$LATEST_TAG" \
-              --notes-from-tag \
               --generate-notes
           else
             echo "Tag $LATEST_TAG already exists or no packages published"
