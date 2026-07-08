@@ -1,14 +1,15 @@
 /**
  * `ocpp-debugkit scenario list` and `ocpp-debugkit scenario run <name>` commands.
  *
- * `scenario run` runs built-in static fixtures through the local analysis
- * engine only — it is NOT active endpoint testing, WebSocket simulation,
- * live station/CSMS testing, or the v0.2 scenario evaluator.
+ * `scenario run` runs built-in or external static fixtures through the local
+ * analysis engine. It is NOT active endpoint testing, WebSocket simulation,
+ * live station/CSMS testing, or an active scenario runner.
  */
 
 import { parseTrace, buildSessionTimeline, detectFailures, ParseError } from '../../core/index.js';
+import type { Scenario } from '../../core/index.js';
 import { scenarioNames, getScenario } from '../../scenarios/index.js';
-import { CliError } from '../utils.js';
+import { CliError, readTraceFile } from '../utils.js';
 
 export function scenarioListCommand(): void {
   console.log('');
@@ -32,6 +33,7 @@ export function scenarioListCommand(): void {
   }
 
   console.log('Run with: ocpp-debugkit scenario run <name>');
+  console.log('         ocpp-debugkit scenario run --file <path>');
   console.log('');
 }
 
@@ -44,6 +46,48 @@ export async function scenarioRunCommand(name: string): Promise<void> {
     );
   }
 
+  await runScenarioInternal(scenario);
+}
+
+/**
+ * `ocpp-debugkit scenario run --file <path>` — run an external scenario file
+ * through the analysis engine.
+ *
+ * The external file must be a JSON object with: name, description, trace, and
+ * expectedFailures fields (same shape as built-in scenarios).
+ */
+export async function scenarioRunFileCommand(filePath: string): Promise<void> {
+  const content = readTraceFile(filePath);
+
+  let scenario: Scenario;
+  try {
+    const parsed = JSON.parse(content) as unknown;
+    if (
+      typeof parsed !== 'object' ||
+      parsed === null ||
+      !('trace' in parsed) ||
+      !('name' in parsed)
+    ) {
+      throw new CliError('Invalid scenario file: must contain "name" and "trace" fields.');
+    }
+    scenario = parsed as Scenario;
+  } catch (e) {
+    if (e instanceof CliError) throw e;
+    throw new CliError('Invalid JSON in scenario file.');
+  }
+
+  if (!scenario.expectedFailures) {
+    scenario.expectedFailures = [];
+  }
+
+  await runScenarioInternal(scenario);
+}
+
+// ---------------------------------------------------------------------------
+// Shared scenario run logic
+// ---------------------------------------------------------------------------
+
+async function runScenarioInternal(scenario: Scenario): Promise<void> {
   console.log('');
   console.log('═'.repeat(60));
   console.log(`  Running Scenario: ${scenario.name}`);
@@ -71,7 +115,7 @@ export async function scenarioRunCommand(name: string): Promise<void> {
 
   // Compare detected vs expected failures
   const detectedCodes = new Set<string>(failures.map((f) => f.code));
-  const expectedCodes = new Set<string>(scenario.expectedFailures);
+  const expectedCodes = new Set<string>(scenario.expectedFailures as string[]);
 
   const correctlyDetected = [...expectedCodes].filter((c) => detectedCodes.has(c));
   const unexpectedFailures = [...detectedCodes].filter((c) => !expectedCodes.has(c));

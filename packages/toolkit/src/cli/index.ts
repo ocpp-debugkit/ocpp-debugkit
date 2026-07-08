@@ -7,7 +7,11 @@
 import { Command } from 'commander';
 import { inspectCommand } from './commands/inspect.js';
 import { reportCommand } from './commands/report.js';
-import { scenarioListCommand, scenarioRunCommand } from './commands/scenario.js';
+import {
+  scenarioListCommand,
+  scenarioRunCommand,
+  scenarioRunFileCommand,
+} from './commands/scenario.js';
 
 const program = new Command();
 
@@ -46,10 +50,17 @@ scenarioCmd
   });
 
 scenarioCmd
-  .command('run <name>')
-  .description('Run a scenario through the analysis engine')
-  .action(async (name: string) => {
-    await scenarioRunCommand(name);
+  .command('run [name]')
+  .description('Run a scenario through the analysis engine (built-in or --file <path>)')
+  .option('-f, --file <path>', 'Run an external scenario file instead of a built-in scenario')
+  .action(async (name: string | undefined, options: { file?: string }) => {
+    if (options.file) {
+      await scenarioRunFileCommand(options.file);
+    } else if (name) {
+      await scenarioRunCommand(name);
+    } else {
+      throw new Error('Either a scenario name or --file <path> is required.');
+    }
   });
 
 program.parse();
