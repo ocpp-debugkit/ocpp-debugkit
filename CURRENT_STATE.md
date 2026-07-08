@@ -144,13 +144,23 @@ report exported. CLI and web inspector.
 - ✅ Sticky header for better UX on long traces
 - ✅ Analyze button shows "Analyzing…" and disables during parsing
 
-### Playwright Smoke Tests (in progress — this PR)
+### Playwright Smoke Tests (PR #45)
 
 - ✅ `playwright.config.ts` — chromium, auto-start dev server
 - ✅ Landing page tests: page loads, hero, CTA links, features, footer
 - ✅ Navigation tests: landing → inspector, landing → docs
 - ✅ Inspector tests: empty state, sample scenario → timeline, failures, event click → message inspector, export button, invalid input error
 - ✅ CI workflow updated: install browsers + run E2E after unit tests
+
+### Docs Content (in progress — this PR)
+
+- ✅ `/docs` index with navigation sidebar
+- ✅ `/docs/quickstart` — install, inspect, report, scenario, web inspector, programmatic use
+- ✅ `/docs/glossary` — OCPP, CSMS, Charge Point, Connector, Transaction, Call, CallResult, CallError, idTag, Trace, Direction
+- ✅ `/docs/architecture` — package structure, dependency graph, data flow, browser-local processing, tech stack
+- ✅ `/docs/trace-format` — JSON Object, JSONL, bare array, message structure, timestamps, limits, direction inference
+- ✅ `/docs/cli` — install, inspect, report, scenario list, scenario run, options, security
+- ✅ `/docs/scenarios` — 5 built-in scenarios, failure detection rules, running scenarios, synthetic data
 
 ## What's Next
 
@@ -164,8 +174,8 @@ report exported. CLI and web inspector.
 8. **Issue #27** → complete (PR #43): Landing page (hero, features, architecture, quick start, footer)
 9. **Issue #28** → complete (PR #43): Inspector (trace input + timeline + message inspector + failures + report export)
 10. **Issue #29** → complete (PR #44): Inspector polish (loading states, responsive, keyboard nav)
-11. **Issue #30** (this PR) → complete: Playwright smoke tests
-12. **Issue #31**: Docs content (quickstart, glossary, architecture, CLI reference, API reference)
+11. **Issue #30** → complete (PR #45): Playwright smoke tests
+12. **Issue #31** (this PR) → complete: Docs content (quickstart, glossary, architecture, trace format, CLI reference, scenarios)
 13. **Issue #32**: Release v0.1.0
 
 ## Known Blockers / Decisions Pending
