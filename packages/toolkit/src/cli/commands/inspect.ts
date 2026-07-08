@@ -8,7 +8,7 @@ import {
   detectFailures,
   summarizeSessions,
   ParseError,
-} from '@ocpp-debugkit/core';
+} from '../../core/index.js';
 import { CliError, readTraceFile } from '../utils.js';
 
 export interface InspectOptions {

@@ -12,9 +12,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@ocpp-debugkit/core": "workspace:*",
-    "@ocpp-debugkit/reporter": "workspace:*",
-    "@ocpp-debugkit/scenarios": "workspace:*",
+    "@ocpp-debugkit/toolkit": "workspace:*",
     "next": "16.2.10",
     "react": "19.2.4",
     "react-dom": "19.2.4"

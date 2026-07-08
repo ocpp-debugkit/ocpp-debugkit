@@ -11,7 +11,7 @@
  */
 
 import type { AnalysisResult } from './types.js';
-import type { Event } from '@ocpp-debugkit/core';
+import type { Event } from '../core/index.js';
 
 // ---------------------------------------------------------------------------
 // Helpers

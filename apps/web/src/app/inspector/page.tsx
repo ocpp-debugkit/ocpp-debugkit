@@ -14,9 +14,9 @@ import {
   type Scenario,
   ParseError,
   MAX_INPUT_SIZE_BYTES,
-} from '@ocpp-debugkit/core';
-import { generateMarkdownReport } from '@ocpp-debugkit/reporter';
-import { scenarios } from '@ocpp-debugkit/scenarios';
+} from '@ocpp-debugkit/toolkit/core';
+import { generateMarkdownReport } from '@ocpp-debugkit/toolkit/reporter';
+import { scenarios } from '@ocpp-debugkit/toolkit/scenarios';
 
 // ---------------------------------------------------------------------------
 // Types

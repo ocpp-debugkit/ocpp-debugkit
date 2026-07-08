@@ -3,9 +3,9 @@ import { execa } from 'execa';
 import { writeFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fixtures } from '@ocpp-debugkit/core';
+import { fixtures } from '../core/index.js';
 
-const CLI_PATH = join(process.cwd(), 'packages/cli/dist/index.js');
+const CLI_PATH = join(process.cwd(), 'packages/toolkit/dist/cli/index.js');
 
 // Helper: run the CLI with given args
 async function runCli(

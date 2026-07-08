@@ -6,8 +6,8 @@
  * live station/CSMS testing, or the v0.2 scenario evaluator.
  */
 
-import { parseTrace, buildSessionTimeline, detectFailures, ParseError } from '@ocpp-debugkit/core';
-import { scenarioNames, getScenario } from '@ocpp-debugkit/scenarios';
+import { parseTrace, buildSessionTimeline, detectFailures, ParseError } from '../../core/index.js';
+import { scenarioNames, getScenario } from '../../scenarios/index.js';
 import { CliError } from '../utils.js';
 
 export function scenarioListCommand(): void {

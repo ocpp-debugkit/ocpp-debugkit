@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { generateMarkdownReport } from './markdown.js';
 import type { AnalysisResult } from './types.js';
-import type { Event, Failure, Session, SessionSummary, RawOcppMessage } from '@ocpp-debugkit/core';
+import type { Event, Failure, Session, SessionSummary, RawOcppMessage } from '../core/index.js';
 
 // Helpers
 function makeEvent(

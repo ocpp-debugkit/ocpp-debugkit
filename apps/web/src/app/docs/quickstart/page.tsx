@@ -5,7 +5,7 @@ export default function QuickStartPage() {
 
       <h2>Install the CLI</h2>
       <pre>
-        <code>{`npm install -g @ocpp-debugkit/cli`}</code>
+        <code>{`npm install -g @ocpp-debugkit/toolkit`}</code>
       </pre>
 
       <h2>Inspect a trace</h2>
@@ -40,7 +40,7 @@ ocpp-debugkit scenario run failed-auth`}</code>
       <h2>Use the core library</h2>
       <p>For programmatic use in your own TypeScript/JavaScript project:</p>
       <pre>
-        <code>{`import { parseTrace, buildSessionTimeline, detectFailures } from '@ocpp-debugkit/core';
+        <code>{`import { parseTrace, buildSessionTimeline, detectFailures } from '@ocpp-debugkit/toolkit/core';
 
 const result = parseTrace(traceString);
 const sessions = buildSessionTimeline(result.events);

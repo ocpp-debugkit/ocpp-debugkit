@@ -9,7 +9,7 @@ export default function CliReferencePage() {
 
       <h2>Installation</h2>
       <pre>
-        <code>{`npm install -g @ocpp-debugkit/cli`}</code>
+        <code>{`npm install -g @ocpp-debugkit/toolkit`}</code>
       </pre>
 
       <h2>inspect</h2>
