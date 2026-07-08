@@ -158,9 +158,13 @@ All v0.1.0 issues complete. Packages published to npm. Web app deployed.
 
 ## What's Next
 
-1. **v0.1.0 release** — merge version PR, CI publishes packages, creates tag + GitHub release
-2. **v0.2.0** — Scenario evaluator & replay (new failure rules, replay engine, @ocpp-debugkit/react)
-3. **v0.3.0** — Integrations & OSS credibility (trace diffing, CI mode, anonymize, examples)
+1. **v0.2.0** — Scenario evaluator & replay (expanded failure rules, replay
+   engine, `@ocpp-debugkit/react`, CLI external scenario files, HTML report
+   format, app replay UI)
+2. **v0.3.0** — Integrations & OSS credibility (trace diffing, CI mode,
+   anonymize, integration examples)
+3. **v1.0.0** — API stabilization, 20+ scenarios, docs overhaul, contributor
+   onboarding
 
 ## Known Blockers / Decisions Pending
 
@@ -170,10 +174,10 @@ All v0.1.0 issues complete. Packages published to npm. Web app deployed.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/core` | done (v0.1.0) | 0.1.0 |
-| `@ocpp-debugkit/scenarios` | done (v0.1.0) | 0.1.0 |
-| `@ocpp-debugkit/reporter` | done (v0.1.0) | 0.1.0 |
-| `@ocpp-debugkit/cli` | done (v0.1.0) | 0.1.0 |
+| `@ocpp-debugkit/core` | published | 0.1.1 |
+| `@ocpp-debugkit/scenarios` | published | 0.1.1 |
+| `@ocpp-debugkit/reporter` | published | 0.1.1 |
+| `@ocpp-debugkit/cli` | published | 0.1.1 |
 | `@ocpp-debugkit/replay` | not started | — |
 | `@ocpp-debugkit/react` | not started | — |
-| `apps/web` | done (v0.1.0) | — |
+| `apps/web` | deployed | — |

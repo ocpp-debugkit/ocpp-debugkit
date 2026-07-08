@@ -9,7 +9,7 @@ Each milestone maps to a semantic version release.
 
 ## M0 — Repository & Tooling Foundation
 
-**Status:** In progress
+**Status:** ✅ Complete (merged via PR #12–#15)
 
 Professional monorepo skeleton with CI, linting, testing, release tooling,
 GitHub metadata, and agent onboarding docs — before any feature code lands.
@@ -31,7 +31,7 @@ all work. CI green on main. No release yet — infrastructure only.
 
 ## M0.5 — Protocol & Trace-Format Design Phase
 
-**Status:** Not started
+**Status:** ✅ Complete (merged via PR #19)
 
 Resolve all foundational design decisions before core implementation.
 Produce ADRs and synthetic fixtures that validate the internal model.
@@ -53,7 +53,9 @@ validate against proposed model. Maintainer approves design.
 
 ## v0.1.0 — Inspector MVP
 
-**Status:** Not started
+**Status:** ✅ Released — GitHub release `release-v0.1.0`, packages published
+to npm at 0.1.1 (`@ocpp-debugkit/core`, `scenarios`, `reporter`, `cli`).
+Web app deployed at ocppdebugkit.com.
 
 A user visits ocppdebugkit.com, loads a trace, sees a timeline, sees detected
 failures, and exports a report — without installing anything. Developers can
@@ -64,18 +66,19 @@ also use the CLI locally.
 - **Scenarios:** 5 initial scenarios with expected failures
 - **Reporter:** Markdown report generator
 - **CLI:** inspect, report, scenario list/run commands
-- **App:** Single Next.js app (landing, inspector, docs via Nextra)
+- **App:** Single Next.js app (landing, inspector, docs)
 - **Tests:** Playwright smoke tests
-- **Docs:** Quickstart, glossary, architecture, CLI reference, API reference
+- **Docs:** Quickstart, glossary, architecture, CLI reference, scenarios
 
 **Exit criteria:** Hosted demo, CLI on npm, trace→timeline→failures→report
-workflow, 5 scenarios, 3 failure rules, GitHub release `release-v0.1.0`.
+workflow, 5 scenarios, 3 failure rules, GitHub release `release-v0.1.0`. ✅ All
+met.
 
 ---
 
 ## v0.2.0 — Scenario Evaluator & Replay
 
-**Status:** Not started
+**Status:** Next up
 
 Make the tool genuinely useful for developers' daily workflows.
 

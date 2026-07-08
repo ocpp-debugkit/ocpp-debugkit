@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OCPP DebugKit — Web App
 
-## Getting Started
+The web front-end for [OCPP DebugKit](https://github.com/ocpp-debugkit/ocpp-debugkit),
+a DevTools project for debugging OCPP charging session traces.
 
-First, run the development server:
+This is a [Next.js](https://nextjs.org) app (App Router) using Tailwind CSS. It
+is the only app in the monorepo and hosts the landing page, trace inspector,
+and documentation.
+
+## Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page — hero, features, architecture, quick start |
+| `/inspector` | Trace inspector — paste/upload a trace, view timeline, failures, export report |
+| `/docs` | Documentation — quickstart, glossary, architecture, trace format, CLI reference, scenarios |
+
+## Architecture
+
+All trace processing happens client-side in the browser — no trace data is
+uploaded to a server. The app uses workspace dependencies on
+`@ocpp-debugkit/core`, `@ocpp-debugkit/scenarios`, and
+`@ocpp-debugkit/reporter` for parsing, analysis, and report generation.
+
+## Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# From the monorepo root
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Testing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Playwright E2E smoke tests cover the landing page, navigation, and inspector
+flows:
 
-## Learn More
+```bash
+# From apps/web
+pnpm exec playwright install --with-deps chromium
+pnpm test:e2e
+```
 
-To learn more about Next.js, take a look at the following resources:
+## License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Apache 2.0 — see the [monorepo LICENSE](../../LICENSE).
