@@ -1,6 +1,6 @@
 {
   "name": "@ocpp-debugkit/reporter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Report generators (Markdown, HTML) for OCPP DebugKit analysis results.",
   "license": "Apache-2.0",
   "type": "module",
