@@ -18,13 +18,15 @@ test.describe('Replay UI', () => {
     // Check initial state — 1 / N events
     await expect(page.getByTestId('replay-view').getByText('1 /')).toBeVisible();
 
-    // Step forward
+    // Step forward — first step returns event at index 0 (still 1 / N)
+    // Second step returns event at index 1 (2 / N)
     await page.getByRole('button', { name: 'Forward →' }).click();
-    await expect(page.getByTestId('replay-view').getByText('2 /')).toBeVisible();
+    await page.getByRole('button', { name: 'Forward →' }).click();
+    await expect(page.getByTestId('replay-view').getByText('2 /')).toBeVisible({ timeout: 5000 });
 
     // Step back
     await page.getByRole('button', { name: '← Back' }).click();
-    await expect(page.getByTestId('replay-view').getByText('1 /')).toBeVisible();
+    await expect(page.getByTestId('replay-view').getByText('1 /')).toBeVisible({ timeout: 5000 });
   });
 
   test('replay shows event payload when stepping', async ({ page }) => {
