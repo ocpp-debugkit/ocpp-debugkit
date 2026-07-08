@@ -17,7 +17,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "changeset": "changeset",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "test:external-fixture": "bash scripts/test-external-fixture.sh"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
