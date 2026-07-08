@@ -268,7 +268,7 @@ describe('Synthetic trace fixtures', () => {
       expect(payload.errorCode).not.toBe('NoError');
     });
 
-    it('has StopTransaction with Faulted reason after connector fault', () => {
+    it('has StopTransaction with Other reason after connector fault', () => {
       const stopTx = connectorFault.events.find(
         (e) => e.message[0] === 2 && e.message[2] === 'StopTransaction',
       );
@@ -277,7 +277,7 @@ describe('Synthetic trace fixtures', () => {
       const payload = (stopTx as TraceEventInput).message[3] as {
         reason?: string;
       };
-      expect(payload.reason).toBe('Faulted');
+      expect(payload.reason).toBe('Other');
     });
 
     it('has a StartTransaction before the StopTransaction', () => {

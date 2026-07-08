@@ -149,9 +149,19 @@ export interface ParseResult {
 /** Severity of a detected failure. */
 export type FailureSeverity = 'critical' | 'warning' | 'info';
 
-/** Failure rule codes implemented in v0.1. */
+/** Failure rule codes. v0.1 codes + v0.2 additions. */
 export type FailureCode =
-  'FAILED_AUTHORIZATION' | 'CONNECTOR_FAULT' | 'STATION_OFFLINE_DURING_SESSION';
+  | 'FAILED_AUTHORIZATION'
+  | 'CONNECTOR_FAULT'
+  | 'STATION_OFFLINE_DURING_SESSION'
+  // v0.2 rules
+  | 'TIMEOUT_NO_HEARTBEAT'
+  | 'METER_VALUE_GAP'
+  | 'INVALID_STOP_REASON'
+  | 'UNEXPECTED_START'
+  | 'STATUS_TRANSITION_VIOLATION'
+  | 'DIAGNOSTICS_FAILURE'
+  | 'FIRMWARE_UPDATE_FAILURE';
 
 /**
  * A detected failure in a trace.

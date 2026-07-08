@@ -441,4 +441,307 @@ describe('detectFailures', () => {
       expect(failures.some((f) => f.code === 'CONNECTOR_FAULT')).toBe(true);
     });
   });
+
+  // -------------------------------------------------------------------------
+  // v0.2 detection rules
+  // -------------------------------------------------------------------------
+
+  describe('TIMEOUT_NO_HEARTBEAT', () => {
+    it('detects missing heartbeat when trace spans beyond threshold', () => {
+      const events = [
+        makeEvent('e1', 'm1', 'Call', 'BootNotification', {}, 0),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { interval: 300, status: 'Accepted' },
+          500,
+          'CSMS_TO_CS',
+        ),
+        // No heartbeat, but events span beyond 600s (2x300)
+        makeEvent('e3', 'm2', 'Call', 'StatusNotification', { status: 'Available' }, 700_000),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'TIMEOUT_NO_HEARTBEAT')).toBe(true);
+    });
+
+    it('does not flag when heartbeat is present', () => {
+      const events = [
+        makeEvent('e1', 'm1', 'Call', 'BootNotification', {}, 0),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { interval: 300, status: 'Accepted' },
+          500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e3', 'm2', 'Call', 'Heartbeat', {}, 100_000),
+        makeEvent('e4', 'm2', 'CallResult', null, {}, 100_500, 'CSMS_TO_CS'),
+        makeEvent('e5', 'm3', 'Call', 'StatusNotification', { status: 'Available' }, 700_000),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'TIMEOUT_NO_HEARTBEAT')).toBe(false);
+    });
+
+    it('does not flag when trace ends before first heartbeat is due', () => {
+      const events = [
+        makeEvent('e1', 'm1', 'Call', 'BootNotification', {}, 0),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { interval: 300, status: 'Accepted' },
+          500,
+          'CSMS_TO_CS',
+        ),
+        // Trace ends at 100s — before 600s threshold
+        makeEvent('e3', 'm2', 'Call', 'StatusNotification', { status: 'Available' }, 100_000),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'TIMEOUT_NO_HEARTBEAT')).toBe(false);
+    });
+
+    it('does not flag when no BootNotification', () => {
+      const events = [makeEvent('e1', 'm1', 'Call', 'Heartbeat', {}, 0)];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'TIMEOUT_NO_HEARTBEAT')).toBe(false);
+    });
+  });
+
+  describe('METER_VALUE_GAP', () => {
+    it('detects missing MeterValues in completed transaction', () => {
+      const events = [
+        makeEvent('e1', 'm1', 'Call', 'StartTransaction', { connectorId: 1, transactionId: 1 }, 0),
+        makeEvent('e2', 'm1', 'CallResult', null, { transactionId: 1 }, 500, 'CSMS_TO_CS'),
+        makeEvent(
+          'e3',
+          'm2',
+          'Call',
+          'StopTransaction',
+          { transactionId: 1, reason: 'EVDisconnected' },
+          10_000,
+        ),
+        makeEvent('e4', 'm2', 'CallResult', null, {}, 10_500, 'CSMS_TO_CS'),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'METER_VALUE_GAP')).toBe(true);
+    });
+
+    it('does not flag when MeterValues are present', () => {
+      const events = [
+        makeEvent('e1', 'm1', 'Call', 'StartTransaction', { connectorId: 1, transactionId: 1 }, 0),
+        makeEvent('e2', 'm1', 'CallResult', null, { transactionId: 1 }, 500, 'CSMS_TO_CS'),
+        makeEvent('e3', 'm2', 'Call', 'MeterValues', { connectorId: 1, transactionId: 1 }, 5_000),
+        makeEvent('e4', 'm2', 'CallResult', null, {}, 5_500, 'CSMS_TO_CS'),
+        makeEvent(
+          'e5',
+          'm3',
+          'Call',
+          'StopTransaction',
+          { transactionId: 1, reason: 'EVDisconnected' },
+          10_000,
+        ),
+        makeEvent('e6', 'm3', 'CallResult', null, {}, 10_500, 'CSMS_TO_CS'),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'METER_VALUE_GAP')).toBe(false);
+    });
+  });
+
+  describe('INVALID_STOP_REASON', () => {
+    it('detects invalid stop reason', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'StopTransaction',
+          { transactionId: 1, reason: 'BadReason' },
+          0,
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'INVALID_STOP_REASON')).toBe(true);
+    });
+
+    it('does not flag valid stop reason', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'StopTransaction',
+          { transactionId: 1, reason: 'EVDisconnected' },
+          0,
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'INVALID_STOP_REASON')).toBe(false);
+    });
+  });
+
+  describe('UNEXPECTED_START', () => {
+    it('detects StartTransaction without BootNotification or Authorize', () => {
+      const events = [
+        makeEvent('e1', 'm1', 'Call', 'StartTransaction', { connectorId: 1 }, 0),
+        makeEvent('e2', 'm1', 'CallResult', null, { transactionId: 1 }, 500, 'CSMS_TO_CS'),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'UNEXPECTED_START')).toBe(true);
+    });
+
+    it('does not flag when BootNotification precedes StartTransaction', () => {
+      const events = [
+        makeEvent('e1', 'm1', 'Call', 'BootNotification', {}, 0),
+        makeEvent('e2', 'm1', 'CallResult', null, { status: 'Accepted' }, 500, 'CSMS_TO_CS'),
+        makeEvent('e3', 'm2', 'Call', 'StartTransaction', { connectorId: 1 }, 1000),
+        makeEvent('e4', 'm2', 'CallResult', null, { transactionId: 1 }, 1500, 'CSMS_TO_CS'),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'UNEXPECTED_START')).toBe(false);
+    });
+  });
+
+  describe('STATUS_TRANSITION_VIOLATION', () => {
+    it('detects illegal transition from Available to Finishing', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'StatusNotification',
+          { connectorId: 1, status: 'Available' },
+          0,
+        ),
+        makeEvent(
+          'e2',
+          'm2',
+          'Call',
+          'StatusNotification',
+          { connectorId: 1, status: 'Finishing' },
+          1000,
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'STATUS_TRANSITION_VIOLATION')).toBe(true);
+    });
+
+    it('does not flag valid transition from Available to Preparing', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'StatusNotification',
+          { connectorId: 1, status: 'Available' },
+          0,
+        ),
+        makeEvent(
+          'e2',
+          'm2',
+          'Call',
+          'StatusNotification',
+          { connectorId: 1, status: 'Preparing' },
+          1000,
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'STATUS_TRANSITION_VIOLATION')).toBe(false);
+    });
+  });
+
+  describe('DIAGNOSTICS_FAILURE', () => {
+    it('detects UploadFailed diagnostics status', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'DiagnosticsStatusNotification',
+          { status: 'UploadFailed' },
+          0,
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'DIAGNOSTICS_FAILURE')).toBe(true);
+    });
+
+    it('detects DiagnosisFailed diagnostics status', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'DiagnosticsStatusNotification',
+          { status: 'DiagnosisFailed' },
+          0,
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'DIAGNOSTICS_FAILURE')).toBe(true);
+    });
+
+    it('does not flag Uploaded diagnostics status', () => {
+      const events = [
+        makeEvent('e1', 'm1', 'Call', 'DiagnosticsStatusNotification', { status: 'Uploaded' }, 0),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'DIAGNOSTICS_FAILURE')).toBe(false);
+    });
+  });
+
+  describe('FIRMWARE_UPDATE_FAILURE', () => {
+    it('detects DownloadFailed firmware status', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'FirmwareStatusNotification',
+          { status: 'DownloadFailed' },
+          0,
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(true);
+    });
+
+    it('detects InstallFailed firmware status', () => {
+      const events = [
+        makeEvent('e1', 'm1', 'Call', 'FirmwareStatusNotification', { status: 'InstallFailed' }, 0),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(true);
+    });
+
+    it('does not flag Downloaded firmware status', () => {
+      const events = [
+        makeEvent('e1', 'm1', 'Call', 'FirmwareStatusNotification', { status: 'Downloaded' }, 0),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(false);
+    });
+  });
 });

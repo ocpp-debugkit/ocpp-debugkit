@@ -134,6 +134,16 @@ export default {
         message: [3, 'msg-005', {}],
       },
       {
+        timestamp: '2024-01-15T14:07:30.000Z',
+        direction: 'CS_TO_CSMS',
+        message: [2, 'msg-hb-1', 'Heartbeat', {}],
+      },
+      {
+        timestamp: '2024-01-15T14:07:30.500Z',
+        direction: 'CSMS_TO_CS',
+        message: [3, 'msg-hb-1', { currentTime: '2024-01-15T14:07:30.500Z' }],
+      },
+      {
         timestamp: '2024-01-15T14:15:00.000Z',
         direction: 'CS_TO_CSMS',
         message: [
