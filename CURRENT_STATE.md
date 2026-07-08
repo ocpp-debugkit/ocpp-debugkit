@@ -4,14 +4,13 @@
 
 ## Current Version
 
-`0.0.0` (pre-release, no packages published yet)
+`0.1.0` — Inspector MVP (released)
 
 ## Active Milestone
 
-**v0.1.0 — Inspector MVP**
+**v0.1.0 — Inspector MVP (complete)**
 
-Building the first usable release: trace → timeline → failures detected →
-report exported. CLI and web inspector.
+All v0.1.0 issues complete. Packages published to npm. Web app deployed.
 
 ## What's Done
 
@@ -152,31 +151,16 @@ report exported. CLI and web inspector.
 - ✅ Inspector tests: empty state, sample scenario → timeline, failures, event click → message inspector, export button, invalid input error
 - ✅ CI workflow updated: install browsers + run E2E after unit tests
 
-### Docs Content (in progress — this PR)
+### Docs Content (PR #46)
 
 - ✅ `/docs` index with navigation sidebar
-- ✅ `/docs/quickstart` — install, inspect, report, scenario, web inspector, programmatic use
-- ✅ `/docs/glossary` — OCPP, CSMS, Charge Point, Connector, Transaction, Call, CallResult, CallError, idTag, Trace, Direction
-- ✅ `/docs/architecture` — package structure, dependency graph, data flow, browser-local processing, tech stack
-- ✅ `/docs/trace-format` — JSON Object, JSONL, bare array, message structure, timestamps, limits, direction inference
-- ✅ `/docs/cli` — install, inspect, report, scenario list, scenario run, options, security
-- ✅ `/docs/scenarios` — 5 built-in scenarios, failure detection rules, running scenarios, synthetic data
+- ✅ `/docs/quickstart`, `/docs/glossary`, `/docs/architecture`, `/docs/trace-format`, `/docs/cli`, `/docs/scenarios`
 
 ## What's Next
 
-1. **Issue #20** → complete (PR #33): data model + parser + normalizer
-2. **Issue #21** → complete (PR #34): timeline + detection + summarizer + validator
-3. **Issue #22** → complete (PR #35): public API export + package config
-4. **Issue #23** → complete (PR #39): scenarios package (format + 5 initial scenarios)
-5. **Issue #24** → complete (PR #40): reporter package (Markdown report generator)
-6. **Issue #25** → complete (PR #41): CLI package (scaffold + inspect + report + scenario commands)
-7. **Issue #26** → complete (PR #42): Next.js app scaffold (Next.js + Tailwind, routes for /, /inspector, /docs)
-8. **Issue #27** → complete (PR #43): Landing page (hero, features, architecture, quick start, footer)
-9. **Issue #28** → complete (PR #43): Inspector (trace input + timeline + message inspector + failures + report export)
-10. **Issue #29** → complete (PR #44): Inspector polish (loading states, responsive, keyboard nav)
-11. **Issue #30** → complete (PR #45): Playwright smoke tests
-12. **Issue #31** (this PR) → complete: Docs content (quickstart, glossary, architecture, trace format, CLI reference, scenarios)
-13. **Issue #32**: Release v0.1.0
+1. **v0.1.0 release** — merge version PR, CI publishes packages, creates tag + GitHub release
+2. **v0.2.0** — Scenario evaluator & replay (new failure rules, replay engine, @ocpp-debugkit/react)
+3. **v0.3.0** — Integrations & OSS credibility (trace diffing, CI mode, anonymize, examples)
 
 ## Known Blockers / Decisions Pending
 
@@ -186,10 +170,10 @@ report exported. CLI and web inspector.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/core` | in progress (package config finalized, ready for downstream) | 0.0.0 |
-| `@ocpp-debugkit/scenarios` | in progress (5 scenarios + registry) | 0.0.0 |
-| `@ocpp-debugkit/reporter` | in progress (Markdown generator) | 0.0.0 |
-| `@ocpp-debugkit/cli` | in progress (inspect + report + scenario) | 0.0.0 |
+| `@ocpp-debugkit/core` | done (v0.1.0) | 0.1.0 |
+| `@ocpp-debugkit/scenarios` | done (v0.1.0) | 0.1.0 |
+| `@ocpp-debugkit/reporter` | done (v0.1.0) | 0.1.0 |
+| `@ocpp-debugkit/cli` | done (v0.1.0) | 0.1.0 |
 | `@ocpp-debugkit/replay` | not started | — |
 | `@ocpp-debugkit/react` | not started | — |
-| `apps/web` | in progress (landing + inspector) | — |
+| `apps/web` | done (v0.1.0) | — |
