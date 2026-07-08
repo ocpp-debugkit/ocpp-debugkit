@@ -8,6 +8,11 @@ import {
   connectorFaultScenario,
   stationOfflineScenario,
   unexpectedStopReasonScenario,
+  meterValueGapScenario,
+  invalidStopReasonScenario,
+  unexpectedStartScenario,
+  statusTransitionViolationScenario,
+  diagnosticsFailureScenario,
 } from './index.js';
 import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.js';
 
@@ -16,8 +21,8 @@ import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.
 // ---------------------------------------------------------------------------
 
 describe('scenario registry', () => {
-  it('exports exactly 5 scenarios', () => {
-    expect(scenarios).toHaveLength(5);
+  it('exports exactly 10 scenarios', () => {
+    expect(scenarios).toHaveLength(10);
   });
 
   it('exports scenario names in order', () => {
@@ -27,6 +32,11 @@ describe('scenario registry', () => {
       'connector-fault',
       'station-offline',
       'unexpected-stop-reason',
+      'meter-value-gap',
+      'invalid-stop-reason',
+      'unexpected-start',
+      'status-transition-violation',
+      'diagnostics-failure',
     ]);
   });
 
@@ -45,6 +55,11 @@ describe('scenario registry', () => {
     expect(getScenario('connector-fault')).toBe(connectorFaultScenario);
     expect(getScenario('station-offline')).toBe(stationOfflineScenario);
     expect(getScenario('unexpected-stop-reason')).toBe(unexpectedStopReasonScenario);
+    expect(getScenario('meter-value-gap')).toBe(meterValueGapScenario);
+    expect(getScenario('invalid-stop-reason')).toBe(invalidStopReasonScenario);
+    expect(getScenario('unexpected-start')).toBe(unexpectedStartScenario);
+    expect(getScenario('status-transition-violation')).toBe(statusTransitionViolationScenario);
+    expect(getScenario('diagnostics-failure')).toBe(diagnosticsFailureScenario);
   });
 
   it('getScenario returns undefined for unknown name', () => {
@@ -53,17 +68,24 @@ describe('scenario registry', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Expected failures alignment (pitfall: scenarios must match v0.1 detection rules)
+// Expected failures alignment with detection rules
 // ---------------------------------------------------------------------------
 
-describe('expectedFailures alignment with v0.1 detection rules', () => {
+describe('expectedFailures alignment with detection rules', () => {
   const VALID_FAILURE_CODES = new Set([
     'FAILED_AUTHORIZATION',
     'CONNECTOR_FAULT',
     'STATION_OFFLINE_DURING_SESSION',
+    'TIMEOUT_NO_HEARTBEAT',
+    'METER_VALUE_GAP',
+    'INVALID_STOP_REASON',
+    'UNEXPECTED_START',
+    'STATUS_TRANSITION_VIOLATION',
+    'DIAGNOSTICS_FAILURE',
+    'FIRMWARE_UPDATE_FAILURE',
   ]);
 
-  it('all expectedFailures reference valid v0.1 failure codes', () => {
+  it('all expectedFailures reference valid failure codes', () => {
     for (const scenario of scenarios) {
       for (const code of scenario.expectedFailures) {
         expect(VALID_FAILURE_CODES.has(code)).toBe(true);
@@ -115,6 +137,46 @@ describe('scenario engine integration', () => {
     const sessions = buildSessionTimeline(result.events);
     const failures = detectFailures(result.events, sessions);
     expect(failures).toHaveLength(0);
+  });
+
+  it('meter-value-gap: detects METER_VALUE_GAP', () => {
+    const trace = JSON.stringify(meterValueGapScenario.trace);
+    const result = parseTrace(trace);
+    const sessions = buildSessionTimeline(result.events);
+    const failures = detectFailures(result.events, sessions);
+    expect(failures.some((f) => f.code === 'METER_VALUE_GAP')).toBe(true);
+  });
+
+  it('invalid-stop-reason: detects INVALID_STOP_REASON', () => {
+    const trace = JSON.stringify(invalidStopReasonScenario.trace);
+    const result = parseTrace(trace);
+    const sessions = buildSessionTimeline(result.events);
+    const failures = detectFailures(result.events, sessions);
+    expect(failures.some((f) => f.code === 'INVALID_STOP_REASON')).toBe(true);
+  });
+
+  it('unexpected-start: detects UNEXPECTED_START', () => {
+    const trace = JSON.stringify(unexpectedStartScenario.trace);
+    const result = parseTrace(trace);
+    const sessions = buildSessionTimeline(result.events);
+    const failures = detectFailures(result.events, sessions);
+    expect(failures.some((f) => f.code === 'UNEXPECTED_START')).toBe(true);
+  });
+
+  it('status-transition-violation: detects STATUS_TRANSITION_VIOLATION', () => {
+    const trace = JSON.stringify(statusTransitionViolationScenario.trace);
+    const result = parseTrace(trace);
+    const sessions = buildSessionTimeline(result.events);
+    const failures = detectFailures(result.events, sessions);
+    expect(failures.some((f) => f.code === 'STATUS_TRANSITION_VIOLATION')).toBe(true);
+  });
+
+  it('diagnostics-failure: detects DIAGNOSTICS_FAILURE', () => {
+    const trace = JSON.stringify(diagnosticsFailureScenario.trace);
+    const result = parseTrace(trace);
+    const sessions = buildSessionTimeline(result.events);
+    const failures = detectFailures(result.events, sessions);
+    expect(failures.some((f) => f.code === 'DIAGNOSTICS_FAILURE')).toBe(true);
   });
 });
 

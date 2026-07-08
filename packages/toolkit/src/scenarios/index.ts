@@ -10,6 +10,11 @@ import { fixtures } from '../core/index.js';
 
 import stationOffline from './__scenarios__/station-offline.js';
 import unexpectedStopReason from './__scenarios__/unexpected-stop-reason.js';
+import meterValueGap from './__scenarios__/meter-value-gap.js';
+import invalidStopReason from './__scenarios__/invalid-stop-reason.js';
+import unexpectedStart from './__scenarios__/unexpected-start.js';
+import statusTransitionViolation from './__scenarios__/status-transition-violation.js';
+import diagnosticsFailure from './__scenarios__/diagnostics-failure.js';
 
 // ---------------------------------------------------------------------------
 // Scenarios derived from core fixtures
@@ -18,7 +23,7 @@ import unexpectedStopReason from './__scenarios__/unexpected-stop-reason.js';
 const normalSessionScenario: Scenario = {
   name: 'normal-session',
   description:
-    'Normal charging session: boot → authorize → start transaction → meter values → stop transaction. No failures expected.',
+    'Normal charging session: boot, authorize, start transaction, meter values, stop transaction. No failures expected.',
   trace: fixtures.normalSession as Trace,
   expectedFailures: [],
 };
@@ -26,7 +31,7 @@ const normalSessionScenario: Scenario = {
 const failedAuthScenario: Scenario = {
   name: 'failed-auth',
   description:
-    'Failed authorization: station connector prepares, idTag is rejected by CSMS. StartTransaction is not attempted. Expects FAILED_AUTHORIZATION failure.',
+    'Failed authorization: station prepares, idTag is rejected by CSMS. StartTransaction is not attempted. Expects FAILED_AUTHORIZATION failure.',
   trace: fixtures.failedAuth as Trace,
   expectedFailures: ['FAILED_AUTHORIZATION'],
 };
@@ -40,11 +45,17 @@ const connectorFaultScenario: Scenario = {
 };
 
 // ---------------------------------------------------------------------------
-// Scenarios from JSON files
+// Scenarios from fixture files
 // ---------------------------------------------------------------------------
 
 const stationOfflineScenario: Scenario = stationOffline as unknown as Scenario;
 const unexpectedStopReasonScenario: Scenario = unexpectedStopReason as unknown as Scenario;
+const meterValueGapScenario: Scenario = meterValueGap as unknown as Scenario;
+const invalidStopReasonScenario: Scenario = invalidStopReason as unknown as Scenario;
+const unexpectedStartScenario: Scenario = unexpectedStart as unknown as Scenario;
+const statusTransitionViolationScenario: Scenario =
+  statusTransitionViolation as unknown as Scenario;
+const diagnosticsFailureScenario: Scenario = diagnosticsFailure as unknown as Scenario;
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -56,6 +67,11 @@ export const scenarios = [
   connectorFaultScenario,
   stationOfflineScenario,
   unexpectedStopReasonScenario,
+  meterValueGapScenario,
+  invalidStopReasonScenario,
+  unexpectedStartScenario,
+  statusTransitionViolationScenario,
+  diagnosticsFailureScenario,
 ] as const;
 
 export const scenarioNames = [
@@ -64,6 +80,11 @@ export const scenarioNames = [
   'connector-fault',
   'station-offline',
   'unexpected-stop-reason',
+  'meter-value-gap',
+  'invalid-stop-reason',
+  'unexpected-start',
+  'status-transition-violation',
+  'diagnostics-failure',
 ] as const;
 
 export {
@@ -72,6 +93,11 @@ export {
   connectorFaultScenario,
   stationOfflineScenario,
   unexpectedStopReasonScenario,
+  meterValueGapScenario,
+  invalidStopReasonScenario,
+  unexpectedStartScenario,
+  statusTransitionViolationScenario,
+  diagnosticsFailureScenario,
 };
 
 /**
