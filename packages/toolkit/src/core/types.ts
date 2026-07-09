@@ -225,4 +225,51 @@ export interface Scenario {
   trace: Trace;
   /** Failure codes expected to be detected. */
   expectedFailures: FailureCode[];
+  /** Optional rich assertions (v0.3). When present, evaluated alongside expectedFailures. */
+  assertions?: ScenarioAssertion[];
+}
+
+// ---------------------------------------------------------------------------
+// Scenario Assertions (v0.3)
+// ---------------------------------------------------------------------------
+
+/** A declarative assertion for scenario evaluation. */
+export type ScenarioAssertion =
+  | { type: 'event_order'; params: { actions: string[] } }
+  | { type: 'event_count'; params: { min?: number; max?: number; action?: string } }
+  | {
+      type: 'payload_field';
+      params: { action: string; field: string; equals?: unknown; contains?: unknown };
+    }
+  | {
+      type: 'timing';
+      params: { actionA: string; actionB: string; maxGapMs?: number; minGapMs?: number };
+    }
+  | { type: 'session_state'; params: { expected: 'active' | 'completed' | 'aborted' } }
+  | { type: 'failure_severity'; params: { code: FailureCode; severity: FailureSeverity } }
+  | { type: 'no_failures'; params: Record<string, never> }
+  | { type: 'failure_count'; params: { min?: number; max?: number; code?: FailureCode } };
+
+/** Result of evaluating a single assertion. */
+export interface AssertionResult {
+  /** The assertion that was evaluated. */
+  assertion: ScenarioAssertion;
+  /** Whether the assertion passed. */
+  passed: boolean;
+  /** Human-readable description of the result. */
+  message: string;
+}
+
+/** Result of evaluating all assertions for a scenario. */
+export interface ScenarioEvalResult {
+  /** Results for each assertion. */
+  assertions: AssertionResult[];
+  /** Whether all assertions passed. */
+  allPassed: boolean;
+  /** Detected failures. */
+  failures: Failure[];
+  /** Detected failure codes. */
+  detectedFailureCodes: FailureCode[];
+  /** Whether expectedFailures matches detectedFailures. */
+  expectedFailuresPassed: boolean;
 }

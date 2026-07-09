@@ -41,5 +41,9 @@ export { validateMessage, validateMessages } from './validator.js';
 export { diffTraces } from './diff.js';
 export type { TraceDiff, EventDiff, SummaryDiff } from './diff.js';
 
+// Assertions
+export { runAssertion, runAssertions, evaluateScenario } from './assertions.js';
+export type { AssertionContext } from './assertions.js';
+
 // Fixtures
 export * from './fixtures/index.js';
