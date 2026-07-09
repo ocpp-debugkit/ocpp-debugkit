@@ -53,6 +53,49 @@ subpath exports (`@ocpp-debugkit/toolkit/core`, `/scenarios`, `/reporter`,
 See [`AGENTS.md`](./AGENTS.md) for a detailed overview of the architecture,
 build commands, and package dependency graph.
 
+## Architecture Overview
+
+OCPP DebugKit is a pnpm monorepo with a single published package
+(`@ocpp-debugkit/toolkit`) and a single Next.js web app.
+
+### Core Data Flow
+
+```
+Trace Input (JSON/JSONL)
+  → parseTrace()           → Events[]
+  → buildSessionTimeline() → Sessions[]
+  → detectFailures()       → Failures[]
+  → summarizeSessions()    → SessionSummary[]
+```
+
+Each step is a pure function — no side effects, no I/O. The CLI and web app
+compose these functions to provide the full analysis pipeline.
+
+### Key Modules
+
+| Module | Location | Description |
+|--------|----------|-------------|
+| Types | `src/core/types.ts` | All TypeScript interfaces and type definitions |
+| Schemas | `src/core/schemas.ts` | Zod validation schemas for input |
+| Parser | `src/core/parser.ts` | `parseTrace()` — JSON, JSONL, bare array |
+| Normalizer | `src/core/normalizer.ts` | Event normalization (timestamps, directions) |
+| Timeline | `src/core/timeline.ts` | `buildSessionTimeline()` — session correlation |
+| Detection | `src/core/detection.ts` | `detectFailures()` — 15 failure rules |
+| Diff | `src/core/diff.ts` | `diffTraces()` — compare two traces |
+| Assertions | `src/core/assertions.ts` | `evaluateScenario()` — scenario assertions |
+| Summarizer | `src/core/summarizer.ts` | Session summary statistics |
+| Validator | `src/core/validator.ts` | OCPP 1.6 structural validation |
+| Scenarios | `src/scenarios/` | 15 predefined scenarios + registry |
+| Reporter | `src/reporter/` | Markdown + HTML report generators |
+| Replay | `src/replay/` | Deterministic replay engine |
+| React | `src/react/` | Reusable UI components |
+| CLI | `src/cli/` | Command-line interface |
+
+### Browser-Safe vs Node-Only
+
+- `core`, `scenarios`, `reporter`, `replay`, `react`: browser-safe (no Node built-ins)
+- `cli`: Node-only (uses `fs`, `path`, `process`). Never imported by browser code.
+
 ## Development Workflow
 
 ### 1. Find or Create an Issue
@@ -136,6 +179,105 @@ test/<description>             # e.g. test/core-coverage
 - Test files: `*.test.ts` / `*.spec.ts`.
 - Tests live next to the code they test.
 - Coverage target: 70%+ for core package.
+
+#### Running Tests
+
+```bash
+pnpm test                    # Run all unit tests
+pnpm test:external-fixture   # External fixture test (installs from tarball)
+pnpm test:e2e                # Playwright E2E tests (in apps/web)
+```
+
+#### Writing Tests
+
+- Test the **behavior**, not the implementation.
+- Cover both positive (expected result) and negative (error/edge case) paths.
+- Use the `makeEvent()` helper pattern from `detection.test.ts` for creating
+  test events.
+- For CLI tests, use the `execa`-based pattern from `cli.test.ts`.
+
+## Contributing Scenarios
+
+Scenarios are the most common first contribution. A scenario is a synthetic
+trace with expected failure outcomes and optional assertions.
+
+### How to Add a Scenario
+
+1. Create a file in `packages/toolkit/src/scenarios/__scenarios__/`:
+   ```typescript
+   export default {
+     name: 'my-scenario',
+     description: 'Description of what the scenario tests.',
+     trace: { /* synthetic trace data */ },
+     expectedFailures: ['FAILED_AUTHORIZATION'],
+     assertions: [
+       { type: 'event_order', params: { actions: ['BootNotification', 'Authorize'] } }
+     ],
+   };
+   ```
+
+2. Import and register it in `packages/toolkit/src/scenarios/index.ts`.
+
+3. Update the scenario count in:
+   - `packages/toolkit/src/scenarios/index.test.ts`
+   - `tests/external-fixture/test.mjs`
+
+4. Run `ocpp-debugkit ci` to verify all scenarios pass.
+
+### Guidelines
+
+- All data must be **synthetic** — no real station IDs, transaction IDs, idTags,
+  or personal data.
+- Use `SYNTHETIC-TAG-NNN` for idTags, `CS-SYNTHETIC-NNN` for station IDs.
+- `expectedFailures` must align with detection rules available in the current
+  version.
+- Test your scenario with `ocpp-debugkit scenario run my-scenario`.
+
+## Contributing Detection Rules
+
+Detection rules identify failure patterns in traces.
+
+### How to Add a Detection Rule
+
+1. Add the failure code to `FailureCode` in `packages/toolkit/src/core/types.ts`.
+
+2. Add suggested steps and severity in `packages/toolkit/src/core/detection.ts`:
+   ```typescript
+   SUGGESTED_STEPS.MY_NEW_RULE = [
+     'Step 1 to resolve the issue',
+     'Step 2 to resolve the issue',
+   ];
+   SEVERITY.MY_NEW_RULE = 'warning';
+   ```
+
+3. Implement the detection function:
+   ```typescript
+   function detectMyNewRule(events: Event[]): Failure[] {
+     const failures: Failure[] = [];
+     // Detection logic
+     return failures;
+   }
+   ```
+
+4. Wire it into `detectFailures()`.
+
+5. Add unit tests in `detection.test.ts` (positive + negative cases).
+
+6. **Audit all existing scenarios** — new rules may trigger on existing fixtures.
+   Fix false positives or add the new code to `expectedFailures`.
+
+## Contributing Good-First-Issues
+
+Good-first-issues are labeled with `good-first-issue` and are designed for
+new contributors. They should:
+
+- Have clear instructions and acceptance criteria
+- Point to the relevant files and code
+- Be scoped to a single concern
+- Not require deep knowledge of the codebase
+
+If you're a new contributor, look for issues with the `good-first-issue` label
+on the [issues page](https://github.com/ocpp-debugkit/ocpp-debugkit/issues).
 
 ## Security Guidelines
 

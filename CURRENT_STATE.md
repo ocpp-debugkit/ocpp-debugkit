@@ -205,6 +205,7 @@ integration examples, and contributor onboarding.
 - ✅ Assert-based scenarios — 5 new scenarios (15 total) + `compareScenarioReports()` (Issue #87)
 - ✅ CLI: ci + anonymize + diff commands (Issue #88)
 - ✅ Integration examples — 4 example projects (Issue #89)
+- ✅ Contribution guide + 5 good-first-issues (Issue #90)
 
 ## What's Next
 
