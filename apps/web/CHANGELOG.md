@@ -1,5 +1,16 @@
 # web
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [6775642]
+- Updated dependencies [1b8cb39]
+- Updated dependencies [c580737]
+- Updated dependencies [8db857e]
+- Updated dependencies [8f765f9]
+  - @ocpp-debugkit/toolkit@0.3.0
+
 ## 0.1.2
 
 ### Patch Changes
