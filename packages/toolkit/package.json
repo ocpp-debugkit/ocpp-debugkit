@@ -1,6 +1,6 @@
 {
   "name": "@ocpp-debugkit/toolkit",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Open-source DevTools for debugging OCPP charging sessions — parser, normalizer, timeline, failure detection, scenarios, replay, reports, CLI, and React components.",
   "license": "Apache-2.0",
   "type": "module",

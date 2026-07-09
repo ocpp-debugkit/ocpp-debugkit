@@ -1,5 +1,11 @@
 # @ocpp-debugkit/toolkit
 
+## 0.3.1
+
+### Patch Changes
+
+- 2c4d518: Add repeated BootNotification failure detection for stations that send multiple boot calls within five minutes.
+
 ## 0.3.0
 
 ### Minor Changes
