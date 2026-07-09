@@ -4,15 +4,15 @@
 
 ## Current Version
 
-`0.2.1` — Packaging Consolidation + Scenario Evaluator & Replay (published)
+`0.3.0` — Integrations & OSS Credibility (published)
 
 ## Active Milestone
 
-**v0.3.0 — Integrations & OSS Credibility (in progress)**
+**v1.0.0 — Stable FOSS Ecosystem (next)**
 
-v0.2.1 is published to npm. Old v0.1.1 packages are deprecated. v0.3.0 adds
-trace diffing, rich scenario assertions, CI/anonymize/diff CLI commands,
-integration examples, and contributor onboarding.
+v0.3.0 is published to npm. Adds trace diffing, rich scenario assertions,
+CI/anonymize/diff CLI commands, 15 detection rules, 15 scenarios, integration
+examples, and contributor onboarding.
 
 ## What's Done
 
@@ -208,13 +208,18 @@ integration examples, and contributor onboarding.
 - ✅ Contribution guide + 5 good-first-issues (Issue #90)
 - ✅ v0.3 docs content — 5 new + 3 updated docs pages (Issue #91)
 
+### v0.3.0 Release
+
+- ✅ `@ocpp-debugkit/toolkit@0.3.0` published to npm
+- ✅ Git tag `v0.3.0` + GitHub release `v0.3.0` created
+- ✅ v0.3.0 milestone closed
+
 ## What's Next
 
-1. **v0.3.0 — Integrations & OSS Credibility** — Trace diffing, rich scenario
-   assertions, CI/anonymize/diff CLI commands, integration examples, contributor
-   onboarding (Issues #82–#92)
-2. **v1.0.0** — API stabilization, 20+ scenarios, docs overhaul, contributor
-   onboarding
+1. **v1.0.0 — Stable FOSS Ecosystem** — API stabilization, 20+ scenarios, docs
+   overhaul, contributor onboarding
+2. **Future** — Active scenario runner (live endpoint testing), playground,
+   YAML trace format support
 
 ## Known Blockers / Decisions Pending
 
@@ -224,7 +229,7 @@ integration examples, and contributor onboarding.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/toolkit` | published | 0.2.1 |
+| `@ocpp-debugkit/toolkit` | published | 0.3.0 |
 | `@ocpp-debugkit/core` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/scenarios` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/reporter` | deprecated | 0.1.1 |

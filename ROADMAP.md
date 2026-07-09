@@ -101,7 +101,8 @@ old packages deprecated.
 
 ## v0.3.0 — Integrations & OSS Credibility
 
-**Status:** In progress
+**Status:** ✅ Complete — published as `@ocpp-debugkit/toolkit@0.3.0` on npm,
+Git tag `v0.3.0`, GitHub release `v0.3.0`. Milestone closed.
 
 Connect to real ecosystem workflows. Attract external engagement.
 
@@ -112,13 +113,13 @@ Connect to real ecosystem workflows. Attract external engagement.
 - Integration examples (simple-trace, simple-csms, simulator-output, etc.)
 - Contribution guide + good-first-issues
 
-**Exit criteria:** GitHub release `release-v0.3.0`.
+**Exit criteria:** GitHub release `v0.3.0`. ✅ All met.
 
 ---
 
 ## v1.0.0 — Stable FOSS Ecosystem
 
-**Status:** Not started
+**Status:** Next up
 
 Mature APIs, stable formats, contributor-ready.
 
