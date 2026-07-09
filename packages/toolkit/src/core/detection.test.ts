@@ -744,4 +744,773 @@ describe('detectFailures', () => {
       expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(false);
     });
   });
+
+  // -------------------------------------------------------------------------
+  // v0.3 rules
+  // -------------------------------------------------------------------------
+
+  describe('SUSPICIOUS_SESSION_DURATION', () => {
+    it('detects suspiciously short session (< 60s)', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          1500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e3', 'm2', 'Call', 'Authorize', { idTag: 'TAG-001' }, 2000),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          2500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e5',
+          'm3',
+          'Call',
+          'StartTransaction',
+          { connectorId: 1, idTag: 'TAG-001' },
+          3000,
+        ),
+        makeEvent(
+          'e6',
+          'm3',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' }, transactionId: 42 },
+          3500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e7',
+          'm4',
+          'Call',
+          'StopTransaction',
+          { transactionId: 42, reason: 'Local' },
+          10000,
+        ),
+        makeEvent(
+          'e8',
+          'm4',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          10500,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      const durationFailures = failures.filter((f) => f.code === 'SUSPICIOUS_SESSION_DURATION');
+      expect(durationFailures).toHaveLength(1);
+      expect(durationFailures[0]?.severity).toBe('warning');
+    });
+
+    it('detects suspiciously long session (> 24h)', () => {
+      const DAY = 24 * 60 * 60 * 1000;
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          1500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e3', 'm2', 'Call', 'Authorize', { idTag: 'TAG-001' }, 2000),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          2500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e5',
+          'm3',
+          'Call',
+          'StartTransaction',
+          { connectorId: 1, idTag: 'TAG-001' },
+          3000,
+        ),
+        makeEvent(
+          'e6',
+          'm3',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' }, transactionId: 42 },
+          3500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e7',
+          'm4',
+          'Call',
+          'StopTransaction',
+          { transactionId: 42, reason: 'Local' },
+          3000 + DAY + 1000,
+        ),
+        makeEvent(
+          'e8',
+          'm4',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          3000 + DAY + 1500,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      const durationFailures = failures.filter((f) => f.code === 'SUSPICIOUS_SESSION_DURATION');
+      expect(durationFailures).toHaveLength(1);
+      expect(durationFailures[0]?.severity).toBe('warning');
+    });
+
+    it('does not flag normal session duration', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          1500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e3', 'm2', 'Call', 'Authorize', { idTag: 'TAG-001' }, 2000),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          2500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e5',
+          'm3',
+          'Call',
+          'StartTransaction',
+          { connectorId: 1, idTag: 'TAG-001' },
+          3000,
+        ),
+        makeEvent(
+          'e6',
+          'm3',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' }, transactionId: 42 },
+          3500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e7',
+          'm4',
+          'Call',
+          'StopTransaction',
+          { transactionId: 42, reason: 'Local' },
+          3000 + 30 * 60 * 1000,
+        ),
+        makeEvent(
+          'e8',
+          'm4',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          3000 + 30 * 60 * 1000 + 500,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'SUSPICIOUS_SESSION_DURATION')).toBe(false);
+    });
+  });
+
+  describe('SLOW_RESPONSE', () => {
+    it('detects response gap > 10s', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          15000,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      const slowFailures = failures.filter((f) => f.code === 'SLOW_RESPONSE');
+      expect(slowFailures).toHaveLength(1);
+      expect(slowFailures[0]?.severity).toBe('warning');
+      expect(slowFailures[0]?.eventIds).toContain('e1');
+    });
+
+    it('does not flag fast response', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          2000,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'SLOW_RESPONSE')).toBe(false);
+    });
+  });
+
+  describe('HEARTBEAT_INTERVAL_VIOLATION', () => {
+    it('detects heartbeat interval deviation > 50%', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          1500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e3', 'm2', 'Call', 'Heartbeat', {}, 2000),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { currentTime: '2024-01-15T10:00:02Z' },
+          2100,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e5', 'm3', 'Call', 'Heartbeat', {}, 2000 + 120 * 1000), // 120s gap vs 60s expected = 100% deviation
+        makeEvent(
+          'e6',
+          'm3',
+          'CallResult',
+          null,
+          { currentTime: '2024-01-15T10:02:00Z' },
+          2000 + 120 * 1000 + 100,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      const hbFailures = failures.filter((f) => f.code === 'HEARTBEAT_INTERVAL_VIOLATION');
+      expect(hbFailures).toHaveLength(1);
+      expect(hbFailures[0]?.severity).toBe('info');
+    });
+
+    it('does not flag normal heartbeat interval', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          1500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e3', 'm2', 'Call', 'Heartbeat', {}, 2000),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { currentTime: '2024-01-15T10:00:02Z' },
+          2100,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e5', 'm3', 'Call', 'Heartbeat', {}, 2000 + 65 * 1000), // 65s gap vs 60s expected = ~8% deviation
+        makeEvent(
+          'e6',
+          'm3',
+          'CallResult',
+          null,
+          { currentTime: '2024-01-15T10:01:05Z' },
+          2000 + 65 * 1000 + 100,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'HEARTBEAT_INTERVAL_VIOLATION')).toBe(false);
+    });
+
+    it('does not flag when fewer than 2 heartbeats', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          1500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e3', 'm2', 'Call', 'Heartbeat', {}, 2000),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { currentTime: '2024-01-15T10:00:02Z' },
+          2100,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'HEARTBEAT_INTERVAL_VIOLATION')).toBe(false);
+    });
+  });
+
+  describe('METER_VALUE_ANOMALY', () => {
+    it('detects negative meter value', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          1500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e3', 'm2', 'Call', 'Authorize', { idTag: 'TAG-001' }, 2000),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          2500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e5',
+          'm3',
+          'Call',
+          'StartTransaction',
+          { connectorId: 1, idTag: 'TAG-001' },
+          3000,
+        ),
+        makeEvent(
+          'e6',
+          'm3',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' }, transactionId: 42 },
+          3500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e7',
+          'm4',
+          'Call',
+          'MeterValues',
+          {
+            connectorId: 1,
+            transactionId: 42,
+            meterValue: [{ sampledValue: [{ value: '-100' }] }],
+          },
+          4000,
+        ),
+        makeEvent(
+          'e8',
+          'm5',
+          'Call',
+          'StopTransaction',
+          { transactionId: 42, reason: 'Local' },
+          5000,
+        ),
+        makeEvent(
+          'e9',
+          'm5',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          5500,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      const anomalyFailures = failures.filter((f) => f.code === 'METER_VALUE_ANOMALY');
+      expect(anomalyFailures).toHaveLength(1);
+      expect(anomalyFailures[0]?.severity).toBe('warning');
+    });
+
+    it('detects non-monotonic (decreasing) meter value', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          1500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e3', 'm2', 'Call', 'Authorize', { idTag: 'TAG-001' }, 2000),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          2500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e5',
+          'm3',
+          'Call',
+          'StartTransaction',
+          { connectorId: 1, idTag: 'TAG-001' },
+          3000,
+        ),
+        makeEvent(
+          'e6',
+          'm3',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' }, transactionId: 42 },
+          3500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e7',
+          'm4',
+          'Call',
+          'MeterValues',
+          {
+            connectorId: 1,
+            transactionId: 42,
+            meterValue: [{ sampledValue: [{ value: '100' }] }],
+          },
+          4000,
+        ),
+        makeEvent(
+          'e8',
+          'm5',
+          'Call',
+          'MeterValues',
+          {
+            connectorId: 1,
+            transactionId: 42,
+            meterValue: [{ sampledValue: [{ value: '50' }] }], // decreased from 100 to 50
+          },
+          5000,
+        ),
+        makeEvent(
+          'e9',
+          'm6',
+          'Call',
+          'StopTransaction',
+          { transactionId: 42, reason: 'Local' },
+          6000,
+        ),
+        makeEvent(
+          'e10',
+          'm6',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          6500,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      const anomalyFailures = failures.filter((f) => f.code === 'METER_VALUE_ANOMALY');
+      expect(anomalyFailures).toHaveLength(1);
+      expect(anomalyFailures[0]?.severity).toBe('warning');
+    });
+
+    it('does not flag monotonic increasing meter values', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          1500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e3', 'm2', 'Call', 'Authorize', { idTag: 'TAG-001' }, 2000),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          2500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e5',
+          'm3',
+          'Call',
+          'StartTransaction',
+          { connectorId: 1, idTag: 'TAG-001' },
+          3000,
+        ),
+        makeEvent(
+          'e6',
+          'm3',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' }, transactionId: 42 },
+          3500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e7',
+          'm4',
+          'Call',
+          'MeterValues',
+          {
+            connectorId: 1,
+            transactionId: 42,
+            meterValue: [{ sampledValue: [{ value: '100' }] }],
+          },
+          4000,
+        ),
+        makeEvent(
+          'e8',
+          'm5',
+          'Call',
+          'MeterValues',
+          {
+            connectorId: 1,
+            transactionId: 42,
+            meterValue: [{ sampledValue: [{ value: '200' }] }], // increased from 100 to 200
+          },
+          5000,
+        ),
+        makeEvent(
+          'e9',
+          'm6',
+          'Call',
+          'StopTransaction',
+          { transactionId: 42, reason: 'Local' },
+          6000,
+        ),
+        makeEvent(
+          'e10',
+          'm6',
+          'CallResult',
+          null,
+          { idTagInfo: { status: 'Accepted' } },
+          6500,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'METER_VALUE_ANOMALY')).toBe(false);
+    });
+  });
+
+  describe('UNRESPONSIVE_CSMS', () => {
+    it('detects Call with no matching CallResult or CallError', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        // No CallResult for m1
+        makeEvent('e2', 'm2', 'Call', 'Heartbeat', {}, 2000),
+        makeEvent(
+          'e3',
+          'm2',
+          'CallResult',
+          null,
+          { currentTime: '2024-01-15T10:00:02Z' },
+          2100,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      const unresponsiveFailures = failures.filter((f) => f.code === 'UNRESPONSIVE_CSMS');
+      expect(unresponsiveFailures).toHaveLength(1);
+      expect(unresponsiveFailures[0]?.severity).toBe('critical');
+      expect(unresponsiveFailures[0]?.eventIds).toContain('e1');
+    });
+
+    it('does not flag Call with matching CallResult', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          1500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent('e3', 'm2', 'Call', 'Heartbeat', {}, 2000),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { currentTime: '2024-01-15T10:00:02Z' },
+          2100,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'UNRESPONSIVE_CSMS')).toBe(false);
+    });
+
+    it('does not flag Call with matching CallError', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-001' },
+          1000,
+        ),
+        makeEvent('e2', 'm1', 'CallError', null, {}, 1500, 'CSMS_TO_CS'),
+        makeEvent('e3', 'm2', 'Call', 'Heartbeat', {}, 2000),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { currentTime: '2024-01-15T10:00:02Z' },
+          2100,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      expect(failures.some((f) => f.code === 'UNRESPONSIVE_CSMS')).toBe(false);
+    });
+  });
 });

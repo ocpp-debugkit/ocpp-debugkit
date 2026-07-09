@@ -1,7 +1,7 @@
 /**
  * Failure detection — analyzes events and sessions for known failure patterns.
  *
- * 10 detection rules (v0.1 + v0.2):
+ * 15 detection rules (v0.1 + v0.2 + v0.3):
  *
  * v0.1:
  * 1. FAILED_AUTHORIZATION — Authorize response with idTagInfo.status = "Invalid"
@@ -16,6 +16,13 @@
  * 8. STATUS_TRANSITION_VIOLATION — illegal connector status transition
  * 9. DIAGNOSTICS_FAILURE — DiagnosticsStatusNotification indicating failure
  * 10. FIRMWARE_UPDATE_FAILURE — FirmwareStatusNotification indicating failure
+ *
+ * v0.3:
+ * 11. SUSPICIOUS_SESSION_DURATION — session < 60s or > 24h
+ * 12. SLOW_RESPONSE — gap between Call and matching CallResult/CallError > 10s
+ * 13. HEARTBEAT_INTERVAL_VIOLATION — heartbeat intervals deviate >50% from expected
+ * 14. METER_VALUE_ANOMALY — non-monotonic or negative meter readings
+ * 15. UNRESPONSIVE_CSMS — Call with no matching CallResult or CallError
  *
  * @see ADR-0003
  */
@@ -92,6 +99,41 @@ const SUGGESTED_STEPS: Record<FailureCode, string[]> = {
     'Retry the firmware update after addressing the failure cause',
     'Contact the firmware provider if the image is defective',
   ],
+  SUSPICIOUS_SESSION_DURATION: [
+    'Review the session duration in the trace timeline',
+    'For very short sessions: check if the transaction was aborted or authorization failed mid-session',
+    'For very long sessions: check if the station forgot to send StopTransaction',
+    'Verify the station clock is synchronized (NTP)',
+    'Check if the session spans a maintenance window or firmware update',
+  ],
+  SLOW_RESPONSE: [
+    'Check the CSMS processing time for the affected message type',
+    'Review system load and database performance on the CSMS',
+    'Verify network latency between station and CSMS',
+    'Check if the CSMS is running a long-running synchronous operation',
+    'Review CSMS logs for the specific message ID',
+  ],
+  HEARTBEAT_INTERVAL_VIOLATION: [
+    'Verify the heartbeat interval configured on the station matches the BootNotification response',
+    'Check for network instability causing delayed heartbeats',
+    'Review the station clock synchronization (NTP)',
+    'Check if the station firmware has a known heartbeat timing bug',
+    'Inspect the WebSocket connection stability',
+  ],
+  METER_VALUE_ANOMALY: [
+    'Verify the meter is functioning correctly and is properly calibrated',
+    'Check for meter communication errors or data corruption',
+    'Review the meter value sampling and reporting configuration',
+    'Inspect for potential tampering or hardware malfunction',
+    'Contact the meter vendor if the issue persists',
+  ],
+  UNRESPONSIVE_CSMS: [
+    'Check if the CSMS was online and accepting connections during the session',
+    'Verify the WebSocket connection was stable at the time of the unanswered Call',
+    'Review CSMS logs for the specific message ID',
+    'Check if the CSMS crashed or restarted during the session',
+    'Inspect the network path between station and CSMS for packet loss',
+  ],
 };
 
 const SEVERITY: Record<FailureCode, FailureSeverity> = {
@@ -105,6 +147,11 @@ const SEVERITY: Record<FailureCode, FailureSeverity> = {
   STATUS_TRANSITION_VIOLATION: 'warning',
   DIAGNOSTICS_FAILURE: 'critical',
   FIRMWARE_UPDATE_FAILURE: 'warning',
+  SUSPICIOUS_SESSION_DURATION: 'warning',
+  SLOW_RESPONSE: 'warning',
+  HEARTBEAT_INTERVAL_VIOLATION: 'info',
+  METER_VALUE_ANOMALY: 'warning',
+  UNRESPONSIVE_CSMS: 'critical',
 };
 
 // ---------------------------------------------------------------------------
@@ -326,6 +373,13 @@ export function detectFailures(events: Event[], sessions: Session[]): Failure[] 
   failures.push(...detectStatusTransitionViolation(events));
   failures.push(...detectDiagnosticsFailure(events));
   failures.push(...detectFirmwareUpdateFailure(events));
+
+  // v0.3 rules
+  failures.push(...detectSuspiciousSessionDuration(events, sessions));
+  failures.push(...detectSlowResponse(events));
+  failures.push(...detectHeartbeatIntervalViolation(events));
+  failures.push(...detectMeterValueAnomaly(events, sessions));
+  failures.push(...detectUnresponsiveCsms(events));
 
   return failures;
 }
@@ -648,6 +702,286 @@ function detectFirmwareUpdateFailure(events: Event[]): Failure[] {
         severity: SEVERITY.FIRMWARE_UPDATE_FAILURE,
         eventIds: [event.id],
         suggestedSteps: SUGGESTED_STEPS.FIRMWARE_UPDATE_FAILURE,
+      });
+    }
+  }
+
+  return failures;
+}
+
+// ---------------------------------------------------------------------------
+// v0.3 detection rules
+// ---------------------------------------------------------------------------
+
+/** Minimum session duration to not be suspicious: 60 seconds. */
+const MIN_SESSION_DURATION_MS = 60_000;
+
+/** Maximum session duration to not be suspicious: 24 hours. */
+const MAX_SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
+
+/** Threshold for slow response: 10 seconds. */
+const SLOW_RESPONSE_THRESHOLD_MS = 10_000;
+
+/** Deviation threshold for heartbeat interval violation: 50%. */
+const HEARTBEAT_DEVIATION_THRESHOLD = 0.5;
+
+/**
+ * Rule 11: SUSPICIOUS_SESSION_DURATION
+ * Detects sessions that are suspiciously short (< 60s) or long (> 24h).
+ */
+function detectSuspiciousSessionDuration(_events: Event[], sessions: Session[]): Failure[] {
+  const failures: Failure[] = [];
+
+  for (const session of sessions) {
+    if (session.transactionId === null) continue;
+    if (session.startTime === null || session.endTime === null) continue;
+
+    const durationMs = session.endTime - session.startTime;
+
+    if (durationMs < MIN_SESSION_DURATION_MS) {
+      failures.push({
+        code: 'SUSPICIOUS_SESSION_DURATION',
+        description: `Session ${session.sessionId} (transaction ${session.transactionId}) lasted only ${durationMs}ms — suspiciously short session may indicate aborted start or authorization failure`,
+        severity: SEVERITY.SUSPICIOUS_SESSION_DURATION,
+        eventIds: session.events
+          .filter(
+            (e) =>
+              e.messageType === 'Call' &&
+              (e.action === 'StartTransaction' || e.action === 'StopTransaction'),
+          )
+          .map((e) => e.id),
+        suggestedSteps: SUGGESTED_STEPS.SUSPICIOUS_SESSION_DURATION,
+      });
+    } else if (durationMs > MAX_SESSION_DURATION_MS) {
+      failures.push({
+        code: 'SUSPICIOUS_SESSION_DURATION',
+        description: `Session ${session.sessionId} (transaction ${session.transactionId}) lasted ${Math.round(durationMs / (60 * 60 * 1000))} hours — suspiciously long session may indicate forgotten charging or missing StopTransaction`,
+        severity: SEVERITY.SUSPICIOUS_SESSION_DURATION,
+        eventIds: session.events
+          .filter(
+            (e) =>
+              e.messageType === 'Call' &&
+              (e.action === 'StartTransaction' || e.action === 'StopTransaction'),
+          )
+          .map((e) => e.id),
+        suggestedSteps: SUGGESTED_STEPS.SUSPICIOUS_SESSION_DURATION,
+      });
+    }
+  }
+
+  return failures;
+}
+
+/**
+ * Rule 12: SLOW_RESPONSE
+ * Detects when the gap between a Call and its matching CallResult/CallError
+ * exceeds the threshold (default 10s).
+ */
+function detectSlowResponse(events: Event[]): Failure[] {
+  const failures: Failure[] = [];
+
+  // Build a map of messageId → CallResult/CallError timestamps
+  const responseMap = new Map<string, number>();
+  for (const event of events) {
+    if (
+      (event.messageType === 'CallResult' || event.messageType === 'CallError') &&
+      event.timestamp !== null
+    ) {
+      responseMap.set(event.messageId, event.timestamp);
+    }
+  }
+
+  for (const call of events) {
+    if (call.messageType !== 'Call' || call.timestamp === null) continue;
+
+    const responseTime = responseMap.get(call.messageId);
+    if (responseTime === undefined) continue; // No matching response — handled by UNRESPONSIVE_CSMS
+
+    const gapMs = responseTime - call.timestamp;
+    if (gapMs > SLOW_RESPONSE_THRESHOLD_MS) {
+      failures.push({
+        code: 'SLOW_RESPONSE',
+        description: `Response to ${call.action} (messageId: ${call.messageId}) took ${Math.round(gapMs / 1000)}s — exceeds ${SLOW_RESPONSE_THRESHOLD_MS / 1000}s threshold`,
+        severity: SEVERITY.SLOW_RESPONSE,
+        eventIds: [call.id],
+        suggestedSteps: SUGGESTED_STEPS.SLOW_RESPONSE,
+      });
+    }
+  }
+
+  return failures;
+}
+
+/**
+ * Rule 13: HEARTBEAT_INTERVAL_VIOLATION
+ * Detects when heartbeat intervals deviate >50% from the expected interval
+ * (from BootNotification response, or default 60s).
+ */
+function detectHeartbeatIntervalViolation(events: Event[]): Failure[] {
+  const failures: Failure[] = [];
+
+  // Extract expected heartbeat interval from BootNotification response
+  let expectedIntervalMs = DEFAULT_HEARTBEAT_INTERVAL_MS;
+  const bootIndex = events.findIndex(
+    (e) => e.messageType === 'Call' && e.action === 'BootNotification',
+  );
+  if (bootIndex !== -1) {
+    const bootEvent = events[bootIndex];
+    if (bootEvent) {
+      const bootResponse = events.find(
+        (e) =>
+          e.messageType === 'CallResult' &&
+          e.messageId === bootEvent.messageId &&
+          typeof (e.payload as { interval?: unknown })?.interval === 'number',
+      );
+      if (bootResponse) {
+        const interval = (bootResponse.payload as { interval: number }).interval;
+        expectedIntervalMs = interval * 1000;
+      }
+    }
+  }
+
+  // Collect heartbeat timestamps in order
+  const heartbeatTimestamps = events
+    .filter((e) => e.messageType === 'Call' && e.action === 'Heartbeat' && e.timestamp !== null)
+    .map((e) => ({ id: e.id, timestamp: e.timestamp as number }));
+
+  if (heartbeatTimestamps.length < 2) return failures;
+
+  for (let i = 1; i < heartbeatTimestamps.length; i++) {
+    const prev = heartbeatTimestamps[i - 1];
+    const curr = heartbeatTimestamps[i];
+    if (!prev || !curr) continue;
+
+    const actualGap = curr.timestamp - prev.timestamp;
+    const deviation = Math.abs(actualGap - expectedIntervalMs) / expectedIntervalMs;
+
+    if (deviation > HEARTBEAT_DEVIATION_THRESHOLD) {
+      failures.push({
+        code: 'HEARTBEAT_INTERVAL_VIOLATION',
+        description: `Heartbeat interval deviation: ${Math.round(actualGap / 1000)}s between heartbeats, expected ~${Math.round(expectedIntervalMs / 1000)}s (${Math.round(deviation * 100)}% deviation)`,
+        severity: SEVERITY.HEARTBEAT_INTERVAL_VIOLATION,
+        eventIds: [prev.id, curr.id],
+        suggestedSteps: SUGGESTED_STEPS.HEARTBEAT_INTERVAL_VIOLATION,
+      });
+    }
+  }
+
+  return failures;
+}
+
+/**
+ * Rule 14: METER_VALUE_ANOMALY
+ * Detects non-monotonic (decreasing) or negative meter readings during
+ * an active transaction.
+ */
+function detectMeterValueAnomaly(_events: Event[], sessions: Session[]): Failure[] {
+  const failures: Failure[] = [];
+
+  for (const session of sessions) {
+    if (session.transactionId === null) continue;
+
+    // Collect meter values from MeterValues calls in order
+    const meterEvents = session.events.filter(
+      (e) => e.messageType === 'Call' && e.action === 'MeterValues',
+    );
+
+    if (meterEvents.length === 0) continue;
+
+    // Extract numeric meter values from the payload
+    // OCPP 1.6 MeterValues: { connectorId, transactionId, meterValue: [{ timestamp, sampledValue: [{ value, ... }] }] }
+    const readings: { eventId: string; value: number }[] = [];
+
+    for (const event of meterEvents) {
+      const payload = event.payload as {
+        meterValue?: {
+          sampledValue?: { value?: unknown }[];
+        }[];
+      };
+
+      const meterValues = payload?.meterValue;
+      if (!Array.isArray(meterValues)) continue;
+
+      for (const mv of meterValues) {
+        const sampledValues = mv?.sampledValue;
+        if (!Array.isArray(sampledValues)) continue;
+
+        for (const sv of sampledValues) {
+          const rawValue = sv?.value;
+          if (typeof rawValue === 'string') {
+            const numValue = Number.parseFloat(rawValue);
+            if (!Number.isNaN(numValue)) {
+              readings.push({ eventId: event.id, value: numValue });
+            }
+          } else if (typeof rawValue === 'number') {
+            readings.push({ eventId: event.id, value: rawValue });
+          }
+        }
+      }
+    }
+
+    if (readings.length === 0) continue;
+
+    // Check for negative values
+    for (const reading of readings) {
+      if (reading.value < 0) {
+        failures.push({
+          code: 'METER_VALUE_ANOMALY',
+          description: `Negative meter value detected: ${reading.value} in session ${session.sessionId} (transaction ${session.transactionId})`,
+          severity: SEVERITY.METER_VALUE_ANOMALY,
+          eventIds: [reading.eventId],
+          suggestedSteps: SUGGESTED_STEPS.METER_VALUE_ANOMALY,
+        });
+      }
+    }
+
+    // Check for non-monotonic (decreasing) values
+    for (let i = 1; i < readings.length; i++) {
+      const prev = readings[i - 1];
+      const curr = readings[i];
+      if (!prev || !curr) continue;
+
+      if (curr.value < prev.value) {
+        failures.push({
+          code: 'METER_VALUE_ANOMALY',
+          description: `Non-monotonic meter reading: value decreased from ${prev.value} to ${curr.value} in session ${session.sessionId} (transaction ${session.transactionId})`,
+          severity: SEVERITY.METER_VALUE_ANOMALY,
+          eventIds: [prev.eventId, curr.eventId],
+          suggestedSteps: SUGGESTED_STEPS.METER_VALUE_ANOMALY,
+        });
+      }
+    }
+  }
+
+  return failures;
+}
+
+/**
+ * Rule 15: UNRESPONSIVE_CSMS
+ * Detects Call messages that have no matching CallResult or CallError
+ * (the CSMS never responded).
+ */
+function detectUnresponsiveCsms(events: Event[]): Failure[] {
+  const failures: Failure[] = [];
+
+  // Build a set of messageIds that have responses
+  const respondedMessageIds = new Set<string>();
+  for (const event of events) {
+    if (event.messageType === 'CallResult' || event.messageType === 'CallError') {
+      respondedMessageIds.add(event.messageId);
+    }
+  }
+
+  for (const call of events) {
+    if (call.messageType !== 'Call') continue;
+
+    if (!respondedMessageIds.has(call.messageId)) {
+      failures.push({
+        code: 'UNRESPONSIVE_CSMS',
+        description: `No response received for ${call.action} Call (messageId: ${call.messageId}) — CSMS did not respond with CallResult or CallError`,
+        severity: SEVERITY.UNRESPONSIVE_CSMS,
+        eventIds: [call.id],
+        suggestedSteps: SUGGESTED_STEPS.UNRESPONSIVE_CSMS,
       });
     }
   }
