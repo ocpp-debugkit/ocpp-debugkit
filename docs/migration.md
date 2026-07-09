@@ -233,6 +233,6 @@ convenience.
 
 ## Questions
 
-- Open a [GitHub Issue](https://github.com/ocpp-debugkit/ocpp-debugkit/issues)
+- Open a [GitHub Issue](https://github.com/ocpp-debugkit/toolkit/issues)
 - Read the [ADR](./adr/0010-single-package-consolidation.md) for the rationale
   behind this consolidation

@@ -242,16 +242,16 @@ Each event has a `message` field containing a raw OCPP 1.6 JSON array:
 - **CallResult:** `[3, "UniqueId", { ...payload }]`
 - **CallError:** `[4, "UniqueId", "ErrorCode", "ErrorDescription", {}]`
 
-See the [trace format specification](https://github.com/ocpp-debugkit/ocpp-debugkit/blob/main/docs/trace-format-spec.md) for full details.
+See the [trace format specification](https://github.com/ocpp-debugkit/toolkit/blob/main/docs/trace-format-spec.md) for full details.
 
 ## Links
 
-- [GitHub repository](https://github.com/ocpp-debugkit/ocpp-debugkit)
+- [GitHub repository](https://github.com/ocpp-debugkit/toolkit)
 - [Documentation](https://ocppdebugkit.com/docs)
-- [Migration guide (v0.1 → v0.2)](https://github.com/ocpp-debugkit/ocpp-debugkit/blob/main/docs/migration.md)
-- [Issue tracker](https://github.com/ocpp-debugkit/ocpp-debugkit/issues)
+- [Migration guide (v0.1 → v0.2)](https://github.com/ocpp-debugkit/toolkit/blob/main/docs/migration.md)
+- [Issue tracker](https://github.com/ocpp-debugkit/toolkit/issues)
 - [npm package](https://www.npmjs.com/package/@ocpp-debugkit/toolkit)
 
 ## License
 
-Apache License 2.0 — see [LICENSE](https://github.com/ocpp-debugkit/ocpp-debugkit/blob/main/LICENSE).
+Apache License 2.0 — see [LICENSE](https://github.com/ocpp-debugkit/toolkit/blob/main/LICENSE).

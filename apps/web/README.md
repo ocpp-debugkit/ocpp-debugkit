@@ -1,6 +1,6 @@
 # OCPP DebugKit — Web App
 
-The web front-end for [OCPP DebugKit](https://github.com/ocpp-debugkit/ocpp-debugkit),
+The web front-end for [OCPP DebugKit](https://github.com/ocpp-debugkit/toolkit),
 a DevTools project for debugging OCPP charging session traces.
 
 This is a [Next.js](https://nextjs.org) app (App Router) using Tailwind CSS. It

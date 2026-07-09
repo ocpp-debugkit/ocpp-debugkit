@@ -20,7 +20,7 @@ export default function HomePage() {
             Try Inspector
           </Link>
           <a
-            href="https://github.com/ocpp-debugkit/ocpp-debugkit"
+            href="https://github.com/ocpp-debugkit/toolkit"
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-lg border border-neutral-300 px-6 py-3 text-sm font-medium text-neutral-900 transition hover:bg-neutral-100 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-900"
@@ -121,7 +121,7 @@ ocpp-debugkit scenario run failed-auth`}</code>
           <p className="text-sm text-neutral-500">Apache 2.0 License</p>
           <div className="flex gap-6">
             <a
-              href="https://github.com/ocpp-debugkit/ocpp-debugkit"
+              href="https://github.com/ocpp-debugkit/toolkit"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
