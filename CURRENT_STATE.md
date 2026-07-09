@@ -214,10 +214,10 @@ examples, and contributor onboarding.
 - ✅ Git tag `v0.3.0` + GitHub release `v0.3.0` created
 - ✅ v0.3.0 milestone closed
 
-### v1.0.0 — In Progress
+### Repeated BootNotification Detection (PR #114)
 
-- ✅ Repeated BootNotification detection rule added (Issue #105): `REPEATED_BOOT_NOTIFICATION`
-  flags 2+ BootNotification calls within five minutes.
+- ✅ `REPEATED_BOOT_NOTIFICATION` — flags 2+ BootNotification calls within
+  five minutes. Added as the 16th detection rule (Issue #105).
 
 ## What's Next
 
