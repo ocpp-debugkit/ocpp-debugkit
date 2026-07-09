@@ -171,4 +171,132 @@ describe('CLI integration', () => {
       expect(result.exitCode).not.toBe(0);
     });
   });
+
+  describe('ci', () => {
+    it('runs all scenarios and exits 0 when all pass', async () => {
+      const result = await runCli('ci');
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('CI Mode');
+      expect(result.stdout).toContain('PASS');
+    });
+
+    it('supports --format json', async () => {
+      const result = await runCli('ci', '--format', 'json');
+      expect(result.exitCode).toBe(0);
+      const parsed = JSON.parse(result.stdout);
+      expect(parsed).toHaveProperty('results');
+      expect(parsed).toHaveProperty('allPassed');
+      expect(parsed.allPassed).toBe(true);
+      expect(parsed.results.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('anonymize', () => {
+    it('anonymizes sensitive fields in a trace', async () => {
+      const trace = {
+        events: [
+          {
+            timestamp: '2024-01-15T10:00:00.000Z',
+            message: [
+              2,
+              'msg-001',
+              'BootNotification',
+              {
+                chargePointSerialNumber: 'REAL-SERIAL-001',
+                chargePointVendor: 'VendorX',
+              },
+            ],
+          },
+          {
+            timestamp: '2024-01-15T10:00:01.000Z',
+            message: [2, 'msg-002', 'Authorize', { idTag: 'REAL-TAG-123' }],
+          },
+          {
+            timestamp: '2024-01-15T10:00:02.000Z',
+            message: [2, 'msg-003', 'StartTransaction', { connectorId: 1, idTag: 'REAL-TAG-123' }],
+          },
+          {
+            timestamp: '2024-01-15T10:00:02.500Z',
+            message: [3, 'msg-003', { transactionId: 99999, idTagInfo: { status: 'Accepted' } }],
+          },
+        ],
+      };
+      const filePath = writeTempTrace(trace);
+      const result = await runCli('anonymize', filePath);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).not.toContain('REAL-SERIAL-001');
+      expect(result.stdout).not.toContain('REAL-TAG-123');
+      expect(result.stdout).toContain('anonymized');
+      expect(result.stdout).toContain('station-anon');
+    });
+
+    it('writes to file with --output', async () => {
+      const trace = {
+        events: [
+          {
+            timestamp: '2024-01-15T10:00:00.000Z',
+            message: [2, 'msg-001', 'BootNotification', { chargePointSerialNumber: 'SECRET' }],
+          },
+        ],
+      };
+      const filePath = writeTempTrace(trace);
+      const outputPath = join(mkdtempSync(join(tmpdir(), 'ocpp-out-')), 'anon.json');
+      const result = await runCli('anonymize', filePath, '--output', outputPath);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Anonymized trace written to');
+    });
+  });
+
+  describe('diff', () => {
+    it('shows differences between two traces', async () => {
+      const traceA = {
+        events: [
+          {
+            timestamp: '2024-01-15T10:00:00.000Z',
+            message: [2, 'msg-001', 'BootNotification', { chargePointSerialNumber: 'CS-001' }],
+          },
+          {
+            timestamp: '2024-01-15T10:00:00.500Z',
+            message: [3, 'msg-001', { status: 'Accepted', interval: 60 }],
+          },
+        ],
+      };
+      const traceB = {
+        events: [
+          {
+            timestamp: '2024-01-15T10:00:00.000Z',
+            message: [2, 'msg-001', 'BootNotification', { chargePointSerialNumber: 'CS-001' }],
+          },
+          {
+            timestamp: '2024-01-15T10:00:01.500Z',
+            message: [3, 'msg-001', { status: 'Accepted', interval: 60 }],
+          },
+        ],
+      };
+      const fileA = writeTempTrace(traceA);
+      const fileB = writeTempTrace(traceB);
+      const result = await runCli('diff', fileA, fileB);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Trace Diff');
+      expect(result.stdout).toContain('Modified events');
+    });
+
+    it('supports --format json', async () => {
+      const traceA = {
+        events: [
+          { timestamp: '2024-01-15T10:00:00.000Z', message: [2, 'ma1', 'BootNotification', {}] },
+        ],
+      };
+      const traceB = {
+        events: [{ timestamp: '2024-01-15T10:00:00.000Z', message: [2, 'mb1', 'Heartbeat', {}] }],
+      };
+      const fileA = writeTempTrace(traceA);
+      const fileB = writeTempTrace(traceB);
+      const result = await runCli('diff', fileA, fileB, '--format', 'json');
+      expect(result.exitCode).toBe(0);
+      const parsed = JSON.parse(result.stdout);
+      expect(parsed).toHaveProperty('onlyInA');
+      expect(parsed).toHaveProperty('onlyInB');
+    });
+  });
 });

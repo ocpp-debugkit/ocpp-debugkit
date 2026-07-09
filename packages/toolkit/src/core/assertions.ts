@@ -411,9 +411,9 @@ export function evaluateScenario(scenario: Scenario): ScenarioEvalResult {
   const { events } = parseTrace(JSON.stringify(scenario.trace));
   const sessions = buildSessionTimeline(events);
   const failures = detectFailures(events, sessions);
-  const detectedFailureCodes = failures.map((f) => f.code);
+  const detectedFailureCodes = [...new Set(failures.map((f) => f.code))];
 
-  // Compare detected vs expected failures
+  // Compare detected vs expected failures (deduplicated)
   const sortedDetected = [...detectedFailureCodes].sort();
   const sortedExpected = [...scenario.expectedFailures].sort();
   const expectedFailuresPassed = JSON.stringify(sortedDetected) === JSON.stringify(sortedExpected);

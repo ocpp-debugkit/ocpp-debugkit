@@ -55,7 +55,7 @@ export default {
   assertions: [
     {
       type: 'timing',
-      params: { actionA: 'BootNotification', actionB: 'Heartbeat', maxGapMs: 5000 },
+      params: { actionA: 'BootNotification', actionB: 'Heartbeat', minGapMs: 5000 },
     },
   ],
 };

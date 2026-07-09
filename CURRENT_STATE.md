@@ -203,6 +203,7 @@ integration examples, and contributor onboarding.
 - ✅ Trace diffing — `diffTraces()` API (Issue #85)
 - ✅ Rich scenario assertions — 8 assertion types, `evaluateScenario()` (Issue #86)
 - ✅ Assert-based scenarios — 5 new scenarios (15 total) + `compareScenarioReports()` (Issue #87)
+- ✅ CLI: ci + anonymize + diff commands (Issue #88)
 
 ## What's Next
 

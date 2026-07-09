@@ -12,6 +12,9 @@ import {
   scenarioRunCommand,
   scenarioRunFileCommand,
 } from './commands/scenario.js';
+import { ciCommand } from './commands/ci.js';
+import { anonymizeCommand } from './commands/anonymize.js';
+import { diffCommand } from './commands/diff.js';
 
 const program = new Command();
 
@@ -61,6 +64,33 @@ scenarioCmd
     } else {
       throw new Error('Either a scenario name or --file <path> is required.');
     }
+  });
+
+// ci
+program
+  .command('ci [dir]')
+  .description('Run all scenarios and exit 0 (all pass) or 1 (any fail)')
+  .option('--format <format>', 'Output format (text, json)', 'text')
+  .action(async (dir: string | undefined, options: { format: string }) => {
+    await ciCommand(dir, options);
+  });
+
+// anonymize
+program
+  .command('anonymize <file>')
+  .description('Strip sensitive fields from a trace file')
+  .option('-o, --output <file>', 'Write anonymized trace to file (default: stdout)')
+  .action(async (file: string, options: { output?: string }) => {
+    await anonymizeCommand(file, options);
+  });
+
+// diff
+program
+  .command('diff <a> <b>')
+  .description('Compare two trace files and show differences')
+  .option('--format <format>', 'Output format (text, json)', 'text')
+  .action(async (fileA: string, fileB: string, options: { format: string }) => {
+    await diffCommand(fileA, fileB, options);
   });
 
 program.parse();
