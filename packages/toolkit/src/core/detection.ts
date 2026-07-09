@@ -1,7 +1,7 @@
 /**
  * Failure detection — analyzes events and sessions for known failure patterns.
  *
- * 15 detection rules (v0.1 + v0.2 + v0.3):
+ * 16 detection rules (v0.1 + v0.2 + v0.3):
  *
  * v0.1:
  * 1. FAILED_AUTHORIZATION — Authorize response with idTagInfo.status = "Invalid"
@@ -23,6 +23,7 @@
  * 13. HEARTBEAT_INTERVAL_VIOLATION — heartbeat intervals deviate >50% from expected
  * 14. METER_VALUE_ANOMALY — non-monotonic or negative meter readings
  * 15. UNRESPONSIVE_CSMS — Call with no matching CallResult or CallError
+ * 16. REPEATED_BOOT_NOTIFICATION — 2+ BootNotification calls within 5 minutes
  *
  * @see ADR-0003
  */
@@ -134,6 +135,13 @@ const SUGGESTED_STEPS: Record<FailureCode, string[]> = {
     'Check if the CSMS crashed or restarted during the session',
     'Inspect the network path between station and CSMS for packet loss',
   ],
+  REPEATED_BOOT_NOTIFICATION: [
+    'Check whether the station rebooted unexpectedly',
+    'Review station power and network stability during the boot window',
+    'Inspect station firmware logs for watchdog resets or startup failures',
+    'Verify the CSMS accepts the BootNotification and returns a valid interval',
+    'Contact the station vendor if repeated boots persist',
+  ],
 };
 
 const SEVERITY: Record<FailureCode, FailureSeverity> = {
@@ -152,6 +160,7 @@ const SEVERITY: Record<FailureCode, FailureSeverity> = {
   HEARTBEAT_INTERVAL_VIOLATION: 'info',
   METER_VALUE_ANOMALY: 'warning',
   UNRESPONSIVE_CSMS: 'critical',
+  REPEATED_BOOT_NOTIFICATION: 'warning',
 };
 
 // ---------------------------------------------------------------------------
@@ -380,6 +389,7 @@ export function detectFailures(events: Event[], sessions: Session[]): Failure[] 
   failures.push(...detectHeartbeatIntervalViolation(events));
   failures.push(...detectMeterValueAnomaly(events, sessions));
   failures.push(...detectUnresponsiveCsms(events));
+  failures.push(...detectRepeatedBootNotification(events));
 
   return failures;
 }
@@ -725,6 +735,9 @@ const SLOW_RESPONSE_THRESHOLD_MS = 10_000;
 /** Deviation threshold for heartbeat interval violation: 50%. */
 const HEARTBEAT_DEVIATION_THRESHOLD = 0.5;
 
+/** Time window for repeated BootNotification calls: 5 minutes. */
+const REPEATED_BOOT_NOTIFICATION_WINDOW_MS = 5 * 60 * 1000;
+
 /**
  * Rule 11: SUSPICIOUS_SESSION_DURATION
  * Detects sessions that are suspiciously short (< 60s) or long (> 24h).
@@ -983,6 +996,66 @@ function detectUnresponsiveCsms(events: Event[]): Failure[] {
         eventIds: [call.id],
         suggestedSteps: SUGGESTED_STEPS.UNRESPONSIVE_CSMS,
       });
+    }
+  }
+
+  return failures;
+}
+
+/**
+ * Rule 16: REPEATED_BOOT_NOTIFICATION
+ * Detects when a station sends 2+ BootNotification Calls within 5 minutes.
+ */
+function detectRepeatedBootNotification(events: Event[]): Failure[] {
+  const failures: Failure[] = [];
+
+  const bootEvents = events
+    .filter(
+      (event) =>
+        event.messageType === 'Call' &&
+        event.action === 'BootNotification' &&
+        event.timestamp !== null,
+    )
+    .sort((a, b) => (a.timestamp as number) - (b.timestamp as number));
+
+  for (let i = 0; i < bootEvents.length; i++) {
+    const firstBoot = bootEvents[i];
+    if (!firstBoot || firstBoot.timestamp === null) continue;
+
+    const repeatedBoots = [firstBoot];
+    let j = i + 1;
+
+    while (j < bootEvents.length) {
+      const nextBoot = bootEvents[j];
+      if (!nextBoot || nextBoot.timestamp === null) {
+        j++;
+        continue;
+      }
+
+      if (nextBoot.timestamp - firstBoot.timestamp > REPEATED_BOOT_NOTIFICATION_WINDOW_MS) {
+        break;
+      }
+
+      repeatedBoots.push(nextBoot);
+      j++;
+    }
+
+    if (repeatedBoots.length >= 2) {
+      const windowSeconds = Math.round(
+        ((repeatedBoots[repeatedBoots.length - 1]?.timestamp ?? firstBoot.timestamp) -
+          firstBoot.timestamp) /
+          1000,
+      );
+
+      failures.push({
+        code: 'REPEATED_BOOT_NOTIFICATION',
+        description: `${repeatedBoots.length} BootNotification calls detected within ${windowSeconds}s — station may be rebooting repeatedly or failing startup`,
+        severity: SEVERITY.REPEATED_BOOT_NOTIFICATION,
+        eventIds: repeatedBoots.map((event) => event.id),
+        suggestedSteps: SUGGESTED_STEPS.REPEATED_BOOT_NOTIFICATION,
+      });
+
+      i = j - 1;
     }
   }
 

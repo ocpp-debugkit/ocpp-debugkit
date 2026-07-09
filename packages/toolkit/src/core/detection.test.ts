@@ -1513,4 +1513,141 @@ describe('detectFailures', () => {
       expect(failures.some((f) => f.code === 'UNRESPONSIVE_CSMS')).toBe(false);
     });
   });
+
+  describe('REPEATED_BOOT_NOTIFICATION', () => {
+    it('detects multiple BootNotification calls within 5 minutes', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-SYNTHETIC-001' },
+          0,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e3',
+          'm2',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-SYNTHETIC-001' },
+          4 * 60 * 1000,
+        ),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          4 * 60 * 1000 + 500,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+      const repeatedBootFailures = failures.filter(
+        (failure) => failure.code === 'REPEATED_BOOT_NOTIFICATION',
+      );
+
+      expect(repeatedBootFailures).toHaveLength(1);
+      expect(repeatedBootFailures[0]?.severity).toBe('warning');
+      expect(repeatedBootFailures[0]?.eventIds).toEqual(['e1', 'e3']);
+      expect(repeatedBootFailures[0]?.suggestedSteps.length).toBeGreaterThan(0);
+    });
+
+    it('does not flag BootNotification calls more than 5 minutes apart', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-SYNTHETIC-001' },
+          0,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          500,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e3',
+          'm2',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-SYNTHETIC-001' },
+          5 * 60 * 1000 + 1,
+        ),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          5 * 60 * 1000 + 501,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+
+      expect(failures.some((failure) => failure.code === 'REPEATED_BOOT_NOTIFICATION')).toBe(false);
+    });
+
+    it('does not flag repeated BootNotification calls without timestamps', () => {
+      const events = [
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-SYNTHETIC-001' },
+          null,
+        ),
+        makeEvent(
+          'e2',
+          'm1',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          null,
+          'CSMS_TO_CS',
+        ),
+        makeEvent(
+          'e3',
+          'm2',
+          'Call',
+          'BootNotification',
+          { chargePointSerialNumber: 'CS-SYNTHETIC-001' },
+          null,
+        ),
+        makeEvent(
+          'e4',
+          'm2',
+          'CallResult',
+          null,
+          { status: 'Accepted', interval: 60 },
+          null,
+          'CSMS_TO_CS',
+        ),
+      ];
+      const sessions = buildSessionTimeline(events);
+      const failures = detectFailures(events, sessions);
+
+      expect(failures.some((failure) => failure.code === 'REPEATED_BOOT_NOTIFICATION')).toBe(false);
+    });
+  });
 });
