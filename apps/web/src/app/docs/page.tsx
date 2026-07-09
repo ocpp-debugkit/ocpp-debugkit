@@ -27,6 +27,21 @@ export default function DocsPage() {
         <li>
           <Link href="/docs/scenarios">Scenarios</Link> — Predefined test scenarios
         </li>
+        <li>
+          <Link href="/docs/trace-diffing">Trace Diffing</Link> — Compare two traces
+        </li>
+        <li>
+          <Link href="/docs/scenario-assertions">Scenario Assertions</Link> — Rich assertion format
+        </li>
+        <li>
+          <Link href="/docs/ci-mode">CI Mode</Link> — Run scenario tests in CI pipelines
+        </li>
+        <li>
+          <Link href="/docs/anonymize">Anonymize</Link> — Strip sensitive fields from traces
+        </li>
+        <li>
+          <Link href="/docs/examples">Examples</Link> — Integration examples
+        </li>
       </ul>
     </div>
   );

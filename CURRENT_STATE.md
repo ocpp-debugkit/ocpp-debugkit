@@ -206,6 +206,7 @@ integration examples, and contributor onboarding.
 - ✅ CLI: ci + anonymize + diff commands (Issue #88)
 - ✅ Integration examples — 4 example projects (Issue #89)
 - ✅ Contribution guide + 5 good-first-issues (Issue #90)
+- ✅ v0.3 docs content — 5 new + 3 updated docs pages (Issue #91)
 
 ## What's Next
 

@@ -67,6 +67,72 @@ export default function CliReferencePage() {
         analysis engine only. It is not active endpoint testing, WebSocket simulation, or live
         station/CSMS testing.
       </p>
+      <h3>External Scenario Files</h3>
+      <p>Load and run an external scenario file (JSON format) instead of a built-in scenario:</p>
+      <pre>
+        <code>{`ocpp-debugkit scenario run --file ./my-scenario.json`}</code>
+      </pre>
+
+      <h2>ci</h2>
+      <p>
+        Run all built-in scenarios (and optional external scenario files from a directory), exit 0
+        if all pass, 1 if any fail. Designed for CI/CD pipelines.
+      </p>
+      <pre>
+        <code>{`ocpp-debugkit ci [dir] [options]`}</code>
+      </pre>
+      <h3>Options</h3>
+      <ul>
+        <li>
+          <code>--format &lt;format&gt;</code> — Output format: text (default) or json
+        </li>
+      </ul>
+      <p>Examples:</p>
+      <pre>
+        <code>{`# Run all built-in scenarios
+ocpp-debugkit ci
+
+# Also run external scenarios from a directory
+ocpp-debugkit ci ./scenarios
+
+# JSON output for CI tooling
+ocpp-debugkit ci --format json`}</code>
+      </pre>
+
+      <h2>anonymize</h2>
+      <p>
+        Strip sensitive fields from a trace file. Anonymizes idTag, chargePointSerialNumber,
+        stationId, transactionId, and email/phone/IP patterns.
+      </p>
+      <pre>
+        <code>{`ocpp-debugkit anonymize <file> [options]`}</code>
+      </pre>
+      <h3>Options</h3>
+      <ul>
+        <li>
+          <code>-o, --output &lt;file&gt;</code> — Write anonymized trace to file (default: stdout)
+        </li>
+      </ul>
+      <p>Example:</p>
+      <pre>
+        <code>{`ocpp-debugkit anonymize trace.json -o trace-anon.json`}</code>
+      </pre>
+
+      <h2>diff</h2>
+      <p>Compare two trace files and show differences in events, failures, and summaries.</p>
+      <pre>
+        <code>{`ocpp-debugkit diff <a> <b> [options]`}</code>
+      </pre>
+      <h3>Options</h3>
+      <ul>
+        <li>
+          <code>--format &lt;format&gt;</code> — Output format: text (default) or json
+        </li>
+      </ul>
+      <p>Example:</p>
+      <pre>
+        <code>{`ocpp-debugkit diff trace-a.json trace-b.json`}</code>
+      </pre>
 
       <h2>Global Options</h2>
       <ul>
