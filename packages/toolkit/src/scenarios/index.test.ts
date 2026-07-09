@@ -13,6 +13,11 @@ import {
   unexpectedStartScenario,
   statusTransitionViolationScenario,
   diagnosticsFailureScenario,
+  slowCsmsResponseScenario,
+  meterAnomalyScenario,
+  shortSessionScenario,
+  heartbeatIrregularScenario,
+  unresponsiveCsmsScenario,
 } from './index.js';
 import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.js';
 
@@ -21,8 +26,8 @@ import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.
 // ---------------------------------------------------------------------------
 
 describe('scenario registry', () => {
-  it('exports exactly 10 scenarios', () => {
-    expect(scenarios).toHaveLength(10);
+  it('exports exactly 15 scenarios', () => {
+    expect(scenarios).toHaveLength(15);
   });
 
   it('exports scenario names in order', () => {
@@ -37,6 +42,11 @@ describe('scenario registry', () => {
       'unexpected-start',
       'status-transition-violation',
       'diagnostics-failure',
+      'slow-csms-response',
+      'meter-anomaly',
+      'short-session',
+      'heartbeat-irregular',
+      'unresponsive-csms',
     ]);
   });
 
@@ -60,6 +70,11 @@ describe('scenario registry', () => {
     expect(getScenario('unexpected-start')).toBe(unexpectedStartScenario);
     expect(getScenario('status-transition-violation')).toBe(statusTransitionViolationScenario);
     expect(getScenario('diagnostics-failure')).toBe(diagnosticsFailureScenario);
+    expect(getScenario('slow-csms-response')).toBe(slowCsmsResponseScenario);
+    expect(getScenario('meter-anomaly')).toBe(meterAnomalyScenario);
+    expect(getScenario('short-session')).toBe(shortSessionScenario);
+    expect(getScenario('heartbeat-irregular')).toBe(heartbeatIrregularScenario);
+    expect(getScenario('unresponsive-csms')).toBe(unresponsiveCsmsScenario);
   });
 
   it('getScenario returns undefined for unknown name', () => {
@@ -83,6 +98,11 @@ describe('expectedFailures alignment with detection rules', () => {
     'STATUS_TRANSITION_VIOLATION',
     'DIAGNOSTICS_FAILURE',
     'FIRMWARE_UPDATE_FAILURE',
+    'SUSPICIOUS_SESSION_DURATION',
+    'SLOW_RESPONSE',
+    'HEARTBEAT_INTERVAL_VIOLATION',
+    'METER_VALUE_ANOMALY',
+    'UNRESPONSIVE_CSMS',
   ]);
 
   it('all expectedFailures reference valid failure codes', () => {

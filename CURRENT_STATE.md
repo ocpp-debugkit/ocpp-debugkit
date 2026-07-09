@@ -202,6 +202,7 @@ integration examples, and contributor onboarding.
   `METER_VALUE_ANOMALY`, `UNRESPONSIVE_CSMS` (15 total rules)
 - ✅ Trace diffing — `diffTraces()` API (Issue #85)
 - ✅ Rich scenario assertions — 8 assertion types, `evaluateScenario()` (Issue #86)
+- ✅ Assert-based scenarios — 5 new scenarios (15 total) + `compareScenarioReports()` (Issue #87)
 
 ## What's Next
 

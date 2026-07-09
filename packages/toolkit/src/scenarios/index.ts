@@ -15,6 +15,11 @@ import invalidStopReason from './__scenarios__/invalid-stop-reason.js';
 import unexpectedStart from './__scenarios__/unexpected-start.js';
 import statusTransitionViolation from './__scenarios__/status-transition-violation.js';
 import diagnosticsFailure from './__scenarios__/diagnostics-failure.js';
+import slowCsmsResponse from './__scenarios__/slow-csms-response.js';
+import meterAnomaly from './__scenarios__/meter-anomaly.js';
+import shortSession from './__scenarios__/short-session.js';
+import heartbeatIrregular from './__scenarios__/heartbeat-irregular.js';
+import unresponsiveCsms from './__scenarios__/unresponsive-csms.js';
 
 // ---------------------------------------------------------------------------
 // Scenarios derived from core fixtures
@@ -56,6 +61,11 @@ const unexpectedStartScenario: Scenario = unexpectedStart as unknown as Scenario
 const statusTransitionViolationScenario: Scenario =
   statusTransitionViolation as unknown as Scenario;
 const diagnosticsFailureScenario: Scenario = diagnosticsFailure as unknown as Scenario;
+const slowCsmsResponseScenario: Scenario = slowCsmsResponse as unknown as Scenario;
+const meterAnomalyScenario: Scenario = meterAnomaly as unknown as Scenario;
+const shortSessionScenario: Scenario = shortSession as unknown as Scenario;
+const heartbeatIrregularScenario: Scenario = heartbeatIrregular as unknown as Scenario;
+const unresponsiveCsmsScenario: Scenario = unresponsiveCsms as unknown as Scenario;
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -72,6 +82,11 @@ export const scenarios = [
   unexpectedStartScenario,
   statusTransitionViolationScenario,
   diagnosticsFailureScenario,
+  slowCsmsResponseScenario,
+  meterAnomalyScenario,
+  shortSessionScenario,
+  heartbeatIrregularScenario,
+  unresponsiveCsmsScenario,
 ] as const;
 
 export const scenarioNames = [
@@ -85,6 +100,11 @@ export const scenarioNames = [
   'unexpected-start',
   'status-transition-violation',
   'diagnostics-failure',
+  'slow-csms-response',
+  'meter-anomaly',
+  'short-session',
+  'heartbeat-irregular',
+  'unresponsive-csms',
 ] as const;
 
 export {
@@ -98,7 +118,15 @@ export {
   unexpectedStartScenario,
   statusTransitionViolationScenario,
   diagnosticsFailureScenario,
+  slowCsmsResponseScenario,
+  meterAnomalyScenario,
+  shortSessionScenario,
+  heartbeatIrregularScenario,
+  unresponsiveCsmsScenario,
 };
+
+export { compareScenarioReports } from './compare.js';
+export type { ScenarioComparison } from './compare.js';
 
 /**
  * Get a scenario by name.
