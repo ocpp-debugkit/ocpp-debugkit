@@ -200,6 +200,7 @@ integration examples, and contributor onboarding.
 - ✅ v0.3 failure detection rules — 5 new rules (Issue #84):
   `SUSPICIOUS_SESSION_DURATION`, `SLOW_RESPONSE`, `HEARTBEAT_INTERVAL_VIOLATION`,
   `METER_VALUE_ANOMALY`, `UNRESPONSIVE_CSMS` (15 total rules)
+- ✅ Trace diffing — `diffTraces()` API (Issue #85)
 
 ## What's Next
 

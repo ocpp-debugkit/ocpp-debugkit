@@ -37,5 +37,9 @@ export { summarizeSession, summarizeSessions } from './summarizer.js';
 // Validator
 export { validateMessage, validateMessages } from './validator.js';
 
+// Diff
+export { diffTraces } from './diff.js';
+export type { TraceDiff, EventDiff, SummaryDiff } from './diff.js';
+
 // Fixtures
 export * from './fixtures/index.js';

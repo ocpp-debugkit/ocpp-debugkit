@@ -38,6 +38,7 @@ export { buildSessionTimeline } from './core/index.js';
 export { detectFailures } from './core/index.js';
 export { summarizeSession, summarizeSessions } from './core/index.js';
 export { validateMessage, validateMessages } from './core/index.js';
+export { diffTraces } from './core/index.js';
 
 // Re-export core types and schemas
 export type {
@@ -57,6 +58,9 @@ export type {
   TraceMetadata,
   ParseWarning,
   ParseResult,
+  TraceDiff,
+  EventDiff,
+  SummaryDiff,
 } from './core/index.js';
 
 // Re-export schemas
