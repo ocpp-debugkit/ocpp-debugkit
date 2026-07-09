@@ -201,6 +201,7 @@ integration examples, and contributor onboarding.
   `SUSPICIOUS_SESSION_DURATION`, `SLOW_RESPONSE`, `HEARTBEAT_INTERVAL_VIOLATION`,
   `METER_VALUE_ANOMALY`, `UNRESPONSIVE_CSMS` (15 total rules)
 - ✅ Trace diffing — `diffTraces()` API (Issue #85)
+- ✅ Rich scenario assertions — 8 assertion types, `evaluateScenario()` (Issue #86)
 
 ## What's Next
 

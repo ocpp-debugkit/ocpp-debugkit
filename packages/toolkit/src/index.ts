@@ -39,6 +39,7 @@ export { detectFailures } from './core/index.js';
 export { summarizeSession, summarizeSessions } from './core/index.js';
 export { validateMessage, validateMessages } from './core/index.js';
 export { diffTraces } from './core/index.js';
+export { runAssertions, evaluateScenario } from './core/index.js';
 
 // Re-export core types and schemas
 export type {
@@ -61,6 +62,9 @@ export type {
   TraceDiff,
   EventDiff,
   SummaryDiff,
+  ScenarioAssertion,
+  AssertionResult,
+  ScenarioEvalResult,
 } from './core/index.js';
 
 // Re-export schemas
