@@ -103,6 +103,7 @@ describe('expectedFailures alignment with detection rules', () => {
     'HEARTBEAT_INTERVAL_VIOLATION',
     'METER_VALUE_ANOMALY',
     'UNRESPONSIVE_CSMS',
+    'REPEATED_BOOT_NOTIFICATION',
   ]);
 
   it('all expectedFailures reference valid failure codes', () => {

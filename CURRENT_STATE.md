@@ -214,6 +214,11 @@ examples, and contributor onboarding.
 - ✅ Git tag `v0.3.0` + GitHub release `v0.3.0` created
 - ✅ v0.3.0 milestone closed
 
+### v1.0.0 — In Progress
+
+- ✅ Repeated BootNotification detection rule added (Issue #105): `REPEATED_BOOT_NOTIFICATION`
+  flags 2+ BootNotification calls within five minutes.
+
 ## What's Next
 
 1. **v1.0.0 — Stable FOSS Ecosystem** — API stabilization, 20+ scenarios, docs

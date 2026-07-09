@@ -167,7 +167,8 @@ export type FailureCode =
   | 'SLOW_RESPONSE'
   | 'HEARTBEAT_INTERVAL_VIOLATION'
   | 'METER_VALUE_ANOMALY'
-  | 'UNRESPONSIVE_CSMS';
+  | 'UNRESPONSIVE_CSMS'
+  | 'REPEATED_BOOT_NOTIFICATION';
 
 /**
  * A detected failure in a trace.
