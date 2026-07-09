@@ -91,7 +91,7 @@ export default {
         message: [3, 'msg-003', {}],
       },
       {
-        timestamp: '2024-01-15T22:00:30.000Z',
+        timestamp: '2024-01-15T22:01:30.000Z',
         direction: 'CS_TO_CSMS',
         message: [
           2,
@@ -101,13 +101,13 @@ export default {
             transactionId: 100008,
             idTag: 'SYNTHETIC-TAG-008',
             meterStop: 100,
-            timestamp: '2024-01-15T22:00:30.000Z',
+            timestamp: '2024-01-15T22:01:30.000Z',
             reason: 'EVDisconnected',
           },
         ],
       },
       {
-        timestamp: '2024-01-15T22:00:30.500Z',
+        timestamp: '2024-01-15T22:01:30.500Z',
         direction: 'CSMS_TO_CS',
         message: [
           3,
