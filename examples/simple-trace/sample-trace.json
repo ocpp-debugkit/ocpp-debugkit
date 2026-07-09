@@ -1,0 +1,119 @@
+{
+  "traceId": "example-simple-trace",
+  "metadata": {
+    "stationId": "CS-EXAMPLE-001",
+    "ocppVersion": "1.6",
+    "source": "synthetic-example",
+    "description": "Synthetic trace for the simple-trace example."
+  },
+  "events": [
+    {
+      "timestamp": "2024-01-15T10:00:00.000Z",
+      "direction": "CS_TO_CSMS",
+      "message": [
+        2,
+        "msg-001",
+        "BootNotification",
+        {
+          "chargePointVendor": "ExampleVendor",
+          "chargePointModel": "EX-100",
+          "chargePointSerialNumber": "CS-EXAMPLE-001",
+          "firmwareVersion": "1.0.0"
+        }
+      ]
+    },
+    {
+      "timestamp": "2024-01-15T10:00:00.500Z",
+      "direction": "CSMS_TO_CS",
+      "message": [
+        3,
+        "msg-001",
+        { "currentTime": "2024-01-15T10:00:00.500Z", "interval": 300, "status": "Accepted" }
+      ]
+    },
+    {
+      "timestamp": "2024-01-15T10:01:00.000Z",
+      "direction": "CS_TO_CSMS",
+      "message": [2, "msg-002", "Authorize", { "idTag": "EXAMPLE-TAG-001" }]
+    },
+    {
+      "timestamp": "2024-01-15T10:01:00.500Z",
+      "direction": "CSMS_TO_CS",
+      "message": [
+        3,
+        "msg-002",
+        { "idTagInfo": { "status": "Accepted", "expiryDate": "2024-12-31T23:59:59.000Z" } }
+      ]
+    },
+    {
+      "timestamp": "2024-01-15T10:02:00.000Z",
+      "direction": "CS_TO_CSMS",
+      "message": [
+        2,
+        "msg-003",
+        "StartTransaction",
+        {
+          "connectorId": 1,
+          "idTag": "EXAMPLE-TAG-001",
+          "meterStart": 0,
+          "timestamp": "2024-01-15T10:02:00.000Z"
+        }
+      ]
+    },
+    {
+      "timestamp": "2024-01-15T10:02:00.500Z",
+      "direction": "CSMS_TO_CS",
+      "message": [3, "msg-003", { "transactionId": 200001, "idTagInfo": { "status": "Accepted" } }]
+    },
+    {
+      "timestamp": "2024-01-15T10:03:00.000Z",
+      "direction": "CS_TO_CSMS",
+      "message": [
+        2,
+        "msg-004",
+        "MeterValues",
+        {
+          "connectorId": 1,
+          "transactionId": 200001,
+          "meterValue": [{ "sampledValue": [{ "value": "5000" }] }]
+        }
+      ]
+    },
+    {
+      "timestamp": "2024-01-15T10:03:00.500Z",
+      "direction": "CSMS_TO_CS",
+      "message": [3, "msg-004", {}]
+    },
+    {
+      "timestamp": "2024-01-15T10:05:00.000Z",
+      "direction": "CS_TO_CSMS",
+      "message": [2, "msg-005", "Heartbeat", {}]
+    },
+    {
+      "timestamp": "2024-01-15T10:05:00.500Z",
+      "direction": "CSMS_TO_CS",
+      "message": [3, "msg-005", { "currentTime": "2024-01-15T10:05:00.500Z" }]
+    },
+    {
+      "timestamp": "2024-01-15T10:30:00.000Z",
+      "direction": "CS_TO_CSMS",
+      "message": [
+        2,
+        "msg-006",
+        "StopTransaction",
+        {
+          "transactionId": 200001,
+          "idTag": "EXAMPLE-TAG-001",
+          "meterStop": 5000,
+          "timestamp": "2024-01-15T10:30:00.000Z",
+          "reason": "EVDisconnected"
+        }
+      ]
+    },
+    {
+      "timestamp": "2024-01-15T10:30:00.500Z",
+      "direction": "CSMS_TO_CS",
+      "message": [3, "msg-006", { "idTagInfo": { "status": "Accepted" } }]
+    }
+  ]
+}

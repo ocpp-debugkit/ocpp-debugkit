@@ -114,6 +114,14 @@ import { generateMarkdownReport } from '@ocpp-debugkit/toolkit/reporter';
 See the [Migration Guide](./docs/migration.md) if you are upgrading from the
 old multi-package layout.
 
+### Examples
+
+See the [`examples/`](./examples/) directory for integration examples:
+- `simple-trace/` — Parse, detect, and report
+- `simple-csms/` — CSMS validation mock
+- `simulator-output/` — JSONL processing + HTML report
+- `ci-example/` — GitHub Actions CI integration
+
 ### Web App
 
 Visit [ocppdebugkit.com/inspector](https://ocppdebugkit.com/inspector) to

@@ -204,6 +204,7 @@ integration examples, and contributor onboarding.
 - ✅ Rich scenario assertions — 8 assertion types, `evaluateScenario()` (Issue #86)
 - ✅ Assert-based scenarios — 5 new scenarios (15 total) + `compareScenarioReports()` (Issue #87)
 - ✅ CLI: ci + anonymize + diff commands (Issue #88)
+- ✅ Integration examples — 4 example projects (Issue #89)
 
 ## What's Next
 

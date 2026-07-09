@@ -1,0 +1,14 @@
+{"timestamp":"2024-01-15T06:00:00.000Z","direction":"CS_TO_CSMS","message":[2,"sim-001","BootNotification",{"chargePointVendor":"SimVendor","chargePointModel":"SIM-200","chargePointSerialNumber":"CS-SIM-001"}]}
+{"timestamp":"2024-01-15T06:00:00.500Z","direction":"CSMS_TO_CS","message":[3,"sim-001",{"status":"Accepted","interval":60,"currentTime":"2024-01-15T06:00:00.500Z"}]}
+{"timestamp":"2024-01-15T06:01:00.000Z","direction":"CS_TO_CSMS","message":[2,"sim-002","Heartbeat",{}]}
+{"timestamp":"2024-01-15T06:01:00.500Z","direction":"CSMS_TO_CS","message":[3,"sim-002",{"currentTime":"2024-01-15T06:01:00.500Z"}]}
+{"timestamp":"2024-01-15T06:02:00.000Z","direction":"CS_TO_CSMS","message":[2,"sim-003","Authorize",{"idTag":"SIM-TAG-001"}]}
+{"timestamp":"2024-01-15T06:02:00.500Z","direction":"CSMS_TO_CS","message":[3,"sim-003",{"idTagInfo":{"status":"Accepted"}}]}
+{"timestamp":"2024-01-15T06:03:00.000Z","direction":"CS_TO_CSMS","message":[2,"sim-004","StartTransaction",{"connectorId":1,"idTag":"SIM-TAG-001","meterStart":0}]}
+{"timestamp":"2024-01-15T06:03:00.500Z","direction":"CSMS_TO_CS","message":[3,"sim-004",{"idTagInfo":{"status":"Accepted"},"transactionId":300001}]}
+{"timestamp":"2024-01-15T06:05:00.000Z","direction":"CS_TO_CSMS","message":[2,"sim-005","MeterValues",{"connectorId":1,"transactionId":300001,"meterValue":[{"sampledValue":[{"value":"2500"}]}]}]}
+{"timestamp":"2024-01-15T06:05:00.500Z","direction":"CSMS_TO_CS","message":[3,"sim-005",{}]}
+{"timestamp":"2024-01-15T06:06:00.000Z","direction":"CS_TO_CSMS","message":[2,"sim-006","Heartbeat",{}]}
+{"timestamp":"2024-01-15T06:06:00.500Z","direction":"CSMS_TO_CS","message":[3,"sim-006",{"currentTime":"2024-01-15T06:06:00.500Z"}]}
+{"timestamp":"2024-01-15T06:20:00.000Z","direction":"CS_TO_CSMS","message":[2,"sim-007","StopTransaction",{"transactionId":300001,"idTag":"SIM-TAG-001","meterStop":2500,"reason":"EVDisconnected"}]}
+{"timestamp":"2024-01-15T06:20:00.500Z","direction":"CSMS_TO_CS","message":[3,"sim-007",{"idTagInfo":{"status":"Accepted"}}]}

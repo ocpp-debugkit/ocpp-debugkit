@@ -1,0 +1,38 @@
+{
+  "name": "example-fail",
+  "description": "Example scenario that detects a failed authorization.",
+  "trace": {
+    "traceId": "ci-example-fail",
+    "metadata": {
+      "stationId": "CS-CI-EXAMPLE-002",
+      "ocppVersion": "1.6",
+      "source": "synthetic-example"
+    },
+    "events": [
+      {
+        "timestamp": "2024-01-15T09:00:00.000Z",
+        "direction": "CS_TO_CSMS",
+        "message": [2, "m1", "BootNotification", { "chargePointSerialNumber": "CS-CI-002" }]
+      },
+      {
+        "timestamp": "2024-01-15T09:00:00.500Z",
+        "direction": "CSMS_TO_CS",
+        "message": [3, "m1", { "status": "Accepted", "interval": 300 }]
+      },
+      {
+        "timestamp": "2024-01-15T09:00:01.000Z",
+        "direction": "CS_TO_CSMS",
+        "message": [2, "m2", "Authorize", { "idTag": "BAD-CI-TAG" }]
+      },
+      {
+        "timestamp": "2024-01-15T09:00:01.500Z",
+        "direction": "CSMS_TO_CS",
+        "message": [3, "m2", { "idTagInfo": { "status": "Invalid" } }]
+      }
+    ]
+  },
+  "expectedFailures": ["FAILED_AUTHORIZATION"],
+  "assertions": [
+    { "type": "failure_count", "params": { "code": "FAILED_AUTHORIZATION", "min": 1 } }
+  ]
+}

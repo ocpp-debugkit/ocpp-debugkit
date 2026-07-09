@@ -1,0 +1,39 @@
+{
+  "name": "example-pass",
+  "description": "Example scenario that should pass in CI.",
+  "trace": {
+    "traceId": "ci-example-pass",
+    "metadata": {
+      "stationId": "CS-CI-EXAMPLE-001",
+      "ocppVersion": "1.6",
+      "source": "synthetic-example"
+    },
+    "events": [
+      {
+        "timestamp": "2024-01-15T08:00:00.000Z",
+        "direction": "CS_TO_CSMS",
+        "message": [2, "m1", "BootNotification", { "chargePointSerialNumber": "CS-CI-001" }]
+      },
+      {
+        "timestamp": "2024-01-15T08:00:00.500Z",
+        "direction": "CSMS_TO_CS",
+        "message": [3, "m1", { "status": "Accepted", "interval": 300 }]
+      },
+      {
+        "timestamp": "2024-01-15T08:00:01.000Z",
+        "direction": "CS_TO_CSMS",
+        "message": [2, "m2", "Heartbeat", {}]
+      },
+      {
+        "timestamp": "2024-01-15T08:00:01.500Z",
+        "direction": "CSMS_TO_CS",
+        "message": [3, "m2", { "currentTime": "2024-01-15T08:00:01.500Z" }]
+      }
+    ]
+  },
+  "expectedFailures": [],
+  "assertions": [
+    { "type": "event_order", "params": { "actions": ["BootNotification", "Heartbeat"] } },
+    { "type": "no_failures", "params": {} }
+  ]
+}
