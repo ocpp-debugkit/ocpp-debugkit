@@ -2,8 +2,8 @@
 
 > Open-source DevTools for debugging OCPP charging sessions.
 
-[![CI](https://github.com/ocpp-debugkit/ocpp-debugkit/actions/workflows/ci.yml/badge.svg)](https://github.com/ocpp-debugkit/ocpp-debugkit/actions/workflows/ci.yml)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/ocpp-debugkit/ocpp-debugkit/blob/main/LICENSE)
+[![CI](https://github.com/ocpp-debugkit/toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/ocpp-debugkit/toolkit/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/ocpp-debugkit/toolkit/blob/main/LICENSE)
 [![npm version](https://img.shields.io/npm/v/@ocpp-debugkit/toolkit.svg)](https://www.npmjs.com/package/@ocpp-debugkit/toolkit)
 
 OCPP DebugKit is a developer toolkit for inspecting, analyzing, and debugging
@@ -74,8 +74,8 @@ OCPP DebugKit is a pnpm monorepo. All modules ship in a single npm package,
 ### From source
 
 ```bash
-git clone https://github.com/ocpp-debugkit/ocpp-debugkit.git
-cd ocpp-debugkit
+git clone https://github.com/ocpp-debugkit/toolkit.git
+cd toolkit
 pnpm install
 pnpm build
 ```
@@ -130,7 +130,7 @@ load a trace directly in your browser — no installation required.
 ## Links
 
 - [Documentation](https://ocppdebugkit.com/docs)
-- [GitHub](https://github.com/ocpp-debugkit/ocpp-debugkit)
+- [GitHub](https://github.com/ocpp-debugkit/toolkit)
 - [npm](https://www.npmjs.com/package/@ocpp-debugkit/toolkit)
 - [Roadmap](./ROADMAP.md)
 - [Contributing](./CONTRIBUTING.md)

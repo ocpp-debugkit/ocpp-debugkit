@@ -6,7 +6,7 @@ If you discover a security vulnerability in OCPP DebugKit, please report it
 responsibly:
 
 1. **Do not** open a public GitHub issue.
-2. Go to [github.com/ocpp-debugkit/ocpp-debugkit/security/advisories/new](https://github.com/ocpp-debugkit/ocpp-debugkit/security/advisories/new)
+2. Go to [github.com/ocpp-debugkit/toolkit/security/advisories/new](https://github.com/ocpp-debugkit/toolkit/security/advisories/new)
    and create a private security advisory.
 3. Include a description of the vulnerability, steps to reproduce, and
    potential impact.

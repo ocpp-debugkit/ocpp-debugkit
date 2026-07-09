@@ -47,7 +47,7 @@ npm start`}</code>
           <Link href="/docs/cli">CLI Reference</Link> — Full command reference
         </li>
         <li>
-          <a href="https://github.com/ocpp-debugkit/ocpp-debugkit/tree/main/examples">
+          <a href="https://github.com/ocpp-debugkit/toolkit/tree/main/examples">
             Examples on GitHub
           </a>
         </li>

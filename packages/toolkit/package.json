@@ -67,12 +67,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ocpp-debugkit/ocpp-debugkit.git",
+    "url": "https://github.com/ocpp-debugkit/toolkit.git",
     "directory": "packages/toolkit"
   },
-  "homepage": "https://github.com/ocpp-debugkit/ocpp-debugkit/tree/main/packages/toolkit",
+  "homepage": "https://github.com/ocpp-debugkit/toolkit/tree/main/packages/toolkit",
   "bugs": {
-    "url": "https://github.com/ocpp-debugkit/ocpp-debugkit/issues"
+    "url": "https://github.com/ocpp-debugkit/toolkit/issues"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

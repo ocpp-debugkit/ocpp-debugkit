@@ -57,7 +57,7 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported via [GitHub's private reporting channel](https://github.com/ocpp-debugkit/ocpp-debugkit/security/advisories/new).
+reported via [GitHub's private reporting channel](https://github.com/ocpp-debugkit/toolkit/security/advisories/new).
 
 All complaints will be reviewed and investigated promptly and fairly.
 

@@ -15,8 +15,8 @@ covers setup, conventions, and the contribution workflow.
 
 ```bash
 # Clone the repository
-git clone https://github.com/ocpp-debugkit/ocpp-debugkit.git
-cd ocpp-debugkit
+git clone https://github.com/ocpp-debugkit/toolkit.git
+cd toolkit
 
 # Install dependencies
 pnpm install
@@ -277,7 +277,7 @@ new contributors. They should:
 - Not require deep knowledge of the codebase
 
 If you're a new contributor, look for issues with the `good-first-issue` label
-on the [issues page](https://github.com/ocpp-debugkit/ocpp-debugkit/issues).
+on the [issues page](https://github.com/ocpp-debugkit/toolkit/issues).
 
 ## Security Guidelines
 
@@ -332,6 +332,6 @@ The following documents are updated as part of the work, inside the PR:
 
 ## Questions?
 
-- Open a [GitHub Issue](https://github.com/ocpp-debugkit/ocpp-debugkit/issues)
+- Open a [GitHub Issue](https://github.com/ocpp-debugkit/toolkit/issues)
 - Read the [documentation](https://ocppdebugkit.com/docs)
 - Check the [roadmap](./ROADMAP.md)
