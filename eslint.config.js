@@ -24,6 +24,7 @@ export default tseslint.config(
       '**/coverage/**',
       '**/node_modules/**',
       '**/tests/external-fixture/**',
+      'examples/**',
     ],
   },
 );

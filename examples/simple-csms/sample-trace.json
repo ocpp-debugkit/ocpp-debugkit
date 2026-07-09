@@ -1,0 +1,43 @@
+{
+  "traceId": "example-csms-validation",
+  "metadata": {
+    "stationId": "CS-EXAMPLE-002",
+    "ocppVersion": "1.6",
+    "source": "synthetic-example"
+  },
+  "events": [
+    {
+      "timestamp": "2024-01-15T14:00:00.000Z",
+      "direction": "CS_TO_CSMS",
+      "message": [
+        2,
+        "msg-001",
+        "BootNotification",
+        {
+          "chargePointVendor": "ExampleVendor",
+          "chargePointModel": "EX-100",
+          "chargePointSerialNumber": "CS-EXAMPLE-002"
+        }
+      ]
+    },
+    {
+      "timestamp": "2024-01-15T14:00:00.500Z",
+      "direction": "CSMS_TO_CS",
+      "message": [
+        3,
+        "msg-001",
+        { "status": "Accepted", "interval": 300, "currentTime": "2024-01-15T14:00:00.500Z" }
+      ]
+    },
+    {
+      "timestamp": "2024-01-15T14:01:00.000Z",
+      "direction": "CS_TO_CSMS",
+      "message": [2, "msg-002", "Authorize", { "idTag": "BAD-EXAMPLE-TAG" }]
+    },
+    {
+      "timestamp": "2024-01-15T14:01:00.500Z",
+      "direction": "CSMS_TO_CS",
+      "message": [3, "msg-002", { "idTagInfo": { "status": "Invalid" } }]
+    }
+  ]
+}
