@@ -5,13 +5,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['**/*.{test,spec}.{ts,tsx,js,jsx}'],
-    exclude: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/.next/**',
-      '**/apps/web/tests/**',
-      '**/tests/external-fixture/**',
-    ],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/tests/external-fixture/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
