@@ -52,8 +52,6 @@ OCPP DebugKit is a pnpm monorepo. All modules ship in a single npm package,
 ├── replay      ← replay engine (depends on core)
 ├── react       ← reusable React components (depends on core, scenarios, reporter)
 └── cli         ← command-line interface (depends on core, scenarios, reporter)
-      │
-      └── apps/web (single Next.js app)
 ```
 
 | Import path | Description |
@@ -65,9 +63,12 @@ OCPP DebugKit is a pnpm monorepo. All modules ship in a single npm package,
 | `@ocpp-debugkit/toolkit/react` | Reusable React components |
 | `@ocpp-debugkit/toolkit/cli` | Programmatic CLI entry (`bin: ocpp-debugkit`) |
 | `@ocpp-debugkit/toolkit/fixtures` | Trace fixtures for testing |
-| `apps/web` | Single Next.js app (landing, inspector, docs) |
 
-**Build order:** toolkit (all internal modules in one `tsc` pass) → app
+**Build order:** toolkit — all internal modules build in one `tsc` pass.
+
+> The website (landing, inspector, docs) now lives in its own repo,
+> [ocpp-debugkit/website](https://github.com/ocpp-debugkit/website), deployed at
+> [ocppdebugkit.com](https://www.ocppdebugkit.com).
 
 ## Quickstart
 

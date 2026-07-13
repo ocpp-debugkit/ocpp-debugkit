@@ -29,14 +29,15 @@ ocpp-debugkit/
 │           ├── replay/     # Replay engine
 │           ├── react/      # Reusable React components
 │           └── cli/        # Command-line interface (bin: ocpp-debugkit)
-├── apps/
-│   └── web/           # Single Next.js app (landing, inspector, docs, blog)
 ├── turbo.json          # Turborepo task pipeline
 ├── tsconfig.base.json  # Shared TypeScript strict config
 ├── eslint.config.js    # ESLint flat config
 ├── vitest.config.ts    # Vitest test config
 └── pnpm-workspace.yaml
 ```
+
+> The website (landing, inspector, docs) lives in its own repo,
+> [ocpp-debugkit/website](https://github.com/ocpp-debugkit/website).
 
 ## Build Commands
 
@@ -62,12 +63,9 @@ pnpm changeset        # Add a changeset for release
     replay       ← depends on core (internal)
     react        ← depends on core, scenarios, reporter, replay (internal)
     cli          ← depends on core, scenarios, reporter (internal; Node-only)
-
-apps/web (single Next.js app)
-  imports: @ocpp-debugkit/toolkit/core, /scenarios, /reporter, /react, /replay
 ```
 
-**Build order:** toolkit (all internal modules in one tsc pass) → app
+**Build order:** toolkit — all internal modules build in one tsc pass.
 
 ## Testing Conventions
 

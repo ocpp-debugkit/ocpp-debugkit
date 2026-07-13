@@ -185,7 +185,6 @@ test/<description>             # e.g. test/core-coverage
 ```bash
 pnpm test                    # Run all unit tests
 pnpm test:external-fixture   # External fixture test (installs from tarball)
-pnpm test:e2e                # Playwright E2E tests (in apps/web)
 ```
 
 #### Writing Tests

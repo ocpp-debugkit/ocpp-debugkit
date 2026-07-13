@@ -239,4 +239,7 @@ examples, and contributor onboarding.
 | `@ocpp-debugkit/scenarios` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/reporter` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/cli` | deprecated | 0.1.1 |
-| `apps/web` | deployed | — |
+
+The website (landing, inspector, docs) now lives in
+[ocpp-debugkit/website](https://github.com/ocpp-debugkit/website), deployed at
+ocppdebugkit.com and built on the published `@ocpp-debugkit/toolkit` package.
