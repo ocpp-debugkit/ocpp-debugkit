@@ -4,15 +4,15 @@
 
 ## Current Version
 
-`0.3.0` — Integrations & OSS Credibility (published)
+`0.3.1` — Integrations & OSS Credibility (published)
 
 ## Active Milestone
 
 **v1.0.0 — Stable FOSS Ecosystem (next)**
 
-v0.3.0 is published to npm. Adds trace diffing, rich scenario assertions,
-CI/anonymize/diff CLI commands, 15 detection rules, 15 scenarios, integration
-examples, and contributor onboarding.
+v0.3.1 is published to npm. The v0.3 line adds trace diffing, rich scenario
+assertions, CI/anonymize/diff CLI commands, 16 detection rules, 15 scenarios,
+integration examples, and contributor onboarding.
 
 ## What's Done
 
@@ -219,6 +219,11 @@ examples, and contributor onboarding.
 - ✅ `REPEATED_BOOT_NOTIFICATION` — flags 2+ BootNotification calls within
   five minutes. Added as the 16th detection rule (Issue #105).
 
+### v0.3.1 Release
+
+- ✅ `@ocpp-debugkit/toolkit@0.3.1` published to npm
+- ✅ Git tag `v0.3.1` + GitHub release `v0.3.1` created
+
 ## What's Next
 
 1. **v1.0.0 — Stable FOSS Ecosystem** — API stabilization, 20+ scenarios, docs
@@ -234,7 +239,7 @@ examples, and contributor onboarding.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/toolkit` | published | 0.3.0 |
+| `@ocpp-debugkit/toolkit` | published | 0.3.1 |
 | `@ocpp-debugkit/core` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/scenarios` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/reporter` | deprecated | 0.1.1 |

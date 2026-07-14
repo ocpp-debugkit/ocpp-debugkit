@@ -15,11 +15,14 @@ validate behavior against known scenarios.
 
 - **Trace Inspector** — Load OCPP traces, view session timelines, inspect
   individual messages, and identify failures.
-- **Failure Detection** — 10 detection rules covering common failure patterns
-  (failed authorization, connector faults, station offline, heartbeat timeout,
-  meter value gaps, invalid stop reasons, status transition violations,
-  diagnostics failures, firmware update failures, unexpected starts).
-- **Scenario Evaluator** — 10 predefined scenarios with expected failure
+- **Failure Detection** — 16 detection rules (4 critical, 10 warning, 2 info)
+  covering common failure patterns: failed authorization, connector faults,
+  station offline, heartbeat timeout, meter value gaps, invalid stop reasons,
+  unexpected starts, status transition violations, diagnostics failures,
+  firmware update failures, suspicious session duration, slow CSMS responses,
+  heartbeat interval violations, meter value anomalies, unresponsive CSMS, and
+  repeated boot notifications.
+- **Scenario Evaluator** — 15 predefined scenarios with expected failure
   outcomes for testing the analysis engine. Supports external scenario files.
 - **Replay Engine** — Deterministic, pure replay engine with step forward/back,
   jump-to-event, and configurable playback speed.
