@@ -8,11 +8,13 @@
 
 ## Active Milestone
 
-**v1.0.0 — Stable FOSS Ecosystem (next)**
+**v0.4.0 - Open OCPP Trace Interop (next)**
 
-v0.3.1 is published to npm. The v0.3 line adds trace diffing, rich scenario
-assertions, CI/anonymize/diff CLI commands, 16 detection rules, 15 scenarios,
-integration examples, and contributor onboarding.
+v0.3.1 is published to npm (16 detection rules, 15 scenarios, trace diffing,
+rich scenario assertions, and the ci/anonymize/diff CLI commands). Next up is
+interoperability with the Open OCPP Trace format: reading and writing the
+shared v1.1 interchange format so DebugKit exchanges traces with other OCPP
+tools, checked against the shared conformance fixtures.
 
 ## What's Done
 
@@ -226,9 +228,13 @@ integration examples, and contributor onboarding.
 
 ## What's Next
 
-1. **v1.0.0 — Stable FOSS Ecosystem** — API stabilization, 20+ scenarios, docs
+1. **v0.4.0 - Open OCPP Trace Interop** - read and write the Open OCPP Trace
+   v1.1 interchange format (#121, #122), checked against the shared fixtures
+2. **v0.5.0 - OCPP 2.0.1 Support** - extend the engine beyond 1.6J: message
+   set, device model, scenarios, and detection
+3. **v1.0.0 - Stable FOSS Ecosystem** - API stabilization, 20+ scenarios, docs
    overhaul, contributor onboarding
-2. **Future** — Active scenario runner (live endpoint testing), playground,
+4. **Future** - active scenario runner (live endpoint testing), playground,
    YAML trace format support
 
 ## Known Blockers / Decisions Pending
