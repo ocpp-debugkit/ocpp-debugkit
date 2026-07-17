@@ -1,5 +1,12 @@
 # @ocpp-debugkit/toolkit
 
+## 0.4.0
+
+### Minor Changes
+
+- 0115e85: Write the Open OCPP Trace interchange format. `toOpenOcppTraceRecords()` / `toOpenOcppTraceJsonl()` export any parsed trace as v1.1 records, with `raw` serialized from the stored frame, response `action` back-filled by messageId correlation, and skip-and-flag warnings for events the format cannot represent. A new `ocpp-debugkit convert <file>` CLI command emits the JSONL, carrying trace-level metadata over from JSON Object inputs. Every exported record is validated against the specification's published JSON Schema in CI, and round-trip tests prove export-then-reparse preserves the consumer view and the events.
+- 32e48f0: Read the Open OCPP Trace interchange format. `parseTrace()` auto-detects it and `parseOpenOcppTrace()` parses it directly, mapping records onto the internal event model with raw-frame precedence, messageId-based action derivation, and unknown-field tolerance. `deriveOpenOcppTraceView()` exposes the format's consumer view, checked in CI against the specification's 15 conformance fixtures.
+
 ## 0.3.2
 
 ### Patch Changes
