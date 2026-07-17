@@ -8,13 +8,13 @@
 
 ## Active Milestone
 
-**v0.4.0 - Open OCPP Trace Interop (next)**
+**v0.4.0 - Open OCPP Trace Interop (in progress)**
 
 v0.3.1 is published to npm (16 detection rules, 15 scenarios, trace diffing,
-rich scenario assertions, and the ci/anonymize/diff CLI commands). Next up is
-interoperability with the Open OCPP Trace format: reading and writing the
-shared v1.1 interchange format so DebugKit exchanges traces with other OCPP
-tools, checked against the shared conformance fixtures.
+rich scenario assertions, and the ci/anonymize/diff CLI commands). The interop
+milestone reads and writes the shared Open OCPP Trace v1.1 interchange format,
+checked against the specification's conformance fixtures. The input half
+(#121) has landed; the exporter and `convert` CLI command (#122) remain.
 
 ## What's Done
 
@@ -226,10 +226,20 @@ tools, checked against the shared conformance fixtures.
 - ✅ `@ocpp-debugkit/toolkit@0.3.1` published to npm
 - ✅ Git tag `v0.3.1` + GitHub release `v0.3.1` created
 
+### Open OCPP Trace Input Adapter (PR #124)
+
+- ✅ `parseOpenOcppTrace()` reads the Open OCPP Trace v1.1 interchange format
+  (JSONL or JSON array of records); `parseTrace()` auto-detects and delegates
+  (Issue #121)
+- ✅ Raw-frame precedence, messageId-based action derivation, unknown-field
+  tolerance; shared untrusted-input limits extracted to `parseLimits.ts`
+- ✅ `deriveOpenOcppTraceView()` exposes the format's consumer view
+- ✅ 15 specification conformance fixtures vendored and asserted in CI
+
 ## What's Next
 
-1. **v0.4.0 - Open OCPP Trace Interop** - read and write the Open OCPP Trace
-   v1.1 interchange format (#121, #122), checked against the shared fixtures
+1. **v0.4.0 - Open OCPP Trace Interop** - reading (#121) is done; remaining:
+   the exporter and `convert` CLI command (#122), then the `v0.4.0` release
 2. **v0.5.0 - OCPP 2.0.1 Support** - extend the engine beyond 1.6J: message
    set, device model, scenarios, and detection
 3. **v1.0.0 - Stable FOSS Ecosystem** - API stabilization, 20+ scenarios, docs
