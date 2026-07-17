@@ -26,9 +26,13 @@ export {
 export {
   parseOpenOcppTrace,
   deriveOpenOcppTraceView,
+  toOpenOcppTraceRecords,
+  toOpenOcppTraceJsonl,
   OPEN_OCPP_TRACE_SCHEMA_VERSION,
   type OpenOcppTraceRecord,
   type OpenOcppTraceView,
+  type OpenOcppTraceExportOptions,
+  type OpenOcppTraceExportResult,
 } from './core/index.js';
 
 export {

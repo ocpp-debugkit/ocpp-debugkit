@@ -8,13 +8,14 @@
 
 ## Active Milestone
 
-**v0.4.0 - Open OCPP Trace Interop (in progress)**
+**v0.4.0 - Open OCPP Trace Interop (feature complete)**
 
 v0.3.1 is published to npm (16 detection rules, 15 scenarios, trace diffing,
 rich scenario assertions, and the ci/anonymize/diff CLI commands). The interop
 milestone reads and writes the shared Open OCPP Trace v1.1 interchange format,
-checked against the specification's conformance fixtures. The input half
-(#121) has landed; the exporter and `convert` CLI command (#122) remain.
+checked against the specification's conformance fixtures: the input adapter
+(#121) and the exporter with the `convert` CLI command (#122) have both
+landed. Remaining: cut the `v0.4.0` release.
 
 ## What's Done
 
@@ -236,10 +237,22 @@ checked against the specification's conformance fixtures. The input half
 - ✅ `deriveOpenOcppTraceView()` exposes the format's consumer view
 - ✅ 15 specification conformance fixtures vendored and asserted in CI
 
+### Open OCPP Trace Exporter + convert CLI (Issue #122)
+
+- ✅ `toOpenOcppTraceRecords()` / `toOpenOcppTraceJsonl()` export any parsed
+  trace as v1.1 records: `raw` from the stored frame, response `action`
+  back-filled by correlation, skip-and-flag for events the format cannot
+  represent
+- ✅ `ocpp-debugkit convert <file> [--output]` emits the JSONL, carrying
+  trace-level metadata over from JSON Object inputs
+- ✅ Every exported record validates against the specification's JSON Schema
+  (vendored) in CI; round-trip tests prove export-then-reparse preserves the
+  consumer view and the events
+
 ## What's Next
 
-1. **v0.4.0 - Open OCPP Trace Interop** - reading (#121) is done; remaining:
-   the exporter and `convert` CLI command (#122), then the `v0.4.0` release
+1. **v0.4.0 release** - both interop halves (#121, #122) are in; cut and
+   publish `v0.4.0`
 2. **v0.5.0 - OCPP 2.0.1 Support** - extend the engine beyond 1.6J: message
    set, device model, scenarios, and detection
 3. **v1.0.0 - Stable FOSS Ecosystem** - API stabilization, 20+ scenarios, docs

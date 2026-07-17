@@ -14,6 +14,7 @@ import {
 } from './commands/scenario.js';
 import { ciCommand } from './commands/ci.js';
 import { anonymizeCommand } from './commands/anonymize.js';
+import { convertCommand } from './commands/convert.js';
 import { diffCommand } from './commands/diff.js';
 
 const program = new Command();
@@ -82,6 +83,15 @@ program
   .option('-o, --output <file>', 'Write anonymized trace to file (default: stdout)')
   .action(async (file: string, options: { output?: string }) => {
     await anonymizeCommand(file, options);
+  });
+
+// convert
+program
+  .command('convert <file>')
+  .description('Convert a trace file to Open OCPP Trace v1.1 JSONL')
+  .option('-o, --output <file>', 'Write converted trace to file (default: stdout)')
+  .action(async (file: string, options: { output?: string }) => {
+    await convertCommand(file, options);
   });
 
 // diff

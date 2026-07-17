@@ -12,11 +12,14 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import Ajv2020 from 'ajv/dist/2020.js';
+import addFormats from 'ajv-formats';
 import {
   parseOpenOcppTrace,
   deriveOpenOcppTraceView,
   type OpenOcppTraceView,
 } from './openOcppTrace.js';
+import { toOpenOcppTraceJsonl, toOpenOcppTraceRecords } from './openOcppTraceExport.js';
 import { buildSessionTimeline } from './timeline.js';
 import { detectFailures } from './detection.js';
 
@@ -29,6 +32,12 @@ const fixturesDir = join(
 const fixtureNames = readdirSync(fixturesDir)
   .filter((name) => statSync(join(fixturesDir, name)).isDirectory())
   .sort();
+
+const ajv = new Ajv2020({ allErrors: true });
+addFormats(ajv);
+const validateRecord = ajv.compile(
+  JSON.parse(readFileSync(join(fixturesDir, 'trace-v1.schema.json'), 'utf8')),
+);
 
 describe('Open OCPP Trace conformance fixtures', () => {
   it('vendors the full 15-scenario corpus', () => {
@@ -64,6 +73,31 @@ describe('Open OCPP Trace conformance fixtures', () => {
       const result = parseOpenOcppTrace(trace);
       const sessions = buildSessionTimeline(result.events);
       expect(() => detectFailures(result.events, sessions)).not.toThrow();
+    });
+
+    it('round-trips: exporting the parsed events reproduces the expected consumer view', () => {
+      const parsed = parseOpenOcppTrace(trace);
+      const { jsonl, warnings } = toOpenOcppTraceJsonl(parsed.events);
+      expect(warnings).toEqual([]);
+      expect(deriveOpenOcppTraceView(jsonl)).toEqual(expected);
+    });
+
+    it('round-trips: every exported record validates against the published schema', () => {
+      const parsed = parseOpenOcppTrace(trace);
+      const { records } = toOpenOcppTraceRecords(parsed.events);
+      expect(records).toHaveLength(expected.counts.records);
+      for (const record of records) {
+        const valid = validateRecord(record);
+        expect(valid, ajv.errorsText(validateRecord.errors)).toBe(true);
+      }
+    });
+
+    it('round-trips: re-parsing the export yields the same events', () => {
+      const parsed = parseOpenOcppTrace(trace);
+      const { jsonl } = toOpenOcppTraceJsonl(parsed.events);
+      const reparsed = parseOpenOcppTrace(jsonl);
+      expect(reparsed.warnings).toEqual([]);
+      expect(reparsed.events).toEqual(parsed.events);
     });
   });
 });

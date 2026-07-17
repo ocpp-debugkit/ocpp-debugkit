@@ -81,8 +81,8 @@
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
-    "zod": "^4.4.3",
-    "commander": "^13.0.0"
+    "commander": "^13.0.0",
+    "zod": "^4.4.3"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
@@ -100,6 +100,8 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "execa": "^9.0.0",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"

@@ -139,9 +139,18 @@ it directly. How records are consumed:
 - Unknown fields are ignored, so a trace from a later minor version of the
   format still parses. The same size and event-count [limits](#limits) apply.
 
+DebugKit is also a producer of the format: `toOpenOcppTraceRecords()` /
+`toOpenOcppTraceJsonl()` export any parsed trace as v1.1 records (`raw`
+serialized from the stored frame, response `action` back-filled by
+correlation), and `ocpp-debugkit convert <file>` does the same from the
+command line. Events the format cannot represent (no timestamp, or an unknown
+direction, as with the bare array input) are skipped with a warning rather
+than invented.
+
 The format is governed independently at
 [open-ocpp-trace/specification](https://github.com/open-ocpp-trace/specification),
-which ships a conformance suite that DebugKit's parser is checked against.
+which ships a conformance suite that DebugKit's parser and exporter are
+checked against.
 
 ---
 
