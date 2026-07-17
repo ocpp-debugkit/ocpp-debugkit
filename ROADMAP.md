@@ -117,9 +117,39 @@ Connect to real ecosystem workflows. Attract external engagement.
 
 ---
 
-## v1.0.0 — Stable FOSS Ecosystem
+## v0.4.0 - Open OCPP Trace Interop
 
 **Status:** Next up
+
+Interoperate with the Open OCPP Trace format, the vendor-neutral interchange
+format for OCPP traces, so DebugKit reads traces other tools produce and emits
+traces they can consume.
+
+- Parse Open OCPP Trace v1.1 input (#121)
+- Export traces to Open OCPP Trace v1.1, with a `convert` CLI command (#122)
+- Conformance against the shared fixtures
+
+**Exit criteria:** GitHub release `v0.4.0`.
+
+---
+
+## v0.5.0 - OCPP 2.0.1 Support
+
+**Status:** Planned
+
+Extend the analysis engine beyond OCPP 1.6J to OCPP 2.0.1.
+
+- 2.0.1 message set and device model
+- 2.0.1 scenarios and fixtures
+- Detection rules adapted for 2.0.1
+
+**Exit criteria:** GitHub release `v0.5.0`.
+
+---
+
+## v1.0.0 — Stable FOSS Ecosystem
+
+**Status:** Planned
 
 Mature APIs, stable formats, contributor-ready.
 
