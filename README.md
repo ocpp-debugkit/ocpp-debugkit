@@ -27,6 +27,9 @@ validate behavior against known scenarios.
 - **Replay Engine** — Deterministic, pure replay engine with step forward/back,
   jump-to-event, and configurable playback speed.
 - **Report Generation** — Export session analysis as Markdown or HTML reports.
+- **Open OCPP Trace Interop** - Read the vendor-neutral
+  [Open OCPP Trace](https://github.com/open-ocpp-trace/specification) interchange
+  format, so traces from other OCPP tools can be inspected and analyzed here.
 - **React Components** — Reusable, SSR-safe components for building custom
   inspector UIs (SessionTimeline, MessageInspector, FailureSummary,
   ReportViewer, ReplayControls).

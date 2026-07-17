@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "1.1",
+  "counts": {
+    "records": 22,
+    "calls": 11,
+    "callResults": 11,
+    "callErrors": 0
+  },
+  "records": [
+    {
+      "index": 0,
+      "messageType": "CALL",
+      "messageId": "msg-001",
+      "action": "BootNotification"
+    },
+    {
+      "index": 1,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-001",
+      "action": "BootNotification",
+      "correlatesWith": 0
+    },
+    {
+      "index": 2,
+      "messageType": "CALL",
+      "messageId": "msg-002",
+      "action": "StatusNotification"
+    },
+    {
+      "index": 3,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-002",
+      "action": "StatusNotification",
+      "correlatesWith": 2
+    },
+    {
+      "index": 4,
+      "messageType": "CALL",
+      "messageId": "msg-003",
+      "action": "StatusNotification"
+    },
+    {
+      "index": 5,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-003",
+      "action": "StatusNotification",
+      "correlatesWith": 4
+    },
+    {
+      "index": 6,
+      "messageType": "CALL",
+      "messageId": "msg-004",
+      "action": "Authorize"
+    },
+    {
+      "index": 7,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-004",
+      "action": "Authorize",
+      "correlatesWith": 6
+    },
+    {
+      "index": 8,
+      "messageType": "CALL",
+      "messageId": "msg-005",
+      "action": "StartTransaction"
+    },
+    {
+      "index": 9,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-005",
+      "action": "StartTransaction",
+      "correlatesWith": 8
+    },
+    {
+      "index": 10,
+      "messageType": "CALL",
+      "messageId": "msg-006",
+      "action": "StatusNotification"
+    },
+    {
+      "index": 11,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-006",
+      "action": "StatusNotification",
+      "correlatesWith": 10
+    },
+    {
+      "index": 12,
+      "messageType": "CALL",
+      "messageId": "msg-hb-1",
+      "action": "Heartbeat"
+    },
+    {
+      "index": 13,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-hb-1",
+      "action": "Heartbeat",
+      "correlatesWith": 12
+    },
+    {
+      "index": 14,
+      "messageType": "CALL",
+      "messageId": "msg-007",
+      "action": "MeterValues"
+    },
+    {
+      "index": 15,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-007",
+      "action": "MeterValues",
+      "correlatesWith": 14
+    },
+    {
+      "index": 16,
+      "messageType": "CALL",
+      "messageId": "msg-008",
+      "action": "MeterValues"
+    },
+    {
+      "index": 17,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-008",
+      "action": "MeterValues",
+      "correlatesWith": 16
+    },
+    {
+      "index": 18,
+      "messageType": "CALL",
+      "messageId": "msg-009",
+      "action": "StopTransaction"
+    },
+    {
+      "index": 19,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-009",
+      "action": "StopTransaction",
+      "correlatesWith": 18
+    },
+    {
+      "index": 20,
+      "messageType": "CALL",
+      "messageId": "msg-010",
+      "action": "StatusNotification"
+    },
+    {
+      "index": 21,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-010",
+      "action": "StatusNotification",
+      "correlatesWith": 20
+    }
+  ],
+  "unansweredCalls": [],
+  "orphanResponses": []
+}

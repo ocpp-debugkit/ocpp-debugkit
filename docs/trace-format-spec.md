@@ -110,6 +110,41 @@ A JSON array of raw OCPP message arrays, with no event wrapper:
 
 ---
 
+## Open OCPP Trace Format (interop)
+
+DebugKit also reads the
+[Open OCPP Trace format](https://github.com/open-ocpp-trace/specification), a
+vendor-neutral interchange format for OCPP traces. This lets traces produced by
+other tools (simulators, proxies, CSMS test suites) be inspected and analyzed
+here without hand-converting them.
+
+The format is a stream of records, one OCPP-J frame per record, as JSONL or a
+JSON array of records:
+
+```jsonl
+{"schemaVersion":"1.1","timestamp":"2024-01-15T10:30:00.000Z","ocppVersion":"1.6","transport":"json","chargePointId":"CS-SYNTHETIC-001","direction":"cp-to-csms","messageType":"CALL","messageId":"msg-001","action":"BootNotification","payload":{"chargePointVendor":"SyntheticVendor","chargePointModel":"SM-100"},"raw":"[2,\"msg-001\",\"BootNotification\",{\"chargePointVendor\":\"SyntheticVendor\",\"chargePointModel\":\"SM-100\"}]"}
+{"schemaVersion":"1.1","timestamp":"2024-01-15T10:30:00.500Z","transport":"json","direction":"csms-to-cp","messageType":"CALLRESULT","messageId":"msg-001","payload":{"status":"Accepted"},"raw":"[3,\"msg-001\",{\"status\":\"Accepted\"}]"}
+```
+
+`parseTrace()` detects this format automatically; `parseOpenOcppTrace()` parses
+it directly. How records are consumed:
+
+- `direction` maps to the internal directions: `cp-to-csms` becomes
+  `CS_TO_CSMS`, `csms-to-cp` becomes `CSMS_TO_CS`.
+- `raw`, when present, is the authoritative frame. If it disagrees with the
+  decomposed fields, the frame from `raw` wins and a warning is recorded.
+- A response (`CALLRESULT` / `CALLERROR`) may omit `action`; its effective
+  action is derived by correlating on `messageId`. `deriveOpenOcppTraceView()`
+  reports that correlation as the format's consumer view.
+- Unknown fields are ignored, so a trace from a later minor version of the
+  format still parses. The same size and event-count [limits](#limits) apply.
+
+The format is governed independently at
+[open-ocpp-trace/specification](https://github.com/open-ocpp-trace/specification),
+which ships a conformance suite that DebugKit's parser is checked against.
+
+---
+
 ## OCPP 1.6 JSON Message Structure
 
 OCPP 1.6 JSON uses WebSocket text frames containing JSON arrays. There are

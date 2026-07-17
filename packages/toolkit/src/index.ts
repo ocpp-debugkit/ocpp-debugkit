@@ -22,6 +22,15 @@ export {
   type TraceFormat,
 } from './core/index.js';
 
+// Open OCPP Trace interop
+export {
+  parseOpenOcppTrace,
+  deriveOpenOcppTraceView,
+  OPEN_OCPP_TRACE_SCHEMA_VERSION,
+  type OpenOcppTraceRecord,
+  type OpenOcppTraceView,
+} from './core/index.js';
+
 export {
   normalizeEvents,
   normalizeTimestamp,

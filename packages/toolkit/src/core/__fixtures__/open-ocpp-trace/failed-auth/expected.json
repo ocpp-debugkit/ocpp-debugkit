@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "1.1",
+  "counts": {
+    "records": 14,
+    "calls": 7,
+    "callResults": 7,
+    "callErrors": 0
+  },
+  "records": [
+    {
+      "index": 0,
+      "messageType": "CALL",
+      "messageId": "msg-001",
+      "action": "BootNotification"
+    },
+    {
+      "index": 1,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-001",
+      "action": "BootNotification",
+      "correlatesWith": 0
+    },
+    {
+      "index": 2,
+      "messageType": "CALL",
+      "messageId": "msg-002",
+      "action": "StatusNotification"
+    },
+    {
+      "index": 3,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-002",
+      "action": "StatusNotification",
+      "correlatesWith": 2
+    },
+    {
+      "index": 4,
+      "messageType": "CALL",
+      "messageId": "msg-003",
+      "action": "StatusNotification"
+    },
+    {
+      "index": 5,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-003",
+      "action": "StatusNotification",
+      "correlatesWith": 4
+    },
+    {
+      "index": 6,
+      "messageType": "CALL",
+      "messageId": "msg-004",
+      "action": "Authorize"
+    },
+    {
+      "index": 7,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-004",
+      "action": "Authorize",
+      "correlatesWith": 6
+    },
+    {
+      "index": 8,
+      "messageType": "CALL",
+      "messageId": "msg-005",
+      "action": "Authorize"
+    },
+    {
+      "index": 9,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-005",
+      "action": "Authorize",
+      "correlatesWith": 8
+    },
+    {
+      "index": 10,
+      "messageType": "CALL",
+      "messageId": "msg-006",
+      "action": "Authorize"
+    },
+    {
+      "index": 11,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-006",
+      "action": "Authorize",
+      "correlatesWith": 10
+    },
+    {
+      "index": 12,
+      "messageType": "CALL",
+      "messageId": "msg-007",
+      "action": "StatusNotification"
+    },
+    {
+      "index": 13,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-007",
+      "action": "StatusNotification",
+      "correlatesWith": 12
+    }
+  ],
+  "unansweredCalls": [],
+  "orphanResponses": []
+}
