@@ -23,59 +23,14 @@ import {
   traceSchema,
 } from './schemas.js';
 import { normalizeEvents } from './normalizer.js';
+import { ParseError, validateInputSize, validateEventCount } from './parseLimits.js';
+import { looksLikeOpenOcppTrace, parseOpenOcppTrace } from './openOcppTrace.js';
 import type { Event, ParseResult, ParseWarning, TraceEventInput } from './types.js';
 
-// ---------------------------------------------------------------------------
-// Limits (ADR-0007, docs/trace-format-spec.md)
-// ---------------------------------------------------------------------------
-
-/** Maximum input size in bytes (10 MB). */
-export const MAX_INPUT_SIZE_BYTES = 10 * 1024 * 1024;
-
-/** Maximum number of events after parsing. */
-export const MAX_EVENT_COUNT = 10_000;
-
-// ---------------------------------------------------------------------------
-// Errors
-// ---------------------------------------------------------------------------
-
-/** Error thrown when input exceeds size limits or has structural problems. */
-export class ParseError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ParseError';
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Input size validation
-// ---------------------------------------------------------------------------
-
-/**
- * Validate the input size before any parsing.
- * @throws {ParseError} if the input exceeds the maximum size.
- */
-function validateInputSize(input: string): void {
-  const byteLength = Buffer.byteLength(input, 'utf8');
-  if (byteLength > MAX_INPUT_SIZE_BYTES) {
-    throw new ParseError(
-      `Input size (${byteLength} bytes) exceeds the maximum allowed size ` +
-        `(${MAX_INPUT_SIZE_BYTES} bytes).`,
-    );
-  }
-}
-
-/**
- * Validate the event count after parsing.
- * @throws {ParseError} if the event count exceeds the maximum.
- */
-function validateEventCount(events: TraceEventInput[]): void {
-  if (events.length > MAX_EVENT_COUNT) {
-    throw new ParseError(
-      `Event count (${events.length}) exceeds the maximum allowed count ` + `(${MAX_EVENT_COUNT}).`,
-    );
-  }
-}
+// The untrusted-input limits and the parse error type live in `parseLimits.ts`
+// so every input path shares them. Re-exported here to keep their public
+// import path (`@ocpp-debugkit/toolkit/core`) unchanged.
+export { ParseError, MAX_INPUT_SIZE_BYTES, MAX_EVENT_COUNT } from './parseLimits.js';
 
 // ---------------------------------------------------------------------------
 // Format detection
@@ -291,6 +246,13 @@ export function parseTrace(input: string): ParseResult {
     throw new ParseError('Input is empty.');
   }
 
+  // The Open OCPP Trace interchange format (records with `messageType` +
+  // `direction`) has its own parser; detect and delegate before the internal
+  // format detection, which does not recognize it.
+  if (looksLikeOpenOcppTrace(trimmed)) {
+    return parseOpenOcppTrace(trimmed);
+  }
+
   // Detect format and parse accordingly
   const format = detectFormat(trimmed);
 
@@ -329,7 +291,7 @@ export function parseTrace(input: string): ParseResult {
   }
 
   // Validate event count
-  validateEventCount(events);
+  validateEventCount(events.length);
 
   if (events.length === 0) {
     throw new ParseError('Trace contains no valid events.');

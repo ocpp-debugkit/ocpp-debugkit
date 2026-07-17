@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.1",
+  "counts": {
+    "records": 10,
+    "calls": 5,
+    "callResults": 5,
+    "callErrors": 0
+  },
+  "records": [
+    {
+      "index": 0,
+      "messageType": "CALL",
+      "messageId": "msg-001",
+      "action": "BootNotification"
+    },
+    {
+      "index": 1,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-001",
+      "action": "BootNotification",
+      "correlatesWith": 0
+    },
+    {
+      "index": 2,
+      "messageType": "CALL",
+      "messageId": "msg-002",
+      "action": "StatusNotification"
+    },
+    {
+      "index": 3,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-002",
+      "action": "StatusNotification",
+      "correlatesWith": 2
+    },
+    {
+      "index": 4,
+      "messageType": "CALL",
+      "messageId": "msg-003",
+      "action": "StatusNotification"
+    },
+    {
+      "index": 5,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-003",
+      "action": "StatusNotification",
+      "correlatesWith": 4
+    },
+    {
+      "index": 6,
+      "messageType": "CALL",
+      "messageId": "msg-hb-1",
+      "action": "Heartbeat"
+    },
+    {
+      "index": 7,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-hb-1",
+      "action": "Heartbeat",
+      "correlatesWith": 6
+    },
+    {
+      "index": 8,
+      "messageType": "CALL",
+      "messageId": "msg-004",
+      "action": "StatusNotification"
+    },
+    {
+      "index": 9,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-004",
+      "action": "StatusNotification",
+      "correlatesWith": 8
+    }
+  ],
+  "unansweredCalls": [],
+  "orphanResponses": []
+}

@@ -12,6 +12,21 @@ export * from './schemas.js';
 export { parseTrace, ParseError, MAX_INPUT_SIZE_BYTES, MAX_EVENT_COUNT } from './parser.js';
 export type { TraceFormat } from './parser.js';
 
+// Open OCPP Trace interop (https://github.com/open-ocpp-trace/specification)
+export {
+  parseOpenOcppTrace,
+  deriveOpenOcppTraceView,
+  looksLikeOpenOcppTrace,
+  OPEN_OCPP_TRACE_SCHEMA_VERSION,
+} from './openOcppTrace.js';
+export type {
+  OpenOcppTraceRecord,
+  OpenOcppTraceView,
+  OpenOcppTraceViewRecord,
+  OpenOcppTraceDirection,
+  OpenOcppTraceMessageType,
+} from './openOcppTrace.js';
+
 // Normalizer
 export {
   normalizeEvents,

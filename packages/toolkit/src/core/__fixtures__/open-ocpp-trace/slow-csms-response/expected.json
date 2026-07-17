@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.1",
+  "counts": {
+    "records": 4,
+    "calls": 2,
+    "callResults": 2,
+    "callErrors": 0
+  },
+  "records": [
+    {
+      "index": 0,
+      "messageType": "CALL",
+      "messageId": "msg-001",
+      "action": "BootNotification"
+    },
+    {
+      "index": 1,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-001",
+      "action": "BootNotification",
+      "correlatesWith": 0
+    },
+    {
+      "index": 2,
+      "messageType": "CALL",
+      "messageId": "msg-002",
+      "action": "Heartbeat"
+    },
+    {
+      "index": 3,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-002",
+      "action": "Heartbeat",
+      "correlatesWith": 2
+    }
+  ],
+  "unansweredCalls": [],
+  "orphanResponses": []
+}

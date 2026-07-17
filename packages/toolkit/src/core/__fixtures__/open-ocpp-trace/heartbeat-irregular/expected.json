@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.1",
+  "counts": {
+    "records": 8,
+    "calls": 4,
+    "callResults": 4,
+    "callErrors": 0
+  },
+  "records": [
+    {
+      "index": 0,
+      "messageType": "CALL",
+      "messageId": "msg-001",
+      "action": "BootNotification"
+    },
+    {
+      "index": 1,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-001",
+      "action": "BootNotification",
+      "correlatesWith": 0
+    },
+    {
+      "index": 2,
+      "messageType": "CALL",
+      "messageId": "msg-hb-1",
+      "action": "Heartbeat"
+    },
+    {
+      "index": 3,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-hb-1",
+      "action": "Heartbeat",
+      "correlatesWith": 2
+    },
+    {
+      "index": 4,
+      "messageType": "CALL",
+      "messageId": "msg-hb-2",
+      "action": "Heartbeat"
+    },
+    {
+      "index": 5,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-hb-2",
+      "action": "Heartbeat",
+      "correlatesWith": 4
+    },
+    {
+      "index": 6,
+      "messageType": "CALL",
+      "messageId": "msg-hb-3",
+      "action": "Heartbeat"
+    },
+    {
+      "index": 7,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-hb-3",
+      "action": "Heartbeat",
+      "correlatesWith": 6
+    }
+  ],
+  "unansweredCalls": [],
+  "orphanResponses": []
+}

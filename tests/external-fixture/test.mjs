@@ -102,6 +102,44 @@ const sessions = core.buildSessionTimeline(parseResult.events);
 const failures = core.detectFailures(parseResult.events, sessions);
 assert(Array.isArray(failures), 'detectFailures returns an array');
 
+// Open OCPP Trace interop
+assert(typeof core.parseOpenOcppTrace === 'function', 'parseOpenOcppTrace is a function');
+assert(typeof core.deriveOpenOcppTraceView === 'function', 'deriveOpenOcppTraceView is a function');
+const openTrace = [
+  JSON.stringify({
+    schemaVersion: '1.1',
+    timestamp: '2026-01-01T00:00:00Z',
+    transport: 'json',
+    direction: 'cp-to-csms',
+    messageType: 'CALL',
+    messageId: 'm1',
+    action: 'BootNotification',
+    payload: {},
+    raw: '[2,"m1","BootNotification",{}]',
+  }),
+  JSON.stringify({
+    schemaVersion: '1.1',
+    timestamp: '2026-01-01T00:00:01Z',
+    transport: 'json',
+    direction: 'csms-to-cp',
+    messageType: 'CALLRESULT',
+    messageId: 'm1',
+    payload: { status: 'Accepted' },
+    raw: '[3,"m1",{"status":"Accepted"}]',
+  }),
+].join('\n');
+const openResult = core.parseOpenOcppTrace(openTrace);
+assert(
+  openResult.events.length === 2,
+  `parseOpenOcppTrace produces 2 events (got ${openResult.events.length})`,
+);
+assert(core.parseTrace(openTrace).events.length === 2, 'parseTrace auto-detects Open OCPP Trace');
+const openView = core.deriveOpenOcppTraceView(openTrace);
+assert(
+  openView.records[1].action === 'BootNotification',
+  'response action derived by messageId correlation',
+);
+
 console.log('  /core tests passed\n');
 
 // --- /scenarios ---
@@ -216,6 +254,7 @@ assert(
   'root buildSessionTimeline is a function',
 );
 assert(typeof toolkit.fixtures === 'object', 'root fixtures is an object');
+assert(typeof toolkit.parseOpenOcppTrace === 'function', 'root parseOpenOcppTrace is a function');
 
 console.log('  root barrel tests passed\n');
 

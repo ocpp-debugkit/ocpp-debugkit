@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "1.1",
+  "counts": {
+    "records": 8,
+    "calls": 4,
+    "callResults": 4,
+    "callErrors": 0
+  },
+  "records": [
+    {
+      "index": 0,
+      "messageType": "CALL",
+      "messageId": "msg-001",
+      "action": "StartTransaction"
+    },
+    {
+      "index": 1,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-001",
+      "action": "StartTransaction",
+      "correlatesWith": 0
+    },
+    {
+      "index": 2,
+      "messageType": "CALL",
+      "messageId": "msg-002",
+      "action": "StatusNotification"
+    },
+    {
+      "index": 3,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-002",
+      "action": "StatusNotification",
+      "correlatesWith": 2
+    },
+    {
+      "index": 4,
+      "messageType": "CALL",
+      "messageId": "msg-003",
+      "action": "MeterValues"
+    },
+    {
+      "index": 5,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-003",
+      "action": "MeterValues",
+      "correlatesWith": 4
+    },
+    {
+      "index": 6,
+      "messageType": "CALL",
+      "messageId": "msg-004",
+      "action": "StopTransaction"
+    },
+    {
+      "index": 7,
+      "messageType": "CALLRESULT",
+      "messageId": "msg-004",
+      "action": "StopTransaction",
+      "correlatesWith": 6
+    }
+  ],
+  "unansweredCalls": [],
+  "orphanResponses": []
+}
