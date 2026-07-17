@@ -26,6 +26,11 @@ export type {
   OpenOcppTraceDirection,
   OpenOcppTraceMessageType,
 } from './openOcppTrace.js';
+export { toOpenOcppTraceRecords, toOpenOcppTraceJsonl } from './openOcppTraceExport.js';
+export type {
+  OpenOcppTraceExportOptions,
+  OpenOcppTraceExportResult,
+} from './openOcppTraceExport.js';
 
 // Normalizer
 export {

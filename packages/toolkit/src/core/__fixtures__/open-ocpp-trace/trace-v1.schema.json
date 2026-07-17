@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-ocpp-trace.github.io/schema/trace-v1.schema.json",
+  "title": "OcppTraceRecord",
+  "type": "object",
+  "required": ["schemaVersion", "timestamp", "transport", "direction", "messageType"],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "ocppVersion": { "type": "string" },
+    "transport": { "type": "string", "enum": ["json", "soap"] },
+    "chargePointId": { "type": "string" },
+    "connectorId": { "type": "integer", "minimum": 0 },
+    "direction": { "type": "string", "enum": ["cp-to-csms", "csms-to-cp"] },
+    "messageType": {
+      "type": "string",
+      "enum": ["CALL", "CALLRESULT", "CALLERROR"]
+    },
+    "messageId": { "type": "string" },
+    "action": { "type": "string" },
+    "payload": {},
+    "raw": { "type": "string" },
+    "error": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "code": { "type": "string" },
+        "description": { "type": "string" },
+        "details": {}
+      }
+    },
+    "meta": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "messageType": { "const": "CALL" } } },
+      "then": { "required": ["action"] }
+    },
+    {
+      "if": { "properties": { "messageType": { "const": "CALLERROR" } } },
+      "then": { "required": ["error"] },
+      "else": { "properties": { "error": false } }
+    }
+  ]
+}

@@ -4,7 +4,8 @@ Conformance fixtures from the Open OCPP Trace specification, vendored here so
 DebugKit's parser is checked against them in CI.
 
 - **Source:** [open-ocpp-trace/specification](https://github.com/open-ocpp-trace/specification)
-  (`fixtures/`). All data is synthetic.
+  (`fixtures/`, and `schema/trace-v1.schema.json` vendored alongside for
+  validating exporter output). All data is synthetic.
 - Each `<name>/trace.jsonl` is a trace in the shared format. Each
   `<name>/expected.json` is the consumer view a conformant implementation
   derives from it: correlation pairs, effective actions, unanswered calls, and

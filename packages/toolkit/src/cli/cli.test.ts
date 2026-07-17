@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { execa } from 'execa';
-import { writeFileSync, mkdtempSync } from 'node:fs';
+import { writeFileSync, mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fixtures } from '../core/index.js';
@@ -297,6 +297,58 @@ describe('CLI integration', () => {
       const parsed = JSON.parse(result.stdout);
       expect(parsed).toHaveProperty('onlyInA');
       expect(parsed).toHaveProperty('onlyInB');
+    });
+  });
+
+  describe('convert', () => {
+    it('converts a JSON Object trace to Open OCPP Trace JSONL with metadata carried over', async () => {
+      const filePath = writeTempTrace(fixtures.normalSession);
+      const result = await runCli('convert', filePath);
+      expect(result.exitCode).toBe(0);
+
+      const lines = result.stdout.trim().split('\n');
+      expect(lines).toHaveLength(fixtures.normalSession.events.length);
+
+      const first = JSON.parse(lines[0] ?? '') as Record<string, unknown>;
+      expect(first.schemaVersion).toBe('1.1');
+      expect(first.messageType).toBe('CALL');
+      expect(first.action).toBe('BootNotification');
+      expect(first.direction).toBe('cp-to-csms');
+      expect(first.ocppVersion).toBe('1.6');
+      expect(first.chargePointId).toBe('CS-SYNTHETIC-001');
+      expect(typeof first.raw).toBe('string');
+
+      // Every line is a valid record shape.
+      for (const line of lines) {
+        const record = JSON.parse(line) as Record<string, unknown>;
+        expect(record.schemaVersion).toBe('1.1');
+        expect(['CALL', 'CALLRESULT', 'CALLERROR']).toContain(record.messageType);
+      }
+    });
+
+    it('writes to file with --output', async () => {
+      const filePath = writeTempTrace(fixtures.failedAuth);
+      const outPath = filePath.replace('trace.json', 'out.jsonl');
+      const result = await runCli('convert', filePath, '--output', outPath);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Open OCPP Trace written to');
+      const written = readFileSync(outPath, 'utf8');
+      expect(written.trim().split('\n')).toHaveLength(fixtures.failedAuth.events.length);
+    });
+
+    it('fails cleanly when no event can be represented (bare array has no timestamps)', async () => {
+      const dir = mkdtempSync(join(tmpdir(), 'ocpp-test-'));
+      const filePath = join(dir, 'bare.json');
+      writeFileSync(filePath, JSON.stringify([[2, 'msg-001', 'Heartbeat', {}]]), 'utf8');
+      const result = await runCli('convert', filePath);
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain('No events could be converted');
+    });
+
+    it('handles missing file gracefully', async () => {
+      const result = await runCli('convert', '/nonexistent/trace.json');
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain('File not found');
     });
   });
 });

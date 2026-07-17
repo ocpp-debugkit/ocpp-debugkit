@@ -139,6 +139,16 @@ assert(
   openView.records[1].action === 'BootNotification',
   'response action derived by messageId correlation',
 );
+assert(typeof core.toOpenOcppTraceJsonl === 'function', 'toOpenOcppTraceJsonl is a function');
+const exported = core.toOpenOcppTraceJsonl(openResult.events);
+assert(
+  exported.jsonl.trim().split('\n').length === 2,
+  'toOpenOcppTraceJsonl emits one record per event',
+);
+assert(
+  core.parseOpenOcppTrace(exported.jsonl).events.length === 2,
+  'exported JSONL re-parses (round trip)',
+);
 
 console.log('  /core tests passed\n');
 
@@ -288,6 +298,17 @@ try {
 } catch (e) {
   failed++;
   console.error(`FAIL: CLI scenario list — ${e.message}`);
+}
+
+// CLI convert
+try {
+  const output = execSync(`node ${cliPath} convert ${tracePath}`, { encoding: 'utf8' });
+  const firstLine = JSON.parse(output.trim().split('\n')[0]);
+  assert(firstLine.schemaVersion === '1.1', 'CLI convert emits schemaVersion 1.1');
+  assert(firstLine.messageType === 'CALL', 'CLI convert first record is a CALL');
+} catch (e) {
+  failed++;
+  console.error(`FAIL: CLI convert - ${e.message}`);
 }
 
 console.log('  CLI tests passed\n');

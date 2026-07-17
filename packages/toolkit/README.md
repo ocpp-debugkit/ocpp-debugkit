@@ -8,10 +8,11 @@ report generation, React components, and CLI.
 
 - **Trace Parser** — Parse OCPP 1.6 JSON traces in JSON Object, JSONL, or bare
   array format. Safe parsing with size and event-count limits.
-- **Open OCPP Trace Interop** - Read the vendor-neutral
-  [Open OCPP Trace](https://github.com/open-ocpp-trace/specification) format via
-  `parseOpenOcppTrace()` (and `parseTrace()` auto-detection), checked against the
-  specification's conformance fixtures.
+- **Open OCPP Trace Interop** - Read and write the vendor-neutral
+  [Open OCPP Trace](https://github.com/open-ocpp-trace/specification) format:
+  `parseOpenOcppTrace()` (with `parseTrace()` auto-detection) reads it,
+  `toOpenOcppTraceJsonl()` and the `convert` CLI command emit it, both checked
+  against the specification's conformance fixtures.
 - **Failure Detection** — 16 detection rules (4 critical, 10 warning, 2 info)
   covering common failure patterns: failed authorization, connector faults,
   station offline, heartbeat timeout, meter value gaps, invalid stop reasons,
@@ -234,6 +235,9 @@ ocpp-debugkit scenario run failed-auth
 
 # Run an external scenario file
 ocpp-debugkit scenario run --file ./my-scenario.json
+
+# Convert any readable trace to Open OCPP Trace v1.1 JSONL
+ocpp-debugkit convert trace.json --output trace.openocpp.jsonl
 ```
 
 ## Trace Formats
@@ -252,7 +256,8 @@ Each event has a `message` field containing a raw OCPP 1.6 JSON array:
 `parseTrace()` additionally auto-detects the vendor-neutral
 [Open OCPP Trace](https://github.com/open-ocpp-trace/specification) interchange
 format (records carrying `messageType` and `direction`); parse it directly with
-`parseOpenOcppTrace()`.
+`parseOpenOcppTrace()`, and emit it with `toOpenOcppTraceJsonl()` or the
+`convert` CLI command.
 
 See the [trace format specification](https://github.com/ocpp-debugkit/toolkit/blob/main/docs/trace-format-spec.md) for full details.
 
