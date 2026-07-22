@@ -4,20 +4,34 @@
 
 ## Current Version
 
-`0.3.1` — Integrations & OSS Credibility (published)
+`0.4.0`, Open OCPP Trace Interop (published 2026-07-17). A `0.4.1` patch is in
+progress (METER_VALUE_ANOMALY false-positive fix, #127).
 
 ## Active Milestone
 
-**v0.4.0 - Open OCPP Trace Interop (feature complete)**
+**v0.4.1 - detection correctness patch, then v0.5.0 (OCPP 2.0.1)**
 
-v0.3.1 is published to npm (16 detection rules, 15 scenarios, trace diffing,
-rich scenario assertions, and the ci/anonymize/diff CLI commands). The interop
-milestone reads and writes the shared Open OCPP Trace v1.1 interchange format,
-checked against the specification's conformance fixtures: the input adapter
-(#121) and the exporter with the `convert` CLI command (#122) have both
-landed. Remaining: cut the `v0.4.0` release.
+v0.4.0 shipped the Open OCPP Trace interop: the toolkit reads and writes the
+shared v1.1 interchange format (input adapter #121, exporter + `convert` CLI
+#122), checked against the specification's conformance fixtures. **0.4.1**
+fixes a false-positive bug shiv3 found from the simulator integration: the
+`METER_VALUE_ANOMALY` rule flattened all measurands and connectors into one
+series (#127). Next milestone is **v0.5.0 (OCPP 2.0.1)**, where the same
+per-connector/EVSE model this fix introduces is required across detection.
 
 ## What's Done
+
+### METER_VALUE_ANOMALY correctness fix (0.4.1, Issue #127)
+
+- ✅ Rule 14 now buckets readings by `(connectorId, measurand, phase, unit,
+  location)` and applies the monotonic + non-negative checks only to cumulative
+  `Energy.*.Register` measurands (absent `measurand` defaults to
+  `Energy.Active.Import.Register`); other measurands are ignored
+- ✅ Eliminates false positives on multi-measurand samples and multi-connector
+  stations; genuine energy-register anomalies still detected (meter-anomaly
+  scenario and conformance contract unchanged); 3 regression tests added
+- Companion issue drafted for the same connector-blindness in
+  `STATUS_TRANSITION_VIOLATION` (rule 8)
 
 ### GitHub Infrastructure
 

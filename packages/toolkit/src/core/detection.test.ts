@@ -1418,6 +1418,100 @@ describe('detectFailures', () => {
       const failures = detectFailures(events, sessions);
       expect(failures.some((f) => f.code === 'METER_VALUE_ANOMALY')).toBe(false);
     });
+
+    // Regression tests for the per-(connector, measurand) bucketing fix (#127).
+    const meterSession = (meterEvents: Event[]): Event[] => [
+      makeEvent('s1', 'ms', 'Call', 'StartTransaction', { connectorId: 1, idTag: 'TAG-127' }, 1000),
+      makeEvent(
+        's2',
+        'ms',
+        'CallResult',
+        null,
+        { idTagInfo: { status: 'Accepted' }, transactionId: 42 },
+        1500,
+        'CSMS_TO_CS',
+      ),
+      ...meterEvents,
+      makeEvent(
+        's9',
+        'me',
+        'Call',
+        'StopTransaction',
+        { transactionId: 42, reason: 'Local' },
+        9000,
+      ),
+    ];
+
+    const energyPlusPower = (id: string, ts: number, energy: string): Event =>
+      makeEvent(
+        id,
+        id,
+        'Call',
+        'MeterValues',
+        {
+          connectorId: 1,
+          transactionId: 42,
+          meterValue: [
+            {
+              sampledValue: [
+                { measurand: 'Energy.Active.Import.Register', value: energy, unit: 'Wh' },
+                { measurand: 'Power.Active.Import', value: '3000', unit: 'W' },
+              ],
+            },
+          ],
+        },
+        ts,
+      );
+
+    it('does not flag a rising Energy register interleaved with a constant Power sample (#127)', () => {
+      const events = meterSession([
+        energyPlusPower('a1', 2000, '600'),
+        energyPlusPower('a2', 3000, '625'),
+        energyPlusPower('a3', 4000, '650'),
+      ]);
+      const failures = detectFailures(events, buildSessionTimeline(events));
+      expect(failures.some((f) => f.code === 'METER_VALUE_ANOMALY')).toBe(false);
+    });
+
+    it('still flags a decreasing Energy register when other measurands are present', () => {
+      const events = meterSession([
+        energyPlusPower('b1', 2000, '600'),
+        energyPlusPower('b2', 3000, '500'),
+      ]);
+      const anomalies = detectFailures(events, buildSessionTimeline(events)).filter(
+        (f) => f.code === 'METER_VALUE_ANOMALY',
+      );
+      expect(anomalies).toHaveLength(1);
+    });
+
+    it('does not flag two connector registers that share a transaction (bucketed by connectorId)', () => {
+      const meter = (id: string, ts: number, connectorId: number, energy: string): Event =>
+        makeEvent(
+          id,
+          id,
+          'Call',
+          'MeterValues',
+          {
+            connectorId,
+            transactionId: 42,
+            meterValue: [
+              {
+                sampledValue: [
+                  { measurand: 'Energy.Active.Import.Register', value: energy, unit: 'Wh' },
+                ],
+              },
+            ],
+          },
+          ts,
+        );
+      const events = meterSession([
+        meter('c1', 2000, 1, '6000'),
+        meter('c2', 3000, 2, '100'),
+        meter('c3', 4000, 1, '6100'),
+      ]);
+      const failures = detectFailures(events, buildSessionTimeline(events));
+      expect(failures.some((f) => f.code === 'METER_VALUE_ANOMALY')).toBe(false);
+    });
   });
 
   describe('UNRESPONSIVE_CSMS', () => {
