@@ -664,6 +664,46 @@ describe('detectFailures', () => {
       const failures = detectFailures(events, sessions);
       expect(failures.some((f) => f.code === 'STATUS_TRANSITION_VIOLATION')).toBe(false);
     });
+
+    // Regression tests for the per-connector tracking fix (#128).
+    const statusEvent = (id: string, connectorId: number, status: string, ts: number): Event =>
+      makeEvent(id, id, 'Call', 'StatusNotification', { connectorId, status }, ts);
+
+    it('does not flag across connectors when interleaved statuses only look invalid globally (#128)', () => {
+      const events = [
+        statusEvent('e1', 1, 'Charging', 0),
+        statusEvent('e2', 2, 'Available', 500),
+        statusEvent('e3', 1, 'Finishing', 1000),
+      ];
+      const failures = detectFailures(events, buildSessionTimeline(events));
+      expect(failures.some((f) => f.code === 'STATUS_TRANSITION_VIOLATION')).toBe(false);
+    });
+
+    it('still flags a genuine per-connector violation when another connector is interleaved', () => {
+      const events = [
+        statusEvent('e1', 1, 'Available', 0),
+        statusEvent('e2', 2, 'Charging', 500),
+        statusEvent('e3', 1, 'Finishing', 1000),
+      ];
+      const violations = detectFailures(events, buildSessionTimeline(events)).filter(
+        (f) => f.code === 'STATUS_TRANSITION_VIOLATION',
+      );
+      expect(violations).toHaveLength(1);
+      expect(violations[0]?.eventIds).toEqual(['e1', 'e3']);
+    });
+
+    it('tracks connectorId 0 (whole charge point) as its own series', () => {
+      const events = [
+        statusEvent('e1', 0, 'Available', 0),
+        statusEvent('e2', 1, 'Available', 500),
+        statusEvent('e3', 0, 'Finishing', 1000),
+      ];
+      const violations = detectFailures(events, buildSessionTimeline(events)).filter(
+        (f) => f.code === 'STATUS_TRANSITION_VIOLATION',
+      );
+      expect(violations).toHaveLength(1);
+      expect(violations[0]?.eventIds).toEqual(['e1', 'e3']);
+    });
   });
 
   describe('DIAGNOSTICS_FAILURE', () => {
