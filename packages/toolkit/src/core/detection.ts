@@ -884,9 +884,31 @@ function detectHeartbeatIntervalViolation(events: Event[]): Failure[] {
 }
 
 /**
+ * Cumulative energy registers, the only measurands with a monotonic,
+ * non-negative invariant per OCPP 1.6 section 7.28.
+ */
+const CUMULATIVE_MEASURANDS = new Set([
+  'Energy.Active.Import.Register',
+  'Energy.Reactive.Import.Register',
+  'Energy.Active.Export.Register',
+  'Energy.Reactive.Export.Register',
+]);
+
+/** OCPP 1.6: when `measurand` is absent it defaults to Energy.Active.Import.Register. */
+const DEFAULT_MEASURAND = 'Energy.Active.Import.Register';
+
+/**
  * Rule 14: METER_VALUE_ANOMALY
- * Detects non-monotonic (decreasing) or negative meter readings during
- * an active transaction.
+ * Flags a cumulative energy register that decreases, or is negative, during an
+ * active transaction.
+ *
+ * Only the cumulative `Energy.*.Register` measurands are monotonic and
+ * non-negative (OCPP 1.6 section 7.28). Other measurands (Power, Current,
+ * Voltage, Temperature, SoC, ...) legitimately rise and fall, so this rule
+ * ignores them. Readings are bucketed by (connectorId, measurand, phase, unit,
+ * location) so independent series never contaminate each other's monotonicity,
+ * for example a constant Power sample interleaved with a rising Energy register,
+ * or two connectors' meters on the same transaction.
  */
 function detectMeterValueAnomaly(_events: Event[], sessions: Session[]): Failure[] {
   const failures: Failure[] = [];
@@ -894,23 +916,31 @@ function detectMeterValueAnomaly(_events: Event[], sessions: Session[]): Failure
   for (const session of sessions) {
     if (session.transactionId === null) continue;
 
-    // Collect meter values from MeterValues calls in order
     const meterEvents = session.events.filter(
       (e) => e.messageType === 'Call' && e.action === 'MeterValues',
     );
-
     if (meterEvents.length === 0) continue;
 
-    // Extract numeric meter values from the payload
-    // OCPP 1.6 MeterValues: { connectorId, transactionId, meterValue: [{ timestamp, sampledValue: [{ value, ... }] }] }
-    const readings: { eventId: string; value: number }[] = [];
+    // Collect cumulative-register readings, in event order, into per-series
+    // buckets so cross-measurand and cross-connector values never mix.
+    // OCPP 1.6 MeterValues: { connectorId, transactionId, meterValue: [{ timestamp, sampledValue: [...] }] }
+    const buckets = new Map<string, { eventId: string; value: number }[]>();
 
     for (const event of meterEvents) {
       const payload = event.payload as {
+        connectorId?: unknown;
         meterValue?: {
-          sampledValue?: { value?: unknown }[];
+          sampledValue?: {
+            value?: unknown;
+            measurand?: unknown;
+            phase?: unknown;
+            unit?: unknown;
+            location?: unknown;
+          }[];
         }[];
       };
+      const connectorId =
+        typeof payload?.connectorId === 'number' ? payload.connectorId : 'unknown';
 
       const meterValues = payload?.meterValue;
       if (!Array.isArray(meterValues)) continue;
@@ -920,48 +950,57 @@ function detectMeterValueAnomaly(_events: Event[], sessions: Session[]): Failure
         if (!Array.isArray(sampledValues)) continue;
 
         for (const sv of sampledValues) {
+          const measurand = typeof sv?.measurand === 'string' ? sv.measurand : DEFAULT_MEASURAND;
+          if (!CUMULATIVE_MEASURANDS.has(measurand)) continue;
+
           const rawValue = sv?.value;
-          if (typeof rawValue === 'string') {
-            const numValue = Number.parseFloat(rawValue);
-            if (!Number.isNaN(numValue)) {
-              readings.push({ eventId: event.id, value: numValue });
-            }
-          } else if (typeof rawValue === 'number') {
-            readings.push({ eventId: event.id, value: rawValue });
-          }
+          let numValue: number;
+          if (typeof rawValue === 'string') numValue = Number.parseFloat(rawValue);
+          else if (typeof rawValue === 'number') numValue = rawValue;
+          else continue;
+          if (Number.isNaN(numValue)) continue;
+
+          const phase = typeof sv?.phase === 'string' ? sv.phase : '';
+          const unit = typeof sv?.unit === 'string' ? sv.unit : '';
+          const location = typeof sv?.location === 'string' ? sv.location : '';
+          const key = `${connectorId}|${measurand}|${phase}|${unit}|${location}`;
+
+          const bucket = buckets.get(key);
+          if (bucket) bucket.push({ eventId: event.id, value: numValue });
+          else buckets.set(key, [{ eventId: event.id, value: numValue }]);
         }
       }
     }
 
-    if (readings.length === 0) continue;
-
-    // Check for negative values
-    for (const reading of readings) {
-      if (reading.value < 0) {
-        failures.push({
-          code: 'METER_VALUE_ANOMALY',
-          description: `Negative meter value detected: ${reading.value} in session ${session.sessionId} (transaction ${session.transactionId})`,
-          severity: SEVERITY.METER_VALUE_ANOMALY,
-          eventIds: [reading.eventId],
-          suggestedSteps: SUGGESTED_STEPS.METER_VALUE_ANOMALY,
-        });
+    for (const readings of buckets.values()) {
+      // A cumulative register cannot be negative.
+      for (const reading of readings) {
+        if (reading.value < 0) {
+          failures.push({
+            code: 'METER_VALUE_ANOMALY',
+            description: `Negative meter value detected: ${reading.value} in session ${session.sessionId} (transaction ${session.transactionId})`,
+            severity: SEVERITY.METER_VALUE_ANOMALY,
+            eventIds: [reading.eventId],
+            suggestedSteps: SUGGESTED_STEPS.METER_VALUE_ANOMALY,
+          });
+        }
       }
-    }
 
-    // Check for non-monotonic (decreasing) values
-    for (let i = 1; i < readings.length; i++) {
-      const prev = readings[i - 1];
-      const curr = readings[i];
-      if (!prev || !curr) continue;
+      // A cumulative register must not decrease.
+      for (let i = 1; i < readings.length; i++) {
+        const prev = readings[i - 1];
+        const curr = readings[i];
+        if (!prev || !curr) continue;
 
-      if (curr.value < prev.value) {
-        failures.push({
-          code: 'METER_VALUE_ANOMALY',
-          description: `Non-monotonic meter reading: value decreased from ${prev.value} to ${curr.value} in session ${session.sessionId} (transaction ${session.transactionId})`,
-          severity: SEVERITY.METER_VALUE_ANOMALY,
-          eventIds: [prev.eventId, curr.eventId],
-          suggestedSteps: SUGGESTED_STEPS.METER_VALUE_ANOMALY,
-        });
+        if (curr.value < prev.value) {
+          failures.push({
+            code: 'METER_VALUE_ANOMALY',
+            description: `Non-monotonic meter reading: value decreased from ${prev.value} to ${curr.value} in session ${session.sessionId} (transaction ${session.transactionId})`,
+            severity: SEVERITY.METER_VALUE_ANOMALY,
+            eventIds: [prev.eventId, curr.eventId],
+            suggestedSteps: SUGGESTED_STEPS.METER_VALUE_ANOMALY,
+          });
+        }
       }
     }
   }
