@@ -613,35 +613,42 @@ const VALID_TRANSITIONS: Record<string, Set<string>> = {
 function detectStatusTransitionViolation(events: Event[]): Failure[] {
   const failures: Failure[] = [];
 
-  // Collect all StatusNotification statuses in order
   const statusEvents = events.filter(
     (e) => e.messageType === 'Call' && e.action === 'StatusNotification',
   );
 
-  let prevStatus: string | null = null;
-  let prevEvent: Event | null = null;
+  // Each connector has an independent status machine, so a transition is only
+  // valid or invalid relative to the same connector's previous status. Track
+  // the previous status per connectorId; connectorId 0 refers to the charge
+  // point as a whole (OCPP 1.6) and forms its own series, and a missing
+  // connectorId is bucketed under 'unknown'. Comparing statuses across
+  // connectors (the previous behavior) produced false violations on
+  // multi-connector stations.
+  const previousByConnector = new Map<number | string, { status: string; event: Event }>();
 
   for (const event of statusEvents) {
-    const payload = event.payload as { status?: unknown };
+    const payload = event.payload as { status?: unknown; connectorId?: unknown };
     const status = payload?.status;
 
     if (typeof status !== 'string' || !VALID_CONNECTOR_STATUSES.has(status)) continue;
 
-    if (prevStatus !== null && prevEvent !== null) {
-      const allowed: Set<string> | undefined = VALID_TRANSITIONS[prevStatus];
+    const connectorId = typeof payload?.connectorId === 'number' ? payload.connectorId : 'unknown';
+    const previous = previousByConnector.get(connectorId);
+
+    if (previous) {
+      const allowed: Set<string> | undefined = VALID_TRANSITIONS[previous.status];
       if (allowed && !allowed.has(status)) {
         failures.push({
           code: 'STATUS_TRANSITION_VIOLATION',
-          description: `Connector status transition from "${prevStatus}" to "${status}" is not a valid OCPP 1.6 transition (messageId: ${event.messageId})`,
+          description: `Connector status transition from "${previous.status}" to "${status}" is not a valid OCPP 1.6 transition (messageId: ${event.messageId})`,
           severity: SEVERITY.STATUS_TRANSITION_VIOLATION,
-          eventIds: [prevEvent.id, event.id],
+          eventIds: [previous.event.id, event.id],
           suggestedSteps: SUGGESTED_STEPS.STATUS_TRANSITION_VIOLATION,
         });
       }
     }
 
-    prevStatus = status;
-    prevEvent = event;
+    previousByConnector.set(connectorId, { status, event });
   }
 
   return failures;

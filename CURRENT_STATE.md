@@ -4,20 +4,21 @@
 
 ## Current Version
 
-`0.4.0`, Open OCPP Trace Interop (published 2026-07-17). A `0.4.1` patch is in
-progress (METER_VALUE_ANOMALY false-positive fix, #127).
+`0.4.1`, METER_VALUE_ANOMALY fix (published 2026-07-22). A `0.4.2` patch is in
+progress (STATUS_TRANSITION_VIOLATION per-connector fix, #128).
 
 ## Active Milestone
 
-**v0.4.1 - detection correctness patch, then v0.5.0 (OCPP 2.0.1)**
+**v0.4.x - detection correctness patches, then v0.5.0 (OCPP 2.0.1)**
 
 v0.4.0 shipped the Open OCPP Trace interop: the toolkit reads and writes the
 shared v1.1 interchange format (input adapter #121, exporter + `convert` CLI
-#122), checked against the specification's conformance fixtures. **0.4.1**
-fixes a false-positive bug shiv3 found from the simulator integration: the
-`METER_VALUE_ANOMALY` rule flattened all measurands and connectors into one
-series (#127). Next milestone is **v0.5.0 (OCPP 2.0.1)**, where the same
-per-connector/EVSE model this fix introduces is required across detection.
+#122), checked against the specification's conformance fixtures. Two
+false-positive bugs shiv3 found from the simulator integration are being
+fixed: `METER_VALUE_ANOMALY` measurand/connector flattening (#127, shipped in
+0.4.1) and `STATUS_TRANSITION_VIOLATION` global status tracking (#128, in
+0.4.2). Next milestone is **v0.5.0 (OCPP 2.0.1)**, where the per-connector /
+EVSE model these fixes introduce is required across detection.
 
 ## What's Done
 
@@ -30,8 +31,16 @@ per-connector/EVSE model this fix introduces is required across detection.
 - ✅ Eliminates false positives on multi-measurand samples and multi-connector
   stations; genuine energy-register anomalies still detected (meter-anomaly
   scenario and conformance contract unchanged); 3 regression tests added
-- Companion issue drafted for the same connector-blindness in
-  `STATUS_TRANSITION_VIOLATION` (rule 8)
+- Sibling connector-blindness in `STATUS_TRANSITION_VIOLATION` fixed under #128
+
+### STATUS_TRANSITION_VIOLATION per-connector fix (0.4.2, Issue #128)
+
+- ✅ Rule 8 now tracks the previous status per `connectorId` (connectorId 0,
+  the whole charge point, forms its own series) and validates transitions only
+  within one connector's series, instead of one global sequence
+- ✅ Eliminates false violations on multi-connector stations; genuine
+  per-connector violations still detected (status-transition-violation scenario
+  and conformance contract unchanged); 3 regression tests added
 
 ### GitHub Infrastructure
 
