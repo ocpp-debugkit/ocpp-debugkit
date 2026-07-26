@@ -20,6 +20,7 @@ import meterAnomaly from './__scenarios__/meter-anomaly.js';
 import shortSession from './__scenarios__/short-session.js';
 import heartbeatIrregular from './__scenarios__/heartbeat-irregular.js';
 import unresponsiveCsms from './__scenarios__/unresponsive-csms.js';
+import firmwareUpdateSuccess from './__scenarios__/firmware-update-success.js';
 
 // ---------------------------------------------------------------------------
 // Scenarios derived from core fixtures
@@ -66,6 +67,7 @@ const meterAnomalyScenario: Scenario = meterAnomaly as unknown as Scenario;
 const shortSessionScenario: Scenario = shortSession as unknown as Scenario;
 const heartbeatIrregularScenario: Scenario = heartbeatIrregular as unknown as Scenario;
 const unresponsiveCsmsScenario: Scenario = unresponsiveCsms as unknown as Scenario;
+const firmwareUpdateSuccessScenario: Scenario = firmwareUpdateSuccess as unknown as Scenario;
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -87,6 +89,7 @@ export const scenarios = [
   shortSessionScenario,
   heartbeatIrregularScenario,
   unresponsiveCsmsScenario,
+  firmwareUpdateSuccessScenario,
 ] as const;
 
 export const scenarioNames = [
@@ -105,6 +108,7 @@ export const scenarioNames = [
   'short-session',
   'heartbeat-irregular',
   'unresponsive-csms',
+  'firmware-update-success',
 ] as const;
 
 export {
@@ -123,6 +127,7 @@ export {
   shortSessionScenario,
   heartbeatIrregularScenario,
   unresponsiveCsmsScenario,
+  firmwareUpdateSuccessScenario,
 };
 
 export { compareScenarioReports } from './compare.js';
