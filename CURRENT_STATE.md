@@ -272,6 +272,19 @@ EVSE model these fixes introduce is required across detection.
   (vendored) in CI; round-trip tests prove export-then-reparse preserves the
   consumer view and the events
 
+### Contributor Onboarding Fixes (Issue #134)
+
+- ✅ First external contribution to a `good-first-issue` arrived (#133,
+  firmware-update-success scenario for #104). Second external contributor after
+  #114.
+- ✅ `CONTRIBUTING.md` now documents `pnpm format:check`, which CI enforced and
+  the guide never named, with both command lists ordered to match the CI job
+- ✅ Hard-coded rule and scenario counts dropped from the architecture table
+  after drifting twice; the READMEs stay authoritative and the suite asserts them
+- ✅ "Adding a Scenario" names all four files carrying the count, and station
+  IDs are documented as unique per scenario
+- ✅ Good-first-issues carry a one-open-claim-at-a-time policy
+
 ## What's Next
 
 1. **v0.4.0 release** - both interop halves (#121, #122) are in; cut and
