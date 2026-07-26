@@ -5,7 +5,7 @@ export default {
   trace: {
     traceId: 'scenario-firmware-update-success',
     metadata: {
-      stationId: 'CS-SYNTHETIC-012',
+      stationId: 'CS-SYNTHETIC-016',
       ocppVersion: '1.6',
       source: 'synthetic-scenario',
       description:
@@ -22,7 +22,7 @@ export default {
           {
             chargePointVendor: 'SyntheticVendor',
             chargePointModel: 'SM-100',
-            chargePointSerialNumber: 'CS-SYNTHETIC-012',
+            chargePointSerialNumber: 'CS-SYNTHETIC-016',
             firmwareVersion: '1.0.0',
           },
         ],
