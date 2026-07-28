@@ -43,12 +43,7 @@ export default {
       {
         timestamp: '2024-01-15T06:00:30.000Z',
         direction: 'CS_TO_CSMS',
-        message: [
-          2,
-          'msg-002',
-          'FirmwareStatusNotification',
-          { status: 'Downloaded' },
-        ],
+        message: [2, 'msg-002', 'FirmwareStatusNotification', { status: 'Downloaded' }],
       },
       {
         timestamp: '2024-01-15T06:00:30.500Z',
@@ -58,12 +53,7 @@ export default {
       {
         timestamp: '2024-01-15T06:01:00.000Z',
         direction: 'CS_TO_CSMS',
-        message: [
-          2,
-          'msg-003',
-          'FirmwareStatusNotification',
-          { status: 'Installed' },
-        ],
+        message: [2, 'msg-003', 'FirmwareStatusNotification', { status: 'Installed' }],
       },
       {
         timestamp: '2024-01-15T06:01:00.500Z',
@@ -78,11 +68,7 @@ export default {
       {
         timestamp: '2024-01-15T06:03:00.500Z',
         direction: 'CSMS_TO_CS',
-        message: [
-          3,
-          'msg-hb-1',
-          { currentTime: '2024-01-15T06:03:00.500Z' },
-        ],
+        message: [3, 'msg-hb-1', { currentTime: '2024-01-15T06:03:00.500Z' }],
       },
     ],
   },
