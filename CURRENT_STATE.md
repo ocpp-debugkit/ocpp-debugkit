@@ -4,8 +4,10 @@
 
 ## Current Version
 
-`0.4.2`, STATUS_TRANSITION_VIOLATION per-connector fix (published 2026-07-22).
-The v0.4.x line is complete.
+`0.4.3`, firmware-update-success scenario (published 2026-07-28). The v0.4.x
+line is complete. `0.4.3` carries the second `good-first-issue` completed by an
+outside contributor, after `REPEATED_BOOT_NOTIFICATION` (Issue #105, PR #114) in
+`0.3.1`.
 
 ## Active Milestone
 
@@ -250,6 +252,12 @@ these fixes introduce is required across detection.
 - ✅ `@ocpp-debugkit/toolkit@0.3.1` published to npm
 - ✅ Git tag `v0.3.1` + GitHub release `v0.3.1` created
 
+### v0.3.2 Release
+
+- ✅ `@ocpp-debugkit/toolkit@0.3.2` published 2026-07-14, corrected the package
+  README, which advertised 10 detection rules and 10 scenarios against the 16
+  and 15 actually shipping (Issue #118, PR #119)
+
 ### Open OCPP Trace Input Adapter (PR #124)
 
 - ✅ `parseOpenOcppTrace()` reads the Open OCPP Trace v1.1 interchange format
@@ -280,13 +288,14 @@ these fixes introduce is required across detection.
   scoped to cumulative energy registers per connector (Issue #127, PR #129)
 - ✅ `@ocpp-debugkit/toolkit@0.4.2` published 2026-07-22,
   `STATUS_TRANSITION_VIOLATION` tracked per connector (Issue #128, PR #131)
-- ✅ Git tags + GitHub releases `v0.4.0`, `v0.4.1`, `v0.4.2` created
+- ✅ `@ocpp-debugkit/toolkit@0.4.3` published 2026-07-28,
+  `firmware-update-success` scenario (Issue #104, PR #133)
+- ✅ Git tags + GitHub releases `v0.4.0` through `v0.4.3` created
 
 ### Contributor Onboarding Fixes (Issue #134)
 
-- ✅ First external contribution to a `good-first-issue` arrived (#133,
-  firmware-update-success scenario for #104). Second external contributor after
-  #114.
+- ✅ Second external contribution to a `good-first-issue` arrived (#133,
+  firmware-update-success scenario for #104), after #114 for #105.
 - ✅ `CONTRIBUTING.md` now documents `pnpm format:check`, which CI enforced and
   the guide never named, with both command lists ordered to match the CI job
 - ✅ Hard-coded rule and scenario counts dropped from the architecture table
@@ -294,6 +303,36 @@ these fixes introduce is required across detection.
 - ✅ "Adding a Scenario" names all four files carrying the count, and station
   IDs are documented as unique per scenario
 - ✅ Good-first-issues carry a one-open-claim-at-a-time policy
+
+### External Contribution Pipeline (2026-07-26 to 2026-07-28)
+
+- ✅ Second `good-first-issue` completed by an outside contributor: #133 for
+  #104, shipped in `0.4.3`. The scenario registry is at 16. Two of the five
+  original good-first-issues have now been completed, by two different people.
+- ✅ Scenario changesets sized as `patch`, not `minor` (Issue #142, PR #143).
+  The changeset from #133 was a minor, which would have spent `0.5.0` on one
+  scenario and pushed OCPP 2.0.1 to `0.6.0`. The convention is now written into
+  `CONTRIBUTING.md`.
+- ✅ Detection-rule coverage audited: 13 of 16 rules had a scenario.
+  `TIMEOUT_NO_HEARTBEAT`, `FIRMWARE_UPDATE_FAILURE` and
+  `REPEATED_BOOT_NOTIFICATION` had none.
+- ✅ Three good-first-issues opened to close that gap (#137, #138, #139), each
+  with its full trace specified and checked against the detection engine before
+  publishing, so the specs are known to fire exactly one rule.
+- ✅ #108 (`meter-value-zero`) retargeted as a negative control. Its original
+  `expectedFailures: ['METER_VALUE_ANOMALY']` could not hold: that rule fires
+  only on negative or decreasing cumulative readings, and a flat series is
+  neither.
+- ✅ Station IDs allocated per issue so parallel work cannot collide:
+  `CS-SYNTHETIC-016` shipped in #133, `017` to #108, `018` to #137, `019` to
+  #138, `020` to #139.
+- 🔜 #140 proposes the standing invariant that every detection rule ships with a
+  scenario in the same PR, which is what stops this gap reopening.
+- 🔜 #144 proposes a `METER_VALUE_STUCK` rule for a register that never advances,
+  the positive counterpart to #108.
+
+Scenario arithmetic to the v1.0 target of 20+: 16 today, plus #108, #137, #138
+and #139 lands at 20, at which point all 16 detection rules are covered.
 
 ## What's Next
 
@@ -306,13 +345,18 @@ these fixes introduce is required across detection.
 
 ## Known Blockers / Decisions Pending
 
-- None currently. All design decisions resolved in ADRs.
+- Nothing is blocked. One design question is open: #144 (`METER_VALUE_STUCK`)
+  needs decisions on what counts as stuck, how to avoid reporting legitimate
+  `SuspendedEV` / `SuspendedEVSE` flatlines, whether a register stuck at zero is
+  a separate signal from one stuck at a non-zero value, and severity. It most
+  likely wants the per-connector model arriving with v0.5.0, so it is not
+  urgent.
 
 ## Package Status Table
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/toolkit` | published | 0.3.1 |
+| `@ocpp-debugkit/toolkit` | published | 0.4.3 |
 | `@ocpp-debugkit/core` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/scenarios` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/reporter` | deprecated | 0.1.1 |
