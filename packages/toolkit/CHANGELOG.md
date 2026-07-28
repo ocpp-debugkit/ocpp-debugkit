@@ -1,5 +1,11 @@
 # @ocpp-debugkit/toolkit
 
+## 0.4.3
+
+### Patch Changes
+
+- 9e1a294: feat(scenarios): add firmware update success scenario
+
 ## 0.4.2
 
 ### Patch Changes
