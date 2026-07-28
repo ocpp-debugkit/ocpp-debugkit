@@ -18,6 +18,7 @@ import {
   shortSessionScenario,
   heartbeatIrregularScenario,
   unresponsiveCsmsScenario,
+  firmwareUpdateSuccessScenario,
 } from './index.js';
 import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.js';
 
@@ -26,8 +27,8 @@ import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.
 // ---------------------------------------------------------------------------
 
 describe('scenario registry', () => {
-  it('exports exactly 15 scenarios', () => {
-    expect(scenarios).toHaveLength(15);
+  it('exports exactly 16 scenarios', () => {
+    expect(scenarios).toHaveLength(16);
   });
 
   it('exports scenario names in order', () => {
@@ -47,6 +48,7 @@ describe('scenario registry', () => {
       'short-session',
       'heartbeat-irregular',
       'unresponsive-csms',
+      'firmware-update-success',
     ]);
   });
 
@@ -75,6 +77,7 @@ describe('scenario registry', () => {
     expect(getScenario('short-session')).toBe(shortSessionScenario);
     expect(getScenario('heartbeat-irregular')).toBe(heartbeatIrregularScenario);
     expect(getScenario('unresponsive-csms')).toBe(unresponsiveCsmsScenario);
+    expect(getScenario('firmware-update-success')).toBe(firmwareUpdateSuccessScenario);
   });
 
   it('getScenario returns undefined for unknown name', () => {
