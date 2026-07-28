@@ -4,21 +4,21 @@
 
 ## Current Version
 
-`0.4.1`, METER_VALUE_ANOMALY fix (published 2026-07-22). A `0.4.2` patch is in
-progress (STATUS_TRANSITION_VIOLATION per-connector fix, #128).
+`0.4.2`, STATUS_TRANSITION_VIOLATION per-connector fix (published 2026-07-22).
+The v0.4.x line is complete.
 
 ## Active Milestone
 
-**v0.4.x - detection correctness patches, then v0.5.0 (OCPP 2.0.1)**
+**v0.5.0 (OCPP 2.0.1), after a complete v0.4.x**
 
 v0.4.0 shipped the Open OCPP Trace interop: the toolkit reads and writes the
 shared v1.1 interchange format (input adapter #121, exporter + `convert` CLI
-#122), checked against the specification's conformance fixtures. Two
-false-positive bugs shiv3 found from the simulator integration are being
-fixed: `METER_VALUE_ANOMALY` measurand/connector flattening (#127, shipped in
-0.4.1) and `STATUS_TRANSITION_VIOLATION` global status tracking (#128, in
-0.4.2). Next milestone is **v0.5.0 (OCPP 2.0.1)**, where the per-connector /
-EVSE model these fixes introduce is required across detection.
+#122), checked against the specification's conformance fixtures. Both
+false-positive bugs shiv3 found from the simulator integration are fixed and
+released: `METER_VALUE_ANOMALY` measurand/connector flattening (#127, in 0.4.1)
+and `STATUS_TRANSITION_VIOLATION` global status tracking (#128, in 0.4.2). Next
+milestone is **v0.5.0 (OCPP 2.0.1)**, where the per-connector / EVSE model
+these fixes introduce is required across detection.
 
 ## What's Done
 
@@ -272,15 +272,36 @@ EVSE model these fixes introduce is required across detection.
   (vendored) in CI; round-trip tests prove export-then-reparse preserves the
   consumer view and the events
 
+### v0.4.x Releases
+
+- ✅ `@ocpp-debugkit/toolkit@0.4.0` published 2026-07-17, Open OCPP Trace
+  interop (#121, #122)
+- ✅ `@ocpp-debugkit/toolkit@0.4.1` published 2026-07-22, `METER_VALUE_ANOMALY`
+  scoped to cumulative energy registers per connector (Issue #127, PR #129)
+- ✅ `@ocpp-debugkit/toolkit@0.4.2` published 2026-07-22,
+  `STATUS_TRANSITION_VIOLATION` tracked per connector (Issue #128, PR #131)
+- ✅ Git tags + GitHub releases `v0.4.0`, `v0.4.1`, `v0.4.2` created
+
+### Contributor Onboarding Fixes (Issue #134)
+
+- ✅ First external contribution to a `good-first-issue` arrived (#133,
+  firmware-update-success scenario for #104). Second external contributor after
+  #114.
+- ✅ `CONTRIBUTING.md` now documents `pnpm format:check`, which CI enforced and
+  the guide never named, with both command lists ordered to match the CI job
+- ✅ Hard-coded rule and scenario counts dropped from the architecture table
+  after drifting twice; the READMEs stay authoritative and the suite asserts them
+- ✅ "Adding a Scenario" names all four files carrying the count, and station
+  IDs are documented as unique per scenario
+- ✅ Good-first-issues carry a one-open-claim-at-a-time policy
+
 ## What's Next
 
-1. **v0.4.0 release** - both interop halves (#121, #122) are in; cut and
-   publish `v0.4.0`
-2. **v0.5.0 - OCPP 2.0.1 Support** - extend the engine beyond 1.6J: message
+1. **v0.5.0 - OCPP 2.0.1 Support** - extend the engine beyond 1.6J: message
    set, device model, scenarios, and detection
-3. **v1.0.0 - Stable FOSS Ecosystem** - API stabilization, 20+ scenarios, docs
+2. **v1.0.0 - Stable FOSS Ecosystem** - API stabilization, 20+ scenarios, docs
    overhaul, contributor onboarding
-4. **Future** - active scenario runner (live endpoint testing), playground,
+3. **Future** - active scenario runner (live endpoint testing), playground,
    YAML trace format support
 
 ## Known Blockers / Decisions Pending

@@ -21,10 +21,12 @@ cd toolkit
 # Install dependencies
 pnpm install
 
-# Verify everything works
+# Verify everything works (same checks CI runs, in the same order)
 pnpm lint
-pnpm test
+pnpm format:check
+pnpm typecheck
 pnpm build
+pnpm test
 ```
 
 ## Monorepo Structure
@@ -80,12 +82,12 @@ compose these functions to provide the full analysis pipeline.
 | Parser | `src/core/parser.ts` | `parseTrace()` — JSON, JSONL, bare array |
 | Normalizer | `src/core/normalizer.ts` | Event normalization (timestamps, directions) |
 | Timeline | `src/core/timeline.ts` | `buildSessionTimeline()` — session correlation |
-| Detection | `src/core/detection.ts` | `detectFailures()` — 15 failure rules |
+| Detection | `src/core/detection.ts` | `detectFailures()` — failure detection rules |
 | Diff | `src/core/diff.ts` | `diffTraces()` — compare two traces |
 | Assertions | `src/core/assertions.ts` | `evaluateScenario()` — scenario assertions |
 | Summarizer | `src/core/summarizer.ts` | Session summary statistics |
 | Validator | `src/core/validator.ts` | OCPP 1.6 structural validation |
-| Scenarios | `src/scenarios/` | 15 predefined scenarios + registry |
+| Scenarios | `src/scenarios/` | Predefined scenarios + registry |
 | Reporter | `src/reporter/` | Markdown + HTML report generators |
 | Replay | `src/replay/` | Deterministic replay engine |
 | React | `src/react/` | Reusable UI components |
@@ -120,10 +122,16 @@ git checkout -b feat/<scope>-<description>
 
 ```bash
 pnpm lint
+pnpm format:check
 pnpm typecheck
-pnpm test
 pnpm build
+pnpm test
 ```
+
+These are the checks CI runs, in the same order, so a green run here means a
+green run there. CI stops at the first failure, which means a formatting problem
+masks every result after it. `pnpm format:check` only reports; run `pnpm format`
+to apply the fixes.
 
 ### 5. Add a Changeset
 
@@ -217,17 +225,26 @@ trace with expected failure outcomes and optional assertions.
 
 2. Import and register it in `packages/toolkit/src/scenarios/index.ts`.
 
-3. Update the scenario count in:
+3. Update the scenario count in every place that states it:
    - `packages/toolkit/src/scenarios/index.test.ts`
    - `tests/external-fixture/test.mjs`
+   - `README.md`
+   - `packages/toolkit/README.md`
 
-4. Run `ocpp-debugkit ci` to verify all scenarios pass.
+   The first two fail the test suite when they drift. The two READMEs do not, so
+   they are easy to miss.
+
+4. Run `ocpp-debugkit ci` to verify all scenarios pass, then run the full local
+   check from [Verify Locally](#4-verify-locally). `ocpp-debugkit ci` does not
+   cover formatting, lint, or types.
 
 ### Guidelines
 
 - All data must be **synthetic** — no real station IDs, transaction IDs, idTags,
   or personal data.
 - Use `SYNTHETIC-TAG-NNN` for idTags, `CS-SYNTHETIC-NNN` for station IDs.
+- Each scenario takes its own station ID. Check the existing files in
+  `__scenarios__/` for the next free number rather than reusing one.
 - `expectedFailures` must align with detection rules available in the current
   version.
 - Test your scenario with `ocpp-debugkit scenario run my-scenario`.
@@ -277,6 +294,16 @@ new contributors. They should:
 
 If you're a new contributor, look for issues with the `good-first-issue` label
 on the [issues page](https://github.com/ocpp-debugkit/toolkit/issues).
+
+### Claiming One
+
+Comment on the issue saying you would like to work on it and it will be assigned
+to you.
+
+Please hold one open claim at a time. Once your pull request for it is merged,
+say which issue you want next and it will be assigned. This keeps issues from
+sitting claimed while another is still in review, so other newcomers can see what
+is genuinely free.
 
 ## Security Guidelines
 
