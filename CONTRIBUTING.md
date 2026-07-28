@@ -238,6 +238,14 @@ trace with expected failure outcomes and optional assertions.
    check from [Verify Locally](#4-verify-locally). `ocpp-debugkit ci` does not
    cover formatting, lint, or types.
 
+5. Add a changeset with `pnpm changeset`, and pick **patch**. A new scenario does
+   add a public export, but scenarios are test corpus rather than consumer API
+   surface: nothing is built against an individual scenario constant, and the
+   registry is consumed as a whole through `scenarios` and `getScenario()`.
+   Minor and major releases are reserved for changes to the analysis engine, so
+   version numbers keep lining up with the milestones in
+   [ROADMAP.md](ROADMAP.md).
+
 ### Guidelines
 
 - All data must be **synthetic** — no real station IDs, transaction IDs, idTags,
