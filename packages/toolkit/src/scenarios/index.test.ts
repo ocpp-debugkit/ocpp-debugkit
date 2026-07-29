@@ -19,6 +19,7 @@ import {
   heartbeatIrregularScenario,
   unresponsiveCsmsScenario,
   firmwareUpdateSuccessScenario,
+  firmwareUpdateFailureScenario,
 } from './index.js';
 import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.js';
 
@@ -27,8 +28,8 @@ import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.
 // ---------------------------------------------------------------------------
 
 describe('scenario registry', () => {
-  it('exports exactly 16 scenarios', () => {
-    expect(scenarios).toHaveLength(16);
+  it('exports exactly 17 scenarios', () => {
+    expect(scenarios).toHaveLength(17);
   });
 
   it('exports scenario names in order', () => {
@@ -49,6 +50,7 @@ describe('scenario registry', () => {
       'heartbeat-irregular',
       'unresponsive-csms',
       'firmware-update-success',
+      'firmware-update-failure',
     ]);
   });
 
@@ -78,6 +80,7 @@ describe('scenario registry', () => {
     expect(getScenario('heartbeat-irregular')).toBe(heartbeatIrregularScenario);
     expect(getScenario('unresponsive-csms')).toBe(unresponsiveCsmsScenario);
     expect(getScenario('firmware-update-success')).toBe(firmwareUpdateSuccessScenario);
+    expect(getScenario('firmware-update-failure')).toBe(firmwareUpdateFailureScenario);
   });
 
   it('getScenario returns undefined for unknown name', () => {
@@ -201,6 +204,14 @@ describe('scenario engine integration', () => {
     const sessions = buildSessionTimeline(result.events);
     const failures = detectFailures(result.events, sessions);
     expect(failures.some((f) => f.code === 'DIAGNOSTICS_FAILURE')).toBe(true);
+  });
+
+  it('firmware-update-failure: detects FIRMWARE_UPDATE_FAILURE', () => {
+    const trace = JSON.stringify(firmwareUpdateFailureScenario.trace);
+    const result = parseTrace(trace);
+    const sessions = buildSessionTimeline(result.events);
+    const failures = detectFailures(result.events, sessions);
+    expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(true);
   });
 });
 

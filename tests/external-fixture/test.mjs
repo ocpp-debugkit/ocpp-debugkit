@@ -158,8 +158,8 @@ const scenarios = await import('@ocpp-debugkit/toolkit/scenarios');
 
 assert(Array.isArray(scenarios.scenarios), 'scenarios is an array');
 assert(
-  scenarios.scenarios.length === 16,
-  `16 scenarios exported (got ${scenarios.scenarios.length})`,
+  scenarios.scenarios.length === 17,
+  `17 scenarios exported (got ${scenarios.scenarios.length})`,
 );
 assert(typeof scenarios.getScenario === 'function', 'getScenario is a function');
 assert(scenarios.getScenario('normal-session') !== undefined, 'normal-session scenario exists');
