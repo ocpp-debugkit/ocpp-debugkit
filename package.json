@@ -17,6 +17,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "changeset": "changeset",
+    "version:packages": "changeset version && node scripts/update-current-state.mjs",
     "clean": "turbo run clean && rm -rf node_modules",
     "test:external-fixture": "bash scripts/test-external-fixture.sh"
   },
