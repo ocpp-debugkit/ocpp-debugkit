@@ -62,6 +62,22 @@ these fixes introduce is required across detection.
   per-connector violations still detected (status-transition-violation scenario
   and conformance contract unchanged); 3 regression tests added
 
+### FIRMWARE_UPDATE_FAILURE status vocabulary fix (Issue #154)
+
+- ✅ Rule 10 now matches exactly the two failure values in the OCPP 1.6
+  `FirmwareStatus` enumeration (edition 2, section 7.25): `DownloadFailed` and
+  `InstallationFailed`
+- ✅ Drops `DownloadPaused`, `InstallFailed` and `InstallRebootingFailed`, none
+  of which are 1.6 status values (`DownloadPaused` is an OCPP 2.0.1 value, and
+  an intermediate state there rather than a failure); adds `InstallationFailed`,
+  which the rule was missing, so a conformant station reporting a failed install
+  is now detected
+- ✅ `firmware-update-failure` scenario reports `InstallationFailed` in place of
+  the non-spec `InstallFailed`; its expected failure set is unchanged, so the
+  conformance contract is unchanged
+- Studio carries an independent copy of this rule and needs the same narrowing
+  to stay equivalent under `contract-v1`
+
 ### GitHub Infrastructure
 
 - ✅ GitHub milestones created (M0, M0.5, v0.1.0, v0.2.0, v0.3.0, v1.0.0)
