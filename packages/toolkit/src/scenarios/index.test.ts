@@ -21,6 +21,7 @@ import {
   firmwareUpdateSuccessScenario,
   firmwareUpdateFailureScenario,
   refusedAuthorizationScenario,
+  heartbeatTimeoutScenario,
 } from './index.js';
 import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.js';
 
@@ -29,8 +30,8 @@ import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.
 // ---------------------------------------------------------------------------
 
 describe('scenario registry', () => {
-  it('exports exactly 18 scenarios', () => {
-    expect(scenarios).toHaveLength(18);
+  it('exports exactly 19 scenarios', () => {
+    expect(scenarios).toHaveLength(19);
   });
 
   it('exports scenario names in order', () => {
@@ -53,6 +54,7 @@ describe('scenario registry', () => {
       'firmware-update-success',
       'firmware-update-failure',
       'refused-authorization',
+      'heartbeat-timeout',
     ]);
   });
 
@@ -83,6 +85,8 @@ describe('scenario registry', () => {
     expect(getScenario('unresponsive-csms')).toBe(unresponsiveCsmsScenario);
     expect(getScenario('firmware-update-success')).toBe(firmwareUpdateSuccessScenario);
     expect(getScenario('firmware-update-failure')).toBe(firmwareUpdateFailureScenario);
+    expect(getScenario('refused-authorization')).toBe(refusedAuthorizationScenario);
+    expect(getScenario('heartbeat-timeout')).toBe(heartbeatTimeoutScenario);
   });
 
   it('getScenario returns undefined for unknown name', () => {
@@ -229,6 +233,14 @@ describe('scenario engine integration', () => {
       'Expired',
       'ConcurrentTx',
     ]);
+  });
+
+  it('heartbeat-timeout: detects TIMEOUT_NO_HEARTBEAT', () => {
+    const trace = JSON.stringify(heartbeatTimeoutScenario.trace);
+    const result = parseTrace(trace);
+    const sessions = buildSessionTimeline(result.events);
+    const failures = detectFailures(result.events, sessions);
+    expect(failures.some((f) => f.code === 'TIMEOUT_NO_HEARTBEAT')).toBe(true);
   });
 });
 
