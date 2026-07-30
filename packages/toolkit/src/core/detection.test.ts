@@ -739,6 +739,141 @@ describe('detectFailures', () => {
       expect(violations).toHaveLength(1);
       expect(violations[0]?.eventIds).toEqual(['e1', 'e3']);
     });
+
+    // The transition table of OCPP 1.6 edition 2, section 4.9, transcribed
+    // independently of the rule's own matrix so the two have to agree. Written
+    // out as the spec table reads, row by row, cell labels in the comments.
+    const SPEC_TRANSITION_TABLE: Record<string, string[]> = {
+      // A2, A3, A4, A5, A7, A8, A9
+      Available: [
+        'Preparing',
+        'Charging',
+        'SuspendedEV',
+        'SuspendedEVSE',
+        'Reserved',
+        'Unavailable',
+        'Faulted',
+      ],
+      // B1, B3, B4, B5, B6, B9
+      Preparing: ['Available', 'Charging', 'SuspendedEV', 'SuspendedEVSE', 'Finishing', 'Faulted'],
+      // C1, C4, C5, C6, C8, C9
+      Charging: [
+        'Available',
+        'SuspendedEV',
+        'SuspendedEVSE',
+        'Finishing',
+        'Unavailable',
+        'Faulted',
+      ],
+      // D1, D3, D5, D6, D8, D9
+      SuspendedEV: [
+        'Available',
+        'Charging',
+        'SuspendedEVSE',
+        'Finishing',
+        'Unavailable',
+        'Faulted',
+      ],
+      // E1, E3, E4, E6, E8, E9
+      SuspendedEVSE: [
+        'Available',
+        'Charging',
+        'SuspendedEV',
+        'Finishing',
+        'Unavailable',
+        'Faulted',
+      ],
+      // F1, F2, F8, F9
+      Finishing: ['Available', 'Preparing', 'Unavailable', 'Faulted'],
+      // G1, G2, G8, G9
+      Reserved: ['Available', 'Preparing', 'Unavailable', 'Faulted'],
+      // H1, H2, H3, H4, H5, H9
+      Unavailable: [
+        'Available',
+        'Preparing',
+        'Charging',
+        'SuspendedEV',
+        'SuspendedEVSE',
+        'Faulted',
+      ],
+      // I1 through I8
+      Faulted: [
+        'Available',
+        'Preparing',
+        'Charging',
+        'SuspendedEV',
+        'SuspendedEVSE',
+        'Finishing',
+        'Reserved',
+        'Unavailable',
+      ],
+    };
+
+    const CONNECTOR_STATUSES = Object.keys(SPEC_TRANSITION_TABLE);
+
+    const isFlagged = (from: string, to: string): boolean => {
+      const events = [statusEvent('e1', 1, from, 0), statusEvent('e2', 1, to, 1000)];
+      return detectFailures(events, buildSessionTimeline(events)).some(
+        (f) => f.code === 'STATUS_TRANSITION_VIOLATION',
+      );
+    };
+
+    it('permits every transition the section 4.9 table lists', () => {
+      const wronglyFlagged: string[] = [];
+      for (const [from, targets] of Object.entries(SPEC_TRANSITION_TABLE)) {
+        for (const to of targets) {
+          if (isFlagged(from, to)) wronglyFlagged.push(`${from} -> ${to}`);
+        }
+      }
+      expect(wronglyFlagged).toEqual([]);
+    });
+
+    it('flags every transition the section 4.9 table omits', () => {
+      const wronglyPermitted: string[] = [];
+      for (const from of CONNECTOR_STATUSES) {
+        for (const to of CONNECTOR_STATUSES) {
+          if (from === to) continue; // the diagonal is covered separately
+          if (SPEC_TRANSITION_TABLE[from]?.includes(to)) continue;
+          if (!isFlagged(from, to)) wronglyPermitted.push(`${from} -> ${to}`);
+        }
+      }
+      expect(wronglyPermitted).toEqual([]);
+    });
+
+    // Spot checks for the rows the old matrix got most wrong, kept as named
+    // tests so a regression names itself instead of showing up as a list diff.
+    it('permits recovery from Faulted into any pre-fault state (row I)', () => {
+      for (const to of SPEC_TRANSITION_TABLE.Faulted ?? []) {
+        expect(isFlagged('Faulted', to)).toBe(false);
+      }
+    });
+
+    it('permits resuming an operative state from Unavailable (row H)', () => {
+      for (const to of SPEC_TRANSITION_TABLE.Unavailable ?? []) {
+        expect(isFlagged('Unavailable', to)).toBe(false);
+      }
+    });
+
+    it('permits a scheduled availability change during a session (C8, D8, E8, F8)', () => {
+      for (const from of ['Charging', 'SuspendedEV', 'SuspendedEVSE', 'Finishing']) {
+        expect(isFlagged(from, 'Unavailable')).toBe(false);
+      }
+    });
+
+    it('permits Preparing to Finishing, the B6 cell added by the 1.6 errata', () => {
+      expect(isFlagged('Preparing', 'Finishing')).toBe(false);
+    });
+
+    it('flags Preparing to Unavailable and Finishing to Reserved, absent from the table', () => {
+      expect(isFlagged('Preparing', 'Unavailable')).toBe(true);
+      expect(isFlagged('Finishing', 'Reserved')).toBe(true);
+    });
+
+    it('flags a repeated identical status, since the table has no diagonal', () => {
+      for (const status of CONNECTOR_STATUSES) {
+        expect(isFlagged(status, status)).toBe(true);
+      }
+    });
   });
 
   describe('DIAGNOSTICS_FAILURE', () => {
@@ -801,9 +936,16 @@ describe('detectFailures', () => {
       expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(true);
     });
 
-    it('detects InstallFailed firmware status', () => {
+    it('detects InstallationFailed firmware status', () => {
       const events = [
-        makeEvent('e1', 'm1', 'Call', 'FirmwareStatusNotification', { status: 'InstallFailed' }, 0),
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'FirmwareStatusNotification',
+          { status: 'InstallationFailed' },
+          0,
+        ),
       ];
       const sessions = buildSessionTimeline(events);
       const failures = detectFailures(events, sessions);
@@ -817,6 +959,28 @@ describe('detectFailures', () => {
       const sessions = buildSessionTimeline(events);
       const failures = detectFailures(events, sessions);
       expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(false);
+    });
+
+    // The rule used to match DownloadPaused, InstallFailed and
+    // InstallRebootingFailed, none of which are OCPP 1.6 FirmwareStatus values.
+    // DownloadPaused is an OCPP 2.0.1 value, and an intermediate state there
+    // rather than a failure; the other two are in neither enumeration.
+    it.each(['DownloadPaused', 'InstallFailed', 'InstallRebootingFailed'])(
+      'does not flag %s, which is not an OCPP 1.6 FirmwareStatus failure value',
+      (status) => {
+        const events = [makeEvent('e1', 'm1', 'Call', 'FirmwareStatusNotification', { status }, 0)];
+        const sessions = buildSessionTimeline(events);
+        const failures = detectFailures(events, sessions);
+        expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(false);
+      },
+    );
+
+    it('does not flag the OCPP 1.6 progress and success statuses', () => {
+      for (const status of ['Downloading', 'Downloaded', 'Idle', 'Installing', 'Installed']) {
+        const events = [makeEvent('e1', 'm1', 'Call', 'FirmwareStatusNotification', { status }, 0)];
+        const failures = detectFailures(events, buildSessionTimeline(events));
+        expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(false);
+      }
     });
   });
 

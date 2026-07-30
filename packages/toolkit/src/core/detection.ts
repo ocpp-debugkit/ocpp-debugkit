@@ -607,19 +607,100 @@ function detectUnexpectedStart(events: Event[]): Failure[] {
 
 /**
  * Rule 8: STATUS_TRANSITION_VIOLATION
- * Detects illegal connector status transitions.
- * Valid transitions are based on the OCPP 1.6 connector state model.
+ * Detects connector status transitions the OCPP 1.6 status model does not list.
+ *
+ * This is a cell-by-cell transcription of the transition table in OCPP 1.6
+ * edition 2, section 4.9: 53 permitted transitions across the nine
+ * `ChargePointStatus` values. Each entry is ordered the way the table's columns
+ * are (Available, Preparing, Charging, SuspendedEV, SuspendedEVSE, Finishing,
+ * Reserved, Unavailable, Faulted) and carries the table's own cell labels, so a
+ * reader can check a row against the spec rather than against intuition. Keep it
+ * that way: this matrix drifted from the table once already.
+ *
+ * Two properties of the table worth knowing before reading a violation:
+ *
+ * - The `Faulted` row (`I1`-`I8`) permits recovery to any pre-fault state, and
+ *   the `Unavailable` row permits resuming directly into an operative state, so
+ *   a station that faults mid-session and resumes is conformant.
+ * - The table has no diagonal, so a repeated identical status counts as a
+ *   violation here. A charge point answering a `TriggerMessage` for
+ *   `StatusNotification` legitimately repeats its current status.
+ *
+ * The table applies to connectorId > 0. Section 4.9 limits connectorId 0 to
+ * Available, Unavailable and Faulted; every transition among those three is in
+ * the table, so one matrix serves both.
  */
 const VALID_TRANSITIONS: Record<string, Set<string>> = {
-  Available: new Set(['Preparing', 'Charging', 'Reserved', 'Unavailable', 'Faulted']),
-  Preparing: new Set(['Charging', 'Available', 'SuspendedEVSE', 'Faulted', 'Unavailable']),
-  Charging: new Set(['SuspendedEVSE', 'SuspendedEV', 'Finishing', 'Available', 'Faulted']),
-  SuspendedEVSE: new Set(['Charging', 'Finishing', 'Available', 'Faulted']),
-  SuspendedEV: new Set(['Charging', 'Finishing', 'Available', 'Faulted']),
-  Finishing: new Set(['Available', 'Reserved', 'Faulted']),
-  Reserved: new Set(['Available', 'Unavailable', 'Faulted']),
-  Unavailable: new Set(['Available', 'Faulted']),
-  Faulted: new Set(['Unavailable', 'Available']),
+  // A: A2, A3, A4, A5, A7, A8, A9
+  Available: new Set([
+    'Preparing',
+    'Charging',
+    'SuspendedEV',
+    'SuspendedEVSE',
+    'Reserved',
+    'Unavailable',
+    'Faulted',
+  ]),
+  // B: B1, B3, B4, B5, B6, B9
+  Preparing: new Set([
+    'Available',
+    'Charging',
+    'SuspendedEV',
+    'SuspendedEVSE',
+    'Finishing',
+    'Faulted',
+  ]),
+  // C: C1, C4, C5, C6, C8, C9
+  Charging: new Set([
+    'Available',
+    'SuspendedEV',
+    'SuspendedEVSE',
+    'Finishing',
+    'Unavailable',
+    'Faulted',
+  ]),
+  // D: D1, D3, D5, D6, D8, D9
+  SuspendedEV: new Set([
+    'Available',
+    'Charging',
+    'SuspendedEVSE',
+    'Finishing',
+    'Unavailable',
+    'Faulted',
+  ]),
+  // E: E1, E3, E4, E6, E8, E9
+  SuspendedEVSE: new Set([
+    'Available',
+    'Charging',
+    'SuspendedEV',
+    'Finishing',
+    'Unavailable',
+    'Faulted',
+  ]),
+  // F: F1, F2, F8, F9
+  Finishing: new Set(['Available', 'Preparing', 'Unavailable', 'Faulted']),
+  // G: G1, G2, G8, G9
+  Reserved: new Set(['Available', 'Preparing', 'Unavailable', 'Faulted']),
+  // H: H1, H2, H3, H4, H5, H9
+  Unavailable: new Set([
+    'Available',
+    'Preparing',
+    'Charging',
+    'SuspendedEV',
+    'SuspendedEVSE',
+    'Faulted',
+  ]),
+  // I: I1 through I8
+  Faulted: new Set([
+    'Available',
+    'Preparing',
+    'Charging',
+    'SuspendedEV',
+    'SuspendedEVSE',
+    'Finishing',
+    'Reserved',
+    'Unavailable',
+  ]),
 };
 
 function detectStatusTransitionViolation(events: Event[]): Failure[] {
@@ -708,12 +789,15 @@ function detectDiagnosticsFailure(events: Event[]): Failure[] {
  * Rule 10: FIRMWARE_UPDATE_FAILURE
  * Detects FirmwareStatusNotification indicating a firmware update failure.
  */
-const FIRMWARE_FAILURE_STATUSES = new Set([
-  'DownloadFailed',
-  'DownloadPaused',
-  'InstallFailed',
-  'InstallRebootingFailed',
-]);
+/**
+ * The two failure values in the OCPP 1.6 `FirmwareStatus` enumeration (section
+ * 7.25). The full enumeration is `Downloaded`, `DownloadFailed`, `Downloading`,
+ * `Idle`, `InstallationFailed`, `Installing`, `Installed`; the rest are progress
+ * or success states. Values from later OCPP generations (for example
+ * `DownloadPaused`, which 2.0.1 defines as an intermediate state rather than a
+ * failure) are deliberately not matched here.
+ */
+const FIRMWARE_FAILURE_STATUSES = new Set(['DownloadFailed', 'InstallationFailed']);
 
 function detectFirmwareUpdateFailure(events: Event[]): Failure[] {
   const failures: Failure[] = [];

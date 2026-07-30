@@ -62,6 +62,44 @@ these fixes introduce is required across detection.
   per-connector violations still detected (status-transition-violation scenario
   and conformance contract unchanged); 3 regression tests added
 
+### FIRMWARE_UPDATE_FAILURE status vocabulary fix (Issue #154)
+
+- ✅ Rule 10 now matches exactly the two failure values in the OCPP 1.6
+  `FirmwareStatus` enumeration (edition 2, section 7.25): `DownloadFailed` and
+  `InstallationFailed`
+- ✅ Drops `DownloadPaused`, `InstallFailed` and `InstallRebootingFailed`, none
+  of which are 1.6 status values (`DownloadPaused` is an OCPP 2.0.1 value, and
+  an intermediate state there rather than a failure); adds `InstallationFailed`,
+  which the rule was missing, so a conformant station reporting a failed install
+  is now detected
+- ✅ `firmware-update-failure` scenario reports `InstallationFailed` in place of
+  the non-spec `InstallFailed`; its expected failure set is unchanged, so the
+  conformance contract is unchanged
+- Studio carries an independent copy of this rule and needs the same narrowing
+  to stay equivalent under `contract-v1`
+
+### STATUS_TRANSITION_VIOLATION table transcription (Issue #155)
+
+- ✅ `VALID_TRANSITIONS` is now the OCPP 1.6 edition 2 section 4.9 transition
+  table cell by cell, 53 permitted transitions, with the spec's own cell labels
+  in comments so a row can be checked against the table
+- ✅ Removes 22 false positives, most of them in the recovery rows: the table
+  allows a connector to return from `Faulted` to any pre-fault state (`I1`-`I8`)
+  and from `Unavailable` into any operative state, and allows a scheduled
+  availability change during a session (`C8`, `D8`, `E8`, `F8`)
+- ✅ Adds the 2 transitions the table omits but the rule permitted:
+  `Preparing -> Unavailable` and `Finishing -> Reserved`
+- ✅ A test transcribes the table independently and checks all 72 ordered pairs,
+  so the matrix cannot drift from the spec again without a named failure
+- ✅ status-transition-violation scenario (`Available -> Finishing`) still
+  detected, so the scenario corpus and the conformance contract are unchanged
+- Left deliberately unchanged, each worth its own issue: a repeated identical
+  status is still a violation (the table has no diagonal, but a
+  `TriggerMessage`-driven `StatusNotification` legitimately repeats), and
+  connectorId 0 is not checked against its narrower applicable set
+- Studio carries an independent copy of this matrix and needs the same
+  transcription to stay equivalent under `contract-v1`
+
 ### FAILED_AUTHORIZATION refusal statuses (Issue #156)
 
 - ✅ Rule 1 now reports every refusing value of the OCPP 1.6
