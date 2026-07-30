@@ -4,10 +4,12 @@
 
 ## Current Version
 
-`0.4.3`, firmware-update-success scenario (published 2026-07-28). The v0.4.x
-line is complete. `0.4.3` carries the second `good-first-issue` completed by an
-outside contributor, after `REPEATED_BOOT_NOTIFICATION` (Issue #105, PR #114) in
-`0.3.1`.
+`0.4.4`, firmware-update-failure scenario (published 2026-07-30). The v0.4.x
+interop and correctness milestone is complete; the line continues to take patch
+releases for scenario additions. `0.4.3` and `0.4.4` each carry a
+`good-first-issue` completed by an outside contributor: after
+`REPEATED_BOOT_NOTIFICATION` (Issue #105, PR #114) in `0.3.1`, that is three
+external good-first contributions in total.
 
 ## Active Milestone
 
@@ -290,7 +292,9 @@ these fixes introduce is required across detection.
   `STATUS_TRANSITION_VIOLATION` tracked per connector (Issue #128, PR #131)
 - ✅ `@ocpp-debugkit/toolkit@0.4.3` published 2026-07-28,
   `firmware-update-success` scenario (Issue #104, PR #133)
-- ✅ Git tags + GitHub releases `v0.4.0` through `v0.4.3` created
+- ✅ `@ocpp-debugkit/toolkit@0.4.4` published 2026-07-30,
+  `firmware-update-failure` scenario (Issue #138, PR #147)
+- ✅ Git tags + GitHub releases `v0.4.0` through `v0.4.4` created
 
 ### Contributor Onboarding Fixes (Issue #134)
 
@@ -304,7 +308,7 @@ these fixes introduce is required across detection.
   IDs are documented as unique per scenario
 - ✅ Good-first-issues carry a one-open-claim-at-a-time policy
 
-### External Contribution Pipeline (2026-07-26 to 2026-07-28)
+### External Contribution Pipeline (2026-07-26 to 2026-07-30)
 
 - ✅ Second `good-first-issue` completed by an outside contributor: #133 for
   #104, shipped in `0.4.3`. The scenario registry is at 16. Two of the five
@@ -324,15 +328,30 @@ these fixes introduce is required across detection.
   only on negative or decreasing cumulative readings, and a flat series is
   neither.
 - ✅ Station IDs allocated per issue so parallel work cannot collide:
-  `CS-SYNTHETIC-016` shipped in #133, `017` to #108, `018` to #137, `019` to
-  #138, `020` to #139.
-- 🔜 #140 proposes the standing invariant that every detection rule ships with a
-  scenario in the same PR, which is what stops this gap reopening.
+  `CS-SYNTHETIC-016` shipped in #133, `017` to #108, `018` to #137, `019`
+  shipped in #147, `020` to #139.
+- ✅ #140 landed (PR #148): the standing invariant that every detection rule
+  ships with a scenario in the same PR, added to `CONTRIBUTING.md` as a statement
+  and as step 7 of the rule checklist. This is what stops the coverage gap
+  reopening.
+- ✅ Third `good-first-issue` completed: #138 (`firmware-update-failure`) by the
+  same contributor as #133, shipped in `0.4.4` (Issue #138, PR #147). The
+  registry is at 17. Their PR bumped the detection-rule count in the READMEs by
+  mistake (a scenario is not a rule); corrected in review, rules stay 16.
+- ✅ The patch-not-minor changeset convention held on its own for `0.4.4`: the
+  release PR proposed `0.4.4` with no intervention, so `v0.5.0` stays reserved
+  for OCPP 2.0.1.
+- ✅ Third external contributor arrived (`MayurK-cmd`), assigned #137
+  (`heartbeat-timeout`). #139 held for them next under the one-claim policy.
 - 🔜 #144 proposes a `METER_VALUE_STUCK` rule for a register that never advances,
   the positive counterpart to #108.
 
-Scenario arithmetic to the v1.0 target of 20+: 16 today, plus #108, #137, #138
-and #139 lands at 20, at which point all 16 detection rules are covered.
+Rule coverage: after #147, two of the sixteen detection rules still lack a
+scenario, `TIMEOUT_NO_HEARTBEAT` (#137, assigned) and `REPEATED_BOOT_NOTIFICATION`
+(#139, open).
+
+Scenario arithmetic to the v1.0 target of 20+: 17 today, plus #108, #137 and #139
+lands at 20, at which point all 16 detection rules are covered.
 
 ## What's Next
 
@@ -356,7 +375,7 @@ and #139 lands at 20, at which point all 16 detection rules are covered.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/toolkit` | published | 0.4.3 |
+| `@ocpp-debugkit/toolkit` | published | 0.4.4 |
 | `@ocpp-debugkit/core` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/scenarios` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/reporter` | deprecated | 0.1.1 |
