@@ -261,6 +261,13 @@ trace with expected failure outcomes and optional assertions.
 
 Detection rules identify failure patterns in traces.
 
+**Every detection rule ships with a scenario that exercises it, added in the same
+pull request as the rule.** A rule without a scenario has no regression guard, so
+nothing in the corpus catches it breaking. This is the invariant that keeps the
+scenario corpus honest as rules are added, and it means the scenario count in the
+READMEs tracks real coverage rather than volume. See
+[How to Add a Scenario](#how-to-add-a-scenario).
+
 ### How to Add a Detection Rule
 
 1. Add the failure code to `FailureCode` in `packages/toolkit/src/core/types.ts`.
@@ -289,6 +296,11 @@ Detection rules identify failure patterns in traces.
 
 6. **Audit all existing scenarios** — new rules may trigger on existing fixtures.
    Fix false positives or add the new code to `expectedFailures`.
+
+7. **Add a scenario that exercises the new rule**, in this same pull request,
+   following [How to Add a Scenario](#how-to-add-a-scenario). This is the positive side of
+   step 6: step 6 confirms the rule stays quiet where it should, and this confirms
+   it fires where it should. A rule shipped without one is incomplete.
 
 ## Contributing Good-First-Issues
 
