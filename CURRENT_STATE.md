@@ -24,6 +24,7 @@ step). Do not edit between the markers by hand. Full history lives in
 sections further down.
 
 <!-- RELEASE-LOG:START -->
+- `0.4.5` (2026-07-30): Report every refusing `AuthorizationStatus` in `FAILED_AUTHORIZATION`, not just `Invalid` (#156). The OCPP 1.6 enumeration (edition 2, section 7.2) has five values and only `Accepted` permits charging, so `Blocked`, `Expired` and `ConcurrentTx` end a driver's session exactly as `Invalid` does. The rule fired on `Invalid` alone, which meant a blocked or expired token produced a clean report, and silence from a detector reads as "this is not the problem". All four refusals now report under the existing code, with the status named in the description, and the suggested steps mention the `ConcurrentTx` case. Adds a `refused-authorization` scenario covering the three newly reported statuses, bringing the corpus to 18.; Match `FIRMWARE_UPDATE_FAILURE` to the OCPP 1.6 `FirmwareStatus` enumeration (#154, edition 2 section 7.25). The rule matched `DownloadPaused`, `InstallFailed` and `InstallRebootingFailed`, none of which are 1.6 status values, and did not match `InstallationFailed`, which is one of the two failure values the enumeration defines. A conformant station reporting a failed installation, the more consequential of the two firmware outcomes, went undetected. The rule now matches exactly `DownloadFailed` and `InstallationFailed`, and the `firmware-update-failure` scenario reports `InstallationFailed` instead of the non-spec `InstallFailed` it used before.; Transcribe the `STATUS_TRANSITION_VIOLATION` matrix from the OCPP 1.6 status transition table (#155, edition 2 section 4.9). The matrix disagreed with the table in both directions: it flagged 22 transitions the table permits and permitted 2 it does not list. The false positives were concentrated in the recovery rows, where the table allows a connector to return from `Faulted` to any pre-fault state and from `Unavailable` straight into an operative state, so any station that faulted mid-session and resumed charging, or that took a scheduled availability change during a session (`Charging -> Unavailable` and its siblings), produced a spurious warning. `Preparing -> Unavailable` and `Finishing -> Reserved` are absent from the table and are now flagged. The rule's matrix is now the table cell by cell, with the spec's own cell labels alongside it, and a test transcribes the table independently so the two have to agree.
 - `0.4.4` (2026-07-30): feat(scenarios): add firmware-update-failure scenario
 <!-- RELEASE-LOG:END -->
 
@@ -476,7 +477,7 @@ lands at 20, at which point all 16 detection rules are covered.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/toolkit` | published | 0.4.4 |
+| `@ocpp-debugkit/toolkit` | published | 0.4.5 |
 | `@ocpp-debugkit/core` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/scenarios` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/reporter` | deprecated | 0.1.1 |
