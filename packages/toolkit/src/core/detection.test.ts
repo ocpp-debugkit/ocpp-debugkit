@@ -901,9 +901,16 @@ describe('detectFailures', () => {
       expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(true);
     });
 
-    it('detects InstallFailed firmware status', () => {
+    it('detects InstallationFailed firmware status', () => {
       const events = [
-        makeEvent('e1', 'm1', 'Call', 'FirmwareStatusNotification', { status: 'InstallFailed' }, 0),
+        makeEvent(
+          'e1',
+          'm1',
+          'Call',
+          'FirmwareStatusNotification',
+          { status: 'InstallationFailed' },
+          0,
+        ),
       ];
       const sessions = buildSessionTimeline(events);
       const failures = detectFailures(events, sessions);
@@ -917,6 +924,28 @@ describe('detectFailures', () => {
       const sessions = buildSessionTimeline(events);
       const failures = detectFailures(events, sessions);
       expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(false);
+    });
+
+    // The rule used to match DownloadPaused, InstallFailed and
+    // InstallRebootingFailed, none of which are OCPP 1.6 FirmwareStatus values.
+    // DownloadPaused is an OCPP 2.0.1 value, and an intermediate state there
+    // rather than a failure; the other two are in neither enumeration.
+    it.each(['DownloadPaused', 'InstallFailed', 'InstallRebootingFailed'])(
+      'does not flag %s, which is not an OCPP 1.6 FirmwareStatus failure value',
+      (status) => {
+        const events = [makeEvent('e1', 'm1', 'Call', 'FirmwareStatusNotification', { status }, 0)];
+        const sessions = buildSessionTimeline(events);
+        const failures = detectFailures(events, sessions);
+        expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(false);
+      },
+    );
+
+    it('does not flag the OCPP 1.6 progress and success statuses', () => {
+      for (const status of ['Downloading', 'Downloaded', 'Idle', 'Installing', 'Installed']) {
+        const events = [makeEvent('e1', 'm1', 'Call', 'FirmwareStatusNotification', { status }, 0)];
+        const failures = detectFailures(events, buildSessionTimeline(events));
+        expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(false);
+      }
     });
   });
 

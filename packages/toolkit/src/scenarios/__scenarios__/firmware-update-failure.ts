@@ -1,7 +1,7 @@
 export default {
   name: 'firmware-update-failure',
   description:
-    'Firmware update failure: station boots, firmware download initiates but install fails with InstallFailed status. Expects FIRMWARE_UPDATE_FAILURE failure.',
+    'Firmware update failure: station boots, firmware download initiates but install fails with InstallationFailed status. Expects FIRMWARE_UPDATE_FAILURE failure.',
   trace: {
     traceId: 'scenario-firmware-update-failure',
     metadata: {
@@ -9,7 +9,7 @@ export default {
       ocppVersion: '1.6',
       source: 'synthetic-scenario',
       description:
-        'Station boots, reports Downloading firmware, then InstallFailed within seconds, followed by a heartbeat to confirm station is still online.',
+        'Station boots, reports Downloading firmware, then InstallationFailed within seconds, followed by a heartbeat to confirm station is still online.',
     },
     events: [
       {
@@ -53,7 +53,7 @@ export default {
       {
         timestamp: '2026-01-15T07:01:00.000Z',
         direction: 'CS_TO_CSMS',
-        message: [2, 'msg-003', 'FirmwareStatusNotification', { status: 'InstallFailed' }],
+        message: [2, 'msg-003', 'FirmwareStatusNotification', { status: 'InstallationFailed' }],
       },
       {
         timestamp: '2026-01-15T07:01:00.500Z',
