@@ -11,6 +11,18 @@ releases for scenario additions. `0.4.3` and `0.4.4` each carry a
 `REPEATED_BOOT_NOTIFICATION` (Issue #105, PR #114) in `0.3.1`, that is three
 external good-first contributions in total.
 
+## Release Log
+
+The version and the entries below are maintained automatically by the release
+workflow (`scripts/update-current-state.mjs`, run in the changesets version
+step). Do not edit between the markers by hand. Full history lives in
+[`packages/toolkit/CHANGELOG.md`](packages/toolkit/CHANGELOG.md) and the release
+sections further down.
+
+<!-- RELEASE-LOG:START -->
+- `0.4.4` (2026-07-30): feat(scenarios): add firmware-update-failure scenario
+<!-- RELEASE-LOG:END -->
+
 ## Active Milestone
 
 **v0.5.0 (OCPP 2.0.1), after a complete v0.4.x**
