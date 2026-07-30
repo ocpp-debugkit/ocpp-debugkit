@@ -62,6 +62,28 @@ these fixes introduce is required across detection.
   per-connector violations still detected (status-transition-violation scenario
   and conformance contract unchanged); 3 regression tests added
 
+### FAILED_AUTHORIZATION refusal statuses (Issue #156)
+
+- ✅ Rule 1 now reports every refusing value of the OCPP 1.6
+  `AuthorizationStatus` enumeration (edition 2, section 7.2): `Blocked`,
+  `Expired`, `Invalid` and `ConcurrentTx`. It previously fired on `Invalid`
+  alone, so a blocked or expired token produced a clean report
+- ✅ One code rather than four: the operator-facing question is the same in every
+  case, the status is named in the description, and severity stays `warning`.
+  Adding codes grows the published `FailureCode` union and the `contract-v1`
+  surface, so it is worth doing only when a consumer would act differently
+- ✅ New `refused-authorization` scenario (18 in the corpus) covering the three
+  newly reported statuses; counts updated in the registry test, the external
+  fixture test, and both READMEs
+- ✅ No existing scenario's detected code set changes, so the conformance
+  contract is unchanged
+- Out of scope, worth its own issue: the rule only inspects `Authorize`
+  responses, while `StartTransaction.conf` and `StopTransaction.conf` also carry
+  `idTagInfo` (section 4.8 re-verifies the identifier on `StartTransaction`, so a
+  session can start and then be deauthorized)
+- Studio's independent copy of this rule needs the same widening to stay
+  equivalent under `contract-v1`
+
 ### GitHub Infrastructure
 
 - ✅ GitHub milestones created (M0, M0.5, v0.1.0, v0.2.0, v0.3.0, v1.0.0)
