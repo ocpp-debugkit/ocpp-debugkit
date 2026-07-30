@@ -1,6 +1,10 @@
 # CURRENT_STATE.md
 
 > Living document — updated inside every PR before merge.
+>
+> Since #151 the release facts (the Release Log and the Package Status Table
+> version) are maintained automatically by the release workflow. Everything else
+> here is hand-written.
 
 ## Current Version
 
@@ -364,6 +368,31 @@ scenario, `TIMEOUT_NO_HEARTBEAT` (#137, assigned) and `REPEATED_BOOT_NOTIFICATIO
 
 Scenario arithmetic to the v1.0 target of 20+: 17 today, plus #108, #137 and #139
 lands at 20, at which point all 16 detection rules are covered.
+
+### Release Log Automation (Issue #151, PR #152)
+
+- ✅ This document went stale after three consecutive releases (`0.3.2`, `0.4.3`,
+  `0.4.4`), each needing a manual catch-up PR (#146, #150). The cause was
+  structural: the changesets release PR bumps `package.json` and `CHANGELOG.md`
+  and never touched this file, so the version drifted every cycle.
+- ✅ `scripts/update-current-state.mjs` now runs immediately after
+  `changeset version`, wired through a `version:packages` root script that the
+  release workflow's `version` command calls. The edit rides the existing
+  "version packages" PR, which already gets CI and a human merge, so nothing
+  pushes directly to protected `main` and no extra PR is created.
+- ✅ Two spots are machine-owned: the `@ocpp-debugkit/toolkit` row in the Package
+  Status Table, and the Release Log between its `RELEASE-LOG` markers. The
+  editorial prose, including the Current Version narrative, stays hand-written by
+  design, since a per-release sentence is commentary rather than a fact.
+- ✅ The script is idempotent and uses only Node built-ins, so it adds no
+  dependency. `scripts/update-current-state.test.ts` covers changelog parsing,
+  the table replace, insert ordering, idempotency, and both error paths.
+- ✅ An eslint override supplies Node globals for `scripts/**/*.mjs`, which run
+  outside the TypeScript build.
+- 🔜 One link is unproven until it runs for real: the changesets action committing
+  this file into the version PR. Standard changesets behaviour commits whatever
+  the version command produces, so the next release is the check. If the entry is
+  missing from the next "version packages" PR, that step is where to look.
 
 ## What's Next
 
