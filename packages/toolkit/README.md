@@ -13,7 +13,7 @@ report generation, React components, and CLI.
   `parseOpenOcppTrace()` (with `parseTrace()` auto-detection) reads it,
   `toOpenOcppTraceJsonl()` and the `convert` CLI command emit it, both checked
   against the specification's conformance fixtures.
-- **Failure Detection** — 17 detection rules (4 critical, 10 warning, 2 info)
+- **Failure Detection** — 16 detection rules (4 critical, 10 warning, 2 info)
   covering common failure patterns: failed authorization, connector faults,
   station offline, heartbeat timeout, meter value gaps, invalid stop reasons,
   unexpected starts, status transition violations, diagnostics failures,

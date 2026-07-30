@@ -73,7 +73,5 @@ export default {
     ],
   },
   expectedFailures: ['FIRMWARE_UPDATE_FAILURE'],
-  assertions: [
-    { type: 'failure_count', params: { code: 'FIRMWARE_UPDATE_FAILURE', min: 1 } },
-  ],
+  assertions: [{ type: 'failure_count', params: { code: 'FIRMWARE_UPDATE_FAILURE', min: 1 } }],
 };
