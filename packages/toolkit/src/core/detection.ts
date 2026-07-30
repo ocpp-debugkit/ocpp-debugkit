@@ -696,12 +696,15 @@ function detectDiagnosticsFailure(events: Event[]): Failure[] {
  * Rule 10: FIRMWARE_UPDATE_FAILURE
  * Detects FirmwareStatusNotification indicating a firmware update failure.
  */
-const FIRMWARE_FAILURE_STATUSES = new Set([
-  'DownloadFailed',
-  'DownloadPaused',
-  'InstallFailed',
-  'InstallRebootingFailed',
-]);
+/**
+ * The two failure values in the OCPP 1.6 `FirmwareStatus` enumeration (section
+ * 7.25). The full enumeration is `Downloaded`, `DownloadFailed`, `Downloading`,
+ * `Idle`, `InstallationFailed`, `Installing`, `Installed`; the rest are progress
+ * or success states. Values from later OCPP generations (for example
+ * `DownloadPaused`, which 2.0.1 defines as an intermediate state rather than a
+ * failure) are deliberately not matched here.
+ */
+const FIRMWARE_FAILURE_STATUSES = new Set(['DownloadFailed', 'InstallationFailed']);
 
 function detectFirmwareUpdateFailure(events: Event[]): Failure[] {
   const failures: Failure[] = [];
