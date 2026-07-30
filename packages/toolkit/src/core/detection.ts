@@ -4,7 +4,7 @@
  * 16 detection rules (v0.1 + v0.2 + v0.3):
  *
  * v0.1:
- * 1. FAILED_AUTHORIZATION — Authorize response with idTagInfo.status = "Invalid"
+ * 1. FAILED_AUTHORIZATION — Authorize response with a refusing idTagInfo.status
  * 2. CONNECTOR_FAULT — StatusNotification with status = "Faulted" during active session
  * 3. STATION_OFFLINE_DURING_SESSION — session has StartTransaction but no StopTransaction
  *
@@ -39,6 +39,7 @@ const SUGGESTED_STEPS: Record<FailureCode, string[]> = {
     'Verify the idTag is valid and not expired',
     'Check the CSMS local authorization list',
     'Ensure the idTag is not blocked or deactivated',
+    'For ConcurrentTx, check whether the idTag is still open on another transaction',
     'Review the Authorize response payload for rejection reason',
   ],
   CONNECTOR_FAULT: [
@@ -202,8 +203,19 @@ function getStatusNotificationErrorCode(event: Event): string | null {
 // ---------------------------------------------------------------------------
 
 /**
+ * The refusing values of the OCPP 1.6 `AuthorizationStatus` enumeration (edition
+ * 2, section 7.2). The enumeration has five values and only `Accepted` permits
+ * charging: `Blocked` and `Expired` are refusals of a known identifier,
+ * `Invalid` means the identifier is unknown, and `ConcurrentTx` means it is
+ * already in another transaction. Section 7.2 marks `ConcurrentTx` as only
+ * relevant to `StartTransaction.req`, so seeing it on an `Authorize` response is
+ * itself irregular, but it is still a refusal.
+ */
+const AUTHORIZATION_REFUSAL_STATUSES = new Set(['Blocked', 'Expired', 'Invalid', 'ConcurrentTx']);
+
+/**
  * Rule 1: FAILED_AUTHORIZATION
- * Detects Authorize responses where idTagInfo.status is "Invalid".
+ * Detects Authorize responses carrying an idTagInfo.status that refuses charging.
  */
 function detectFailedAuthorization(events: Event[]): Failure[] {
   const failures: Failure[] = [];
@@ -222,10 +234,10 @@ function detectFailedAuthorization(events: Event[]): Failure[] {
     if (!matchingCall) continue;
 
     const status = getAuthorizeStatus(event);
-    if (status === 'Invalid') {
+    if (status !== null && AUTHORIZATION_REFUSAL_STATUSES.has(status)) {
       failures.push({
         code: 'FAILED_AUTHORIZATION',
-        description: `Authorization rejected: idTag returned "Invalid" status (messageId: ${event.messageId})`,
+        description: `Authorization rejected: idTag returned "${status}" status (messageId: ${event.messageId})`,
         severity: SEVERITY.FAILED_AUTHORIZATION,
         eventIds: [matchingCall.id, event.id],
         suggestedSteps: SUGGESTED_STEPS.FAILED_AUTHORIZATION,

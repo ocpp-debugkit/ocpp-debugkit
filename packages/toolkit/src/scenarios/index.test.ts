@@ -20,6 +20,7 @@ import {
   unresponsiveCsmsScenario,
   firmwareUpdateSuccessScenario,
   firmwareUpdateFailureScenario,
+  refusedAuthorizationScenario,
 } from './index.js';
 import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.js';
 
@@ -28,8 +29,8 @@ import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.
 // ---------------------------------------------------------------------------
 
 describe('scenario registry', () => {
-  it('exports exactly 17 scenarios', () => {
-    expect(scenarios).toHaveLength(17);
+  it('exports exactly 18 scenarios', () => {
+    expect(scenarios).toHaveLength(18);
   });
 
   it('exports scenario names in order', () => {
@@ -51,6 +52,7 @@ describe('scenario registry', () => {
       'unresponsive-csms',
       'firmware-update-success',
       'firmware-update-failure',
+      'refused-authorization',
     ]);
   });
 
@@ -212,6 +214,21 @@ describe('scenario engine integration', () => {
     const sessions = buildSessionTimeline(result.events);
     const failures = detectFailures(result.events, sessions);
     expect(failures.some((f) => f.code === 'FIRMWARE_UPDATE_FAILURE')).toBe(true);
+  });
+
+  it('refused-authorization: detects FAILED_AUTHORIZATION for each non-Invalid refusal', () => {
+    const trace = JSON.stringify(refusedAuthorizationScenario.trace);
+    const result = parseTrace(trace);
+    const sessions = buildSessionTimeline(result.events);
+    const failures = detectFailures(result.events, sessions).filter(
+      (f) => f.code === 'FAILED_AUTHORIZATION',
+    );
+    expect(failures).toHaveLength(3);
+    expect(failures.map((f) => f.description.match(/"(\w+)" status/)?.[1])).toEqual([
+      'Blocked',
+      'Expired',
+      'ConcurrentTx',
+    ]);
   });
 });
 

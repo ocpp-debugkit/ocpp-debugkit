@@ -126,6 +126,41 @@ describe('detectFailures', () => {
 
       expect(failures.filter((f) => f.code === 'FAILED_AUTHORIZATION')).toHaveLength(2);
     });
+
+    // OCPP 1.6 edition 2, section 7.2: AuthorizationStatus has five values and
+    // only Accepted permits charging. The rule used to fire on Invalid alone.
+    const authorizeWithStatus = (status: string): Event[] => [
+      makeEvent('evt-0001', 'msg-001', 'Call', 'Authorize', { idTag: 'SYNTHETIC-TAG-001' }, 1000),
+      makeEvent(
+        'evt-0002',
+        'msg-001',
+        'CallResult',
+        null,
+        { idTagInfo: { status } },
+        1500,
+        'CSMS_TO_CS',
+      ),
+    ];
+
+    it.each(['Invalid', 'Blocked', 'Expired', 'ConcurrentTx'])(
+      'detects %s as a refused authorization',
+      (status) => {
+        const events = authorizeWithStatus(status);
+        const failures = detectFailures(events, buildSessionTimeline(events)).filter(
+          (f) => f.code === 'FAILED_AUTHORIZATION',
+        );
+        expect(failures).toHaveLength(1);
+        expect(failures[0]?.severity).toBe('warning');
+        expect(failures[0]?.description).toContain(`"${status}"`);
+        expect(failures[0]?.eventIds).toEqual(['evt-0001', 'evt-0002']);
+      },
+    );
+
+    it('does not flag an unrecognized idTagInfo status', () => {
+      const events = authorizeWithStatus('NotAnAuthorizationStatus');
+      const failures = detectFailures(events, buildSessionTimeline(events));
+      expect(failures.some((f) => f.code === 'FAILED_AUTHORIZATION')).toBe(false);
+    });
   });
 
   describe('CONNECTOR_FAULT', () => {
