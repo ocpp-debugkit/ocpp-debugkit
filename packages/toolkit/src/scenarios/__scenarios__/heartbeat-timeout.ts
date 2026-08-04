@@ -46,7 +46,7 @@ export default {
           2,
           'msg-002',
           'StatusNotification',
-          { connector: 1, status: 'Available', errorCode: 'NoError' },
+          { connectorId: 1, status: 'Available', errorCode: 'NoError' },
         ],
       },
       {
