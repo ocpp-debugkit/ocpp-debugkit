@@ -385,7 +385,7 @@ these fixes introduce is required across detection.
   IDs are documented as unique per scenario
 - ✅ Good-first-issues carry a one-open-claim-at-a-time policy
 
-### External Contribution Pipeline (2026-07-26 to 2026-07-30)
+### External Contribution Pipeline (2026-07-26 to 2026-08-08)
 
 - ✅ Second `good-first-issue` completed by an outside contributor: #133 for
   #104, shipped in `0.4.3`. The scenario registry is at 16. Two of the five
@@ -405,8 +405,11 @@ these fixes introduce is required across detection.
   only on negative or decreasing cumulative readings, and a flat series is
   neither.
 - ✅ Station IDs allocated per issue so parallel work cannot collide:
-  `CS-SYNTHETIC-016` shipped in #133, `017` to #108, `018` to #137, `019`
-  shipped in #147, `020` to #139.
+  `CS-SYNTHETIC-016` shipped in #133, `018` shipped in #161, `019` shipped in
+  #147, `020` reserved for #139, `021` reserved for #108. `017` is NOT free:
+  `refused-authorization.ts` took it in `0.4.5`, which is why #108 moved off it.
+  Live allocation is 004 through 019 in use, 020 and 021 reserved, so the next
+  free number is 022.
 - ✅ #140 landed (PR #148): the standing invariant that every detection rule
   ships with a scenario in the same PR, added to `CONTRIBUTING.md` as a statement
   and as step 7 of the rule checklist. This is what stops the coverage gap
@@ -420,15 +423,36 @@ these fixes introduce is required across detection.
   for OCPP 2.0.1.
 - ✅ Third external contributor arrived (`MayurK-cmd`), assigned #137
   (`heartbeat-timeout`). #139 held for them next under the one-claim policy.
+- ✅ Fourth `good-first-issue` completed and the third external contributor's
+  first merge: #137 (`heartbeat-timeout`) by `MayurK-cmd` (Issue #137, PR #161).
+  The registry is at 19. They also picked up a missing
+  `getScenario('refused-authorization')` assertion that PR #159 left behind, which
+  was not asked for and was correct.
+- ✅ Both remaining scenario issues are now assigned: #139 to `MayurK-cmd` under
+  the promise made when they claimed two at once, and #108 to
+  `YANGCHUNHONG3000`, their third.
+- ✅ #108 carried a live trap, caught before the contributor started: it reserved
+  `CS-SYNTHETIC-017`, which `refused-authorization.ts` had already consumed in
+  `0.4.5`. Anyone following the issue would have created the same collision #133
+  did. Moved to `CS-SYNTHETIC-021`.
+- ✅ The release automation from #152 proved itself unattended: `0.4.5` was logged
+  and the Package Status Table moved with no manual step. Only the narrative here
+  still needs a human, which is the split by design.
 - 🔜 #144 proposes a `METER_VALUE_STUCK` rule for a register that never advances,
   the positive counterpart to #108.
+- 🔜 #163 records that CI never evaluates the scenarios' declared `assertions`.
+  `evaluateScenario` reaches the registry only through `ocpp-debugkit ci`, which
+  is not a workflow step, and the one test that touches it builds its scenarios by
+  hand. Nine scenario files assert things nothing verifies. Found while reviewing
+  #161; pre-existing and unrelated to that contribution.
 
-Rule coverage: after #147, two of the sixteen detection rules still lack a
-scenario, `TIMEOUT_NO_HEARTBEAT` (#137, assigned) and `REPEATED_BOOT_NOTIFICATION`
-(#139, open).
+Rule coverage: after #161, one of the sixteen detection rules still lacks a
+scenario. Verified by iterating the registry, 15 of the 16 codes appear in some
+scenario's `expectedFailures`, and `REPEATED_BOOT_NOTIFICATION` (#139, assigned)
+is the sole gap.
 
-Scenario arithmetic to the v1.0 target of 20+: 17 today, plus #108, #137 and #139
-lands at 20, at which point all 16 detection rules are covered.
+Scenario arithmetic to the v1.0 target of 20+: 19 today, and #108 plus #139 take
+it to 21, at which point all 16 detection rules are covered.
 
 ### Release Log Automation (Issue #151, PR #152)
 
