@@ -23,6 +23,7 @@ import unresponsiveCsms from './__scenarios__/unresponsive-csms.js';
 import firmwareUpdateSuccess from './__scenarios__/firmware-update-success.js';
 import firmwareUpdateFailure from './__scenarios__/firmware-update-failure.js';
 import refusedAuthorization from './__scenarios__/refused-authorization.js';
+import heartbeatTimeout from './__scenarios__/heartbeat-timeout.js';
 
 // ---------------------------------------------------------------------------
 // Scenarios derived from core fixtures
@@ -72,6 +73,7 @@ const unresponsiveCsmsScenario: Scenario = unresponsiveCsms as unknown as Scenar
 const firmwareUpdateSuccessScenario: Scenario = firmwareUpdateSuccess as unknown as Scenario;
 const firmwareUpdateFailureScenario: Scenario = firmwareUpdateFailure as unknown as Scenario;
 const refusedAuthorizationScenario: Scenario = refusedAuthorization as unknown as Scenario;
+const heartbeatTimeoutScenario: Scenario = heartbeatTimeout as unknown as Scenario;
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -96,6 +98,7 @@ export const scenarios = [
   firmwareUpdateSuccessScenario,
   firmwareUpdateFailureScenario,
   refusedAuthorizationScenario,
+  heartbeatTimeoutScenario,
 ] as const;
 
 export const scenarioNames = [
@@ -117,6 +120,7 @@ export const scenarioNames = [
   'firmware-update-success',
   'firmware-update-failure',
   'refused-authorization',
+  'heartbeat-timeout',
 ] as const;
 
 export {
@@ -138,6 +142,7 @@ export {
   firmwareUpdateSuccessScenario,
   firmwareUpdateFailureScenario,
   refusedAuthorizationScenario,
+  heartbeatTimeoutScenario,
 };
 
 export { compareScenarioReports } from './compare.js';
