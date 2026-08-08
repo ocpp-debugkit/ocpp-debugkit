@@ -8,12 +8,13 @@
 
 ## Current Version
 
-`0.4.4`, firmware-update-failure scenario (published 2026-07-30). The v0.4.x
-interop and correctness milestone is complete; the line continues to take patch
-releases for scenario additions. `0.4.3` and `0.4.4` each carry a
-`good-first-issue` completed by an outside contributor: after
-`REPEATED_BOOT_NOTIFICATION` (Issue #105, PR #114) in `0.3.1`, that is three
-external good-first contributions in total.
+`0.4.6`, heartbeat-timeout scenario (published 2026-08-08). The v0.4.x interop and
+correctness milestone is complete; the line continues to take patch releases for
+scenario additions. Three of those patches each carry a `good-first-issue`
+completed by an outside contributor, `0.4.3` (Issue #104, PR #133), `0.4.4`
+(Issue #138, PR #147) and `0.4.6` (Issue #137, PR #161). With
+`REPEATED_BOOT_NOTIFICATION` (Issue #105, PR #114) in `0.3.1`, that is four
+external good-first contributions in total, from three different people.
 
 ## Release Log
 
