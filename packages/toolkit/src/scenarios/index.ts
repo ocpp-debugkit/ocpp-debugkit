@@ -24,6 +24,7 @@ import firmwareUpdateSuccess from './__scenarios__/firmware-update-success.js';
 import firmwareUpdateFailure from './__scenarios__/firmware-update-failure.js';
 import refusedAuthorization from './__scenarios__/refused-authorization.js';
 import heartbeatTimeout from './__scenarios__/heartbeat-timeout.js';
+import meterValueZero from './__scenarios__/meter-value-zero.js';
 
 // ---------------------------------------------------------------------------
 // Scenarios derived from core fixtures
@@ -74,6 +75,7 @@ const firmwareUpdateSuccessScenario: Scenario = firmwareUpdateSuccess as unknown
 const firmwareUpdateFailureScenario: Scenario = firmwareUpdateFailure as unknown as Scenario;
 const refusedAuthorizationScenario: Scenario = refusedAuthorization as unknown as Scenario;
 const heartbeatTimeoutScenario: Scenario = heartbeatTimeout as unknown as Scenario;
+const meterValueZeroScenario: Scenario = meterValueZero as unknown as Scenario;
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -99,6 +101,7 @@ export const scenarios = [
   firmwareUpdateFailureScenario,
   refusedAuthorizationScenario,
   heartbeatTimeoutScenario,
+  meterValueZeroScenario,
 ] as const;
 
 export const scenarioNames = [
@@ -121,6 +124,7 @@ export const scenarioNames = [
   'firmware-update-failure',
   'refused-authorization',
   'heartbeat-timeout',
+  'meter-value-zero',
 ] as const;
 
 export {
@@ -143,6 +147,7 @@ export {
   firmwareUpdateFailureScenario,
   refusedAuthorizationScenario,
   heartbeatTimeoutScenario,
+  meterValueZeroScenario,
 };
 
 export { compareScenarioReports } from './compare.js';
