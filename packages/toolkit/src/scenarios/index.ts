@@ -23,7 +23,9 @@ import unresponsiveCsms from './__scenarios__/unresponsive-csms.js';
 import firmwareUpdateSuccess from './__scenarios__/firmware-update-success.js';
 import firmwareUpdateFailure from './__scenarios__/firmware-update-failure.js';
 import refusedAuthorization from './__scenarios__/refused-authorization.js';
-
+import heartbeatTimeout from './__scenarios__/heartbeat-timeout.js';
+import repeatedBootNotification from './__scenarios__/repeated-boot-notification.js';
+>
 // ---------------------------------------------------------------------------
 // Scenarios derived from core fixtures
 // ---------------------------------------------------------------------------
@@ -72,7 +74,9 @@ const unresponsiveCsmsScenario: Scenario = unresponsiveCsms as unknown as Scenar
 const firmwareUpdateSuccessScenario: Scenario = firmwareUpdateSuccess as unknown as Scenario;
 const firmwareUpdateFailureScenario: Scenario = firmwareUpdateFailure as unknown as Scenario;
 const refusedAuthorizationScenario: Scenario = refusedAuthorization as unknown as Scenario;
-
+const heartbeatTimeoutScenario: Scenario = heartbeatTimeout as unknown as Scenario;
+const repeatedBootNotificationScenario: Scenario = repeatedBootNotification as unknown as Scenario;
+>
 // ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
@@ -96,7 +100,9 @@ export const scenarios = [
   firmwareUpdateSuccessScenario,
   firmwareUpdateFailureScenario,
   refusedAuthorizationScenario,
-] as const;
+  heartbeatTimeoutScenario,
+  repeatedBootNotificationScenario,
+>] as const;
 
 export const scenarioNames = [
   'normal-session',
@@ -117,7 +123,9 @@ export const scenarioNames = [
   'firmware-update-success',
   'firmware-update-failure',
   'refused-authorization',
-] as const;
+  'heartbeat-timeout',
+  'repeated-boot-notification',
+>] as const;
 
 export {
   normalSessionScenario,
@@ -138,7 +146,9 @@ export {
   firmwareUpdateSuccessScenario,
   firmwareUpdateFailureScenario,
   refusedAuthorizationScenario,
-};
+  heartbeatTimeoutScenario,
+  repeatedBootNotificationScenario,
+>};
 
 export { compareScenarioReports } from './compare.js';
 export type { ScenarioComparison } from './compare.js';
