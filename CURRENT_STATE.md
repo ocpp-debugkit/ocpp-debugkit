@@ -410,8 +410,9 @@ these fixes introduce is required across detection.
 - ✅ Station IDs allocated per issue so parallel work cannot collide:
   `CS-SYNTHETIC-016` shipped in #133, `018` in #161, `019` in #147, `020` in #170,
   `021` in #169. `017` is NOT free: `refused-authorization.ts` took it in `0.4.5`,
-  which is why #108 moved off it. Live allocation is 004 through 021 all in use, so
-  the next free number is 022.
+  which is why #108 moved off it. Live allocation is 004 through 021 in use, `022`
+  reserved for #173, `023` for #174 and `024` for #175, so the next free number is
+  025.
   The `021` move also needed the `idTag` and `transactionId` renumbered to match,
   which #108 still carried from before the move; caught in review of #169.
 - ✅ #140 landed (PR #148): the standing invariant that every detection rule
@@ -471,6 +472,42 @@ registry rather than by reading: 16 of 16 codes appear in some scenario's
 Scenario corpus: **21**, which clears the 20+ target in the v1.0 milestone
 (`ROADMAP.md` line 157). That exit criterion is met; the remaining v1.0 work is API
 stabilization, the docs overhaul and release hardening.
+
+### Newcomer Backlog Refill (2026-08-10)
+
+With positive rule coverage finished, more "cover rule X" issues would be busywork,
+so the backlog was refilled against a measured gap instead. Only 3 of the 21
+scenarios are negative controls (`firmware-update-success`, `meter-value-zero`,
+`unexpected-stop-reason`), yet every correctness fix this project has shipped was a
+false positive or a spec mismatch: #127, #128 and #155 on
+`STATUS_TRANSITION_VIOLATION`, #154 on `FIRMWARE_UPDATE_FAILURE`, #156 on
+`FAILED_AUTHORIZATION`. #155 alone found the rule flagging 22 transitions the
+section 4.9 table permits, and nothing in the corpus would have noticed. Negative
+controls are the guard for that class.
+
+- 🔜 #173 legal status transitions stay quiet (`CS-SYNTHETIC-022`). The highest
+  value of the three, given the two prior bugs in that rule.
+- 🔜 #174 boots outside the five minute repeat window (`023`). #139 covers the
+  inside of the window; nothing covered the outside, so widening it or making the
+  comparison inclusive would pass the suite today.
+- 🔜 #175 healthy heartbeat cadence (`024`), guarding both heartbeat rules at once.
+- 🔜 #176 make coverage measurable. `vitest.config.ts` configures coverage and
+  `CONTRIBUTING.md` states a 70% target for core, but `@vitest/coverage-v8` is not
+  a dependency, so `vitest run --coverage` fails with a missing-dependency error and
+  the stated target has never been checked. The issue asks for the real number and
+  explicitly does not change thresholds or gate CI, both of which are separate
+  decisions.
+- 🔜 #177 the `react` module: five published components across 388 lines with no
+  test file, and untestable as configured, since the vitest environment is `node`
+  with no jsdom or testing-library and React only a peer dependency. Deliberately
+  not labelled `good-first-issue`: the DOM environment and component-testing
+  approach are maintainer decisions, and `ReportViewer` renders caller-supplied
+  HTML, so its test encodes a sanitization decision worth making deliberately.
+
+The traces in #173, #174 and #175 were each built and run through the detection
+engine before publishing, and all three report no failures, so the specs are
+known-good rather than plausible. The good-first-issue backlog went from 2 unclaimed
+to 6.
 
 ### Release Log Automation (Issue #151, PR #152)
 
