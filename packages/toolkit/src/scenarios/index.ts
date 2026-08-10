@@ -24,6 +24,7 @@ import firmwareUpdateSuccess from './__scenarios__/firmware-update-success.js';
 import firmwareUpdateFailure from './__scenarios__/firmware-update-failure.js';
 import refusedAuthorization from './__scenarios__/refused-authorization.js';
 import heartbeatTimeout from './__scenarios__/heartbeat-timeout.js';
+import repeatedBootNotification from './__scenarios__/repeated-boot-notification.js';
 import meterValueZero from './__scenarios__/meter-value-zero.js';
 
 // ---------------------------------------------------------------------------
@@ -75,6 +76,7 @@ const firmwareUpdateSuccessScenario: Scenario = firmwareUpdateSuccess as unknown
 const firmwareUpdateFailureScenario: Scenario = firmwareUpdateFailure as unknown as Scenario;
 const refusedAuthorizationScenario: Scenario = refusedAuthorization as unknown as Scenario;
 const heartbeatTimeoutScenario: Scenario = heartbeatTimeout as unknown as Scenario;
+const repeatedBootNotificationScenario: Scenario = repeatedBootNotification as unknown as Scenario;
 const meterValueZeroScenario: Scenario = meterValueZero as unknown as Scenario;
 
 // ---------------------------------------------------------------------------
@@ -101,6 +103,7 @@ export const scenarios = [
   firmwareUpdateFailureScenario,
   refusedAuthorizationScenario,
   heartbeatTimeoutScenario,
+  repeatedBootNotificationScenario,
   meterValueZeroScenario,
 ] as const;
 
@@ -124,6 +127,7 @@ export const scenarioNames = [
   'firmware-update-failure',
   'refused-authorization',
   'heartbeat-timeout',
+  'repeated-boot-notification',
   'meter-value-zero',
 ] as const;
 
@@ -147,6 +151,7 @@ export {
   firmwareUpdateFailureScenario,
   refusedAuthorizationScenario,
   heartbeatTimeoutScenario,
+  repeatedBootNotificationScenario,
   meterValueZeroScenario,
 };
 

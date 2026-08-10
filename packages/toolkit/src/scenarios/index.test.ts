@@ -22,6 +22,7 @@ import {
   firmwareUpdateFailureScenario,
   refusedAuthorizationScenario,
   heartbeatTimeoutScenario,
+  repeatedBootNotificationScenario,
   meterValueZeroScenario,
 } from './index.js';
 import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.js';
@@ -31,8 +32,8 @@ import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.
 // ---------------------------------------------------------------------------
 
 describe('scenario registry', () => {
-  it('exports exactly 20 scenarios', () => {
-    expect(scenarios).toHaveLength(20);
+  it('exports exactly 21 scenarios', () => {
+    expect(scenarios).toHaveLength(21);
   });
 
   it('exports scenario names in order', () => {
@@ -56,6 +57,7 @@ describe('scenario registry', () => {
       'firmware-update-failure',
       'refused-authorization',
       'heartbeat-timeout',
+      'repeated-boot-notification',
       'meter-value-zero',
     ]);
   });
@@ -89,6 +91,7 @@ describe('scenario registry', () => {
     expect(getScenario('firmware-update-failure')).toBe(firmwareUpdateFailureScenario);
     expect(getScenario('refused-authorization')).toBe(refusedAuthorizationScenario);
     expect(getScenario('heartbeat-timeout')).toBe(heartbeatTimeoutScenario);
+    expect(getScenario('repeated-boot-notification')).toBe(repeatedBootNotificationScenario);
     expect(getScenario('meter-value-zero')).toBe(meterValueZeroScenario);
   });
 
@@ -244,6 +247,14 @@ describe('scenario engine integration', () => {
     const sessions = buildSessionTimeline(result.events);
     const failures = detectFailures(result.events, sessions);
     expect(failures.some((f) => f.code === 'TIMEOUT_NO_HEARTBEAT')).toBe(true);
+  });
+
+  it('repeated-boot-notification: detects REPEATED_BOOT_NOTIFICATION', () => {
+    const trace = JSON.stringify(repeatedBootNotificationScenario.trace);
+    const result = parseTrace(trace);
+    const sessions = buildSessionTimeline(result.events);
+    const failures = detectFailures(result.events, sessions);
+    expect(failures.some((f) => f.code === 'REPEATED_BOOT_NOTIFICATION')).toBe(true);
   });
 
   it('meter-value-zero: no failures detected', () => {
