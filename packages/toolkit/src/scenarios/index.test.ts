@@ -22,6 +22,7 @@ import {
   firmwareUpdateFailureScenario,
   refusedAuthorizationScenario,
   heartbeatTimeoutScenario,
+  meterValueZeroScenario,
 } from './index.js';
 import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.js';
 
@@ -30,8 +31,8 @@ import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.
 // ---------------------------------------------------------------------------
 
 describe('scenario registry', () => {
-  it('exports exactly 19 scenarios', () => {
-    expect(scenarios).toHaveLength(19);
+  it('exports exactly 20 scenarios', () => {
+    expect(scenarios).toHaveLength(20);
   });
 
   it('exports scenario names in order', () => {
@@ -55,6 +56,7 @@ describe('scenario registry', () => {
       'firmware-update-failure',
       'refused-authorization',
       'heartbeat-timeout',
+      'meter-value-zero',
     ]);
   });
 
@@ -87,6 +89,7 @@ describe('scenario registry', () => {
     expect(getScenario('firmware-update-failure')).toBe(firmwareUpdateFailureScenario);
     expect(getScenario('refused-authorization')).toBe(refusedAuthorizationScenario);
     expect(getScenario('heartbeat-timeout')).toBe(heartbeatTimeoutScenario);
+    expect(getScenario('meter-value-zero')).toBe(meterValueZeroScenario);
   });
 
   it('getScenario returns undefined for unknown name', () => {
@@ -241,6 +244,14 @@ describe('scenario engine integration', () => {
     const sessions = buildSessionTimeline(result.events);
     const failures = detectFailures(result.events, sessions);
     expect(failures.some((f) => f.code === 'TIMEOUT_NO_HEARTBEAT')).toBe(true);
+  });
+
+  it('meter-value-zero: no failures detected', () => {
+    const trace = JSON.stringify(meterValueZeroScenario.trace);
+    const result = parseTrace(trace);
+    const sessions = buildSessionTimeline(result.events);
+    const failures = detectFailures(result.events, sessions);
+    expect(failures).toHaveLength(0);
   });
 });
 
