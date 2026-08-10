@@ -8,12 +8,13 @@
 
 ## Current Version
 
-`0.4.4`, firmware-update-failure scenario (published 2026-07-30). The v0.4.x
-interop and correctness milestone is complete; the line continues to take patch
-releases for scenario additions. `0.4.3` and `0.4.4` each carry a
-`good-first-issue` completed by an outside contributor: after
-`REPEATED_BOOT_NOTIFICATION` (Issue #105, PR #114) in `0.3.1`, that is three
-external good-first contributions in total.
+`0.4.6`, heartbeat-timeout scenario (published 2026-08-08). The v0.4.x interop and
+correctness milestone is complete; the line continues to take patch releases for
+scenario additions. Three of those patches each carry a `good-first-issue`
+completed by an outside contributor, `0.4.3` (Issue #104, PR #133), `0.4.4`
+(Issue #138, PR #147) and `0.4.6` (Issue #137, PR #161). With
+`REPEATED_BOOT_NOTIFICATION` (Issue #105, PR #114) in `0.3.1`, that is four
+external good-first contributions in total, from three different people.
 
 ## Release Log
 
@@ -24,6 +25,7 @@ step). Do not edit between the markers by hand. Full history lives in
 sections further down.
 
 <!-- RELEASE-LOG:START -->
+- `0.4.6` (2026-08-08): Add `heartbeat-timeout` scenario covering the `TIMEOUT_NO_HEARTBEAT` detection rule. The synthetic trace boots a station with `interval=300`, then sends a `StatusNotification` past the 2× interval threshold (`06:12:00.000Z`) with no `Heartbeat` anywhere in the trace.
 - `0.4.5` (2026-07-30): Report every refusing `AuthorizationStatus` in `FAILED_AUTHORIZATION`, not just `Invalid` (#156). The OCPP 1.6 enumeration (edition 2, section 7.2) has five values and only `Accepted` permits charging, so `Blocked`, `Expired` and `ConcurrentTx` end a driver's session exactly as `Invalid` does. The rule fired on `Invalid` alone, which meant a blocked or expired token produced a clean report, and silence from a detector reads as "this is not the problem". All four refusals now report under the existing code, with the status named in the description, and the suggested steps mention the `ConcurrentTx` case. Adds a `refused-authorization` scenario covering the three newly reported statuses, bringing the corpus to 18.; Match `FIRMWARE_UPDATE_FAILURE` to the OCPP 1.6 `FirmwareStatus` enumeration (#154, edition 2 section 7.25). The rule matched `DownloadPaused`, `InstallFailed` and `InstallRebootingFailed`, none of which are 1.6 status values, and did not match `InstallationFailed`, which is one of the two failure values the enumeration defines. A conformant station reporting a failed installation, the more consequential of the two firmware outcomes, went undetected. The rule now matches exactly `DownloadFailed` and `InstallationFailed`, and the `firmware-update-failure` scenario reports `InstallationFailed` instead of the non-spec `InstallFailed` it used before.; Transcribe the `STATUS_TRANSITION_VIOLATION` matrix from the OCPP 1.6 status transition table (#155, edition 2 section 4.9). The matrix disagreed with the table in both directions: it flagged 22 transitions the table permits and permitted 2 it does not list. The false positives were concentrated in the recovery rows, where the table allows a connector to return from `Faulted` to any pre-fault state and from `Unavailable` straight into an operative state, so any station that faulted mid-session and resumed charging, or that took a scheduled availability change during a session (`Charging -> Unavailable` and its siblings), produced a spurious warning. `Preparing -> Unavailable` and `Finishing -> Reserved` are absent from the table and are now flagged. The rule's matrix is now the table cell by cell, with the spec's own cell labels alongside it, and a test transcribes the table independently so the two have to agree.
 - `0.4.4` (2026-07-30): feat(scenarios): add firmware-update-failure scenario
 <!-- RELEASE-LOG:END -->
@@ -385,7 +387,7 @@ these fixes introduce is required across detection.
   IDs are documented as unique per scenario
 - ✅ Good-first-issues carry a one-open-claim-at-a-time policy
 
-### External Contribution Pipeline (2026-07-26 to 2026-07-30)
+### External Contribution Pipeline (2026-07-26 to 2026-08-08)
 
 - ✅ Second `good-first-issue` completed by an outside contributor: #133 for
   #104, shipped in `0.4.3`. The scenario registry is at 16. Two of the five
@@ -405,8 +407,11 @@ these fixes introduce is required across detection.
   only on negative or decreasing cumulative readings, and a flat series is
   neither.
 - ✅ Station IDs allocated per issue so parallel work cannot collide:
-  `CS-SYNTHETIC-016` shipped in #133, `017` to #108, `018` to #137, `019`
-  shipped in #147, `020` to #139.
+  `CS-SYNTHETIC-016` shipped in #133, `018` shipped in #161, `019` shipped in
+  #147, `020` reserved for #139, `021` reserved for #108. `017` is NOT free:
+  `refused-authorization.ts` took it in `0.4.5`, which is why #108 moved off it.
+  Live allocation is 004 through 019 in use, 020 and 021 reserved, so the next
+  free number is 022.
 - ✅ #140 landed (PR #148): the standing invariant that every detection rule
   ships with a scenario in the same PR, added to `CONTRIBUTING.md` as a statement
   and as step 7 of the rule checklist. This is what stops the coverage gap
@@ -420,15 +425,36 @@ these fixes introduce is required across detection.
   for OCPP 2.0.1.
 - ✅ Third external contributor arrived (`MayurK-cmd`), assigned #137
   (`heartbeat-timeout`). #139 held for them next under the one-claim policy.
+- ✅ Fourth `good-first-issue` completed and the third external contributor's
+  first merge: #137 (`heartbeat-timeout`) by `MayurK-cmd` (Issue #137, PR #161).
+  The registry is at 19. They also picked up a missing
+  `getScenario('refused-authorization')` assertion that PR #159 left behind, which
+  was not asked for and was correct.
+- ✅ Both remaining scenario issues are now assigned: #139 to `MayurK-cmd` under
+  the promise made when they claimed two at once, and #108 to
+  `YANGCHUNHONG3000`, their third.
+- ✅ #108 carried a live trap, caught before the contributor started: it reserved
+  `CS-SYNTHETIC-017`, which `refused-authorization.ts` had already consumed in
+  `0.4.5`. Anyone following the issue would have created the same collision #133
+  did. Moved to `CS-SYNTHETIC-021`.
+- ✅ The release automation from #152 proved itself unattended: `0.4.5` was logged
+  and the Package Status Table moved with no manual step. Only the narrative here
+  still needs a human, which is the split by design.
 - 🔜 #144 proposes a `METER_VALUE_STUCK` rule for a register that never advances,
   the positive counterpart to #108.
+- 🔜 #163 records that CI never evaluates the scenarios' declared `assertions`.
+  `evaluateScenario` reaches the registry only through `ocpp-debugkit ci`, which
+  is not a workflow step, and the one test that touches it builds its scenarios by
+  hand. Nine scenario files assert things nothing verifies. Found while reviewing
+  #161; pre-existing and unrelated to that contribution.
 
-Rule coverage: after #147, two of the sixteen detection rules still lack a
-scenario, `TIMEOUT_NO_HEARTBEAT` (#137, assigned) and `REPEATED_BOOT_NOTIFICATION`
-(#139, open).
+Rule coverage: after #161, one of the sixteen detection rules still lacks a
+scenario. Verified by iterating the registry, 15 of the 16 codes appear in some
+scenario's `expectedFailures`, and `REPEATED_BOOT_NOTIFICATION` (#139, assigned)
+is the sole gap.
 
-Scenario arithmetic to the v1.0 target of 20+: 17 today, plus #108, #137 and #139
-lands at 20, at which point all 16 detection rules are covered.
+Scenario arithmetic to the v1.0 target of 20+: 19 today, and #108 plus #139 take
+it to 21, at which point all 16 detection rules are covered.
 
 ### Release Log Automation (Issue #151, PR #152)
 
@@ -477,7 +503,7 @@ lands at 20, at which point all 16 detection rules are covered.
 
 | Package | Status | Version |
 |---------|--------|---------|
-| `@ocpp-debugkit/toolkit` | published | 0.4.5 |
+| `@ocpp-debugkit/toolkit` | published | 0.4.6 |
 | `@ocpp-debugkit/core` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/scenarios` | deprecated | 0.1.1 |
 | `@ocpp-debugkit/reporter` | deprecated | 0.1.1 |

@@ -25,7 +25,8 @@ import firmwareUpdateFailure from './__scenarios__/firmware-update-failure.js';
 import refusedAuthorization from './__scenarios__/refused-authorization.js';
 import heartbeatTimeout from './__scenarios__/heartbeat-timeout.js';
 import repeatedBootNotification from './__scenarios__/repeated-boot-notification.js';
->
+import meterValueZero from './__scenarios__/meter-value-zero.js';
+
 // ---------------------------------------------------------------------------
 // Scenarios derived from core fixtures
 // ---------------------------------------------------------------------------
@@ -76,7 +77,8 @@ const firmwareUpdateFailureScenario: Scenario = firmwareUpdateFailure as unknown
 const refusedAuthorizationScenario: Scenario = refusedAuthorization as unknown as Scenario;
 const heartbeatTimeoutScenario: Scenario = heartbeatTimeout as unknown as Scenario;
 const repeatedBootNotificationScenario: Scenario = repeatedBootNotification as unknown as Scenario;
->
+const meterValueZeroScenario: Scenario = meterValueZero as unknown as Scenario;
+
 // ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
@@ -102,7 +104,8 @@ export const scenarios = [
   refusedAuthorizationScenario,
   heartbeatTimeoutScenario,
   repeatedBootNotificationScenario,
->] as const;
+  meterValueZeroScenario,
+] as const;
 
 export const scenarioNames = [
   'normal-session',
@@ -125,7 +128,8 @@ export const scenarioNames = [
   'refused-authorization',
   'heartbeat-timeout',
   'repeated-boot-notification',
->] as const;
+  'meter-value-zero',
+] as const;
 
 export {
   normalSessionScenario,
@@ -148,7 +152,8 @@ export {
   refusedAuthorizationScenario,
   heartbeatTimeoutScenario,
   repeatedBootNotificationScenario,
->};
+  meterValueZeroScenario,
+};
 
 export { compareScenarioReports } from './compare.js';
 export type { ScenarioComparison } from './compare.js';
