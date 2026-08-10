@@ -407,11 +407,12 @@ these fixes introduce is required across detection.
   only on negative or decreasing cumulative readings, and a flat series is
   neither.
 - ✅ Station IDs allocated per issue so parallel work cannot collide:
-  `CS-SYNTHETIC-016` shipped in #133, `018` shipped in #161, `019` shipped in
-  #147, `020` reserved for #139, `021` reserved for #108. `017` is NOT free:
-  `refused-authorization.ts` took it in `0.4.5`, which is why #108 moved off it.
-  Live allocation is 004 through 019 in use, 020 and 021 reserved, so the next
-  free number is 022.
+  `CS-SYNTHETIC-016` shipped in #133, `018` in #161, `019` in #147, `020` in #170,
+  `021` in #169. `017` is NOT free: `refused-authorization.ts` took it in `0.4.5`,
+  which is why #108 moved off it. Live allocation is 004 through 021 all in use, so
+  the next free number is 022.
+  The `021` move also needed the `idTag` and `transactionId` renumbered to match,
+  which #108 still carried from before the move; caught in review of #169.
 - ✅ #140 landed (PR #148): the standing invariant that every detection rule
   ships with a scenario in the same PR, added to `CONTRIBUTING.md` as a statement
   and as step 7 of the rule checklist. This is what stops the coverage gap
@@ -448,13 +449,27 @@ these fixes introduce is required across detection.
   hand. Nine scenario files assert things nothing verifies. Found while reviewing
   #161; pre-existing and unrelated to that contribution.
 
-Rule coverage: after #161, one of the sixteen detection rules still lacks a
-scenario. Verified by iterating the registry, 15 of the 16 codes appear in some
-scenario's `expectedFailures`, and `REPEATED_BOOT_NOTIFICATION` (#139, assigned)
-is the sole gap.
+- ✅ Fifth and sixth `good-first-issue` completions landed together: #108
+  (`meter-value-zero`) by `YANGCHUNHONG3000`, their third, and #139
+  (`repeated-boot-notification`) by `MayurK-cmd`, their second (PRs #169 and #170).
+  Both arrived within two days of being assigned.
+- ✅ #170 needed its branch repaired before it could land, and the repair is worth
+  recording because the failure mode is easy to repeat. It was cut before #161 and
+  the conflict resolution deleted `heartbeat-timeout.ts`, which would have reverted
+  #161, and left three stray `>` characters in `index.ts` and `index.test.ts` that
+  broke `typecheck` and `build`. The scenario file and changeset were fine; only the
+  merge was wrong.
+- ✅ Both PRs also confirmed the review habit that keeps paying: neither touched the
+  detection-rule count, the trap an earlier contribution fell into.
 
-Scenario arithmetic to the v1.0 target of 20+: 19 today, and #108 plus #139 take
-it to 21, at which point all 16 detection rules are covered.
+Rule coverage: **complete**. All 16 detection rules now have a scenario exercising
+them, the invariant #140 put in `CONTRIBUTING.md`. Verified by iterating the
+registry rather than by reading: 16 of 16 codes appear in some scenario's
+`expectedFailures`.
+
+Scenario corpus: **21**, which clears the 20+ target in the v1.0 milestone
+(`ROADMAP.md` line 157). That exit criterion is met; the remaining v1.0 work is API
+stabilization, the docs overhaul and release hardening.
 
 ### Release Log Automation (Issue #151, PR #152)
 
