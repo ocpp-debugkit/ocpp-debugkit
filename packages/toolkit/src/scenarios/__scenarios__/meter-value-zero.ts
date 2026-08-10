@@ -39,7 +39,7 @@ export default {
       {
         timestamp: '2026-01-15T09:00:30.000Z',
         direction: 'CS_TO_CSMS',
-        message: [2, 'msg-002', 'Authorize', { idTag: 'SYNTHETIC-TAG-017' }],
+        message: [2, 'msg-002', 'Authorize', { idTag: 'SYNTHETIC-TAG-021' }],
       },
       {
         timestamp: '2026-01-15T09:00:30.500Z',
@@ -53,13 +53,13 @@ export default {
           2,
           'msg-003',
           'StartTransaction',
-          { connectorId: 1, idTag: 'SYNTHETIC-TAG-017', meterStart: 0 },
+          { connectorId: 1, idTag: 'SYNTHETIC-TAG-021', meterStart: 0 },
         ],
       },
       {
         timestamp: '2026-01-15T09:01:00.500Z',
         direction: 'CSMS_TO_CS',
-        message: [3, 'msg-003', { idTagInfo: { status: 'Accepted' }, transactionId: 100017 }],
+        message: [3, 'msg-003', { idTagInfo: { status: 'Accepted' }, transactionId: 100021 }],
       },
       {
         timestamp: '2026-01-15T09:02:00.000Z',
@@ -70,7 +70,7 @@ export default {
           'MeterValues',
           {
             connectorId: 1,
-            transactionId: 100017,
+            transactionId: 100021,
             meterValue: [
               {
                 sampledValue: [
@@ -95,7 +95,7 @@ export default {
           'MeterValues',
           {
             connectorId: 1,
-            transactionId: 100017,
+            transactionId: 100021,
             meterValue: [
               {
                 sampledValue: [
@@ -120,7 +120,7 @@ export default {
           'MeterValues',
           {
             connectorId: 1,
-            transactionId: 100017,
+            transactionId: 100021,
             meterValue: [
               {
                 sampledValue: [
@@ -144,8 +144,8 @@ export default {
           'msg-007',
           'StopTransaction',
           {
-            transactionId: 100017,
-            idTag: 'SYNTHETIC-TAG-017',
+            transactionId: 100021,
+            idTag: 'SYNTHETIC-TAG-021',
             meterStop: 0,
             reason: 'Local',
           },
