@@ -26,6 +26,7 @@ import refusedAuthorization from './__scenarios__/refused-authorization.js';
 import heartbeatTimeout from './__scenarios__/heartbeat-timeout.js';
 import repeatedBootNotification from './__scenarios__/repeated-boot-notification.js';
 import meterValueZero from './__scenarios__/meter-value-zero.js';
+import bootOutsideRepeatWindow from './__scenarios__/boot-outside-repeat-window.js';
 
 // ---------------------------------------------------------------------------
 // Scenarios derived from core fixtures
@@ -78,6 +79,7 @@ const refusedAuthorizationScenario: Scenario = refusedAuthorization as unknown a
 const heartbeatTimeoutScenario: Scenario = heartbeatTimeout as unknown as Scenario;
 const repeatedBootNotificationScenario: Scenario = repeatedBootNotification as unknown as Scenario;
 const meterValueZeroScenario: Scenario = meterValueZero as unknown as Scenario;
+const bootOutsideRepeatWindowScenario: Scenario = bootOutsideRepeatWindow as unknown as Scenario;
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -105,6 +107,7 @@ export const scenarios = [
   heartbeatTimeoutScenario,
   repeatedBootNotificationScenario,
   meterValueZeroScenario,
+  bootOutsideRepeatWindowScenario,
 ] as const;
 
 export const scenarioNames = [
@@ -129,6 +132,7 @@ export const scenarioNames = [
   'heartbeat-timeout',
   'repeated-boot-notification',
   'meter-value-zero',
+  'boot-outside-repeat-window',
 ] as const;
 
 export {
@@ -153,6 +157,7 @@ export {
   heartbeatTimeoutScenario,
   repeatedBootNotificationScenario,
   meterValueZeroScenario,
+  bootOutsideRepeatWindowScenario,
 };
 
 export { compareScenarioReports } from './compare.js';

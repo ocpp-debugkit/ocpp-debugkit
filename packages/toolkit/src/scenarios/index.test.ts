@@ -32,8 +32,8 @@ import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.
 // ---------------------------------------------------------------------------
 
 describe('scenario registry', () => {
-  it('exports exactly 21 scenarios', () => {
-    expect(scenarios).toHaveLength(21);
+  it('exports exactly 22 scenarios', () => {
+    expect(scenarios).toHaveLength(22);
   });
 
   it('exports scenario names in order', () => {
@@ -59,6 +59,7 @@ describe('scenario registry', () => {
       'heartbeat-timeout',
       'repeated-boot-notification',
       'meter-value-zero',
+      'boot-outside-repeat-window'
     ]);
   });
 
