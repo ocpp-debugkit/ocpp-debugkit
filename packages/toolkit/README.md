@@ -20,7 +20,7 @@ report generation, React components, and CLI.
   firmware update failures, suspicious session duration, slow CSMS responses,
   heartbeat interval violations, meter value anomalies, unresponsive CSMS, and
   repeated boot notifications.
-- **Scenario Evaluator** — 21 predefined scenarios with expected failure
+- **Scenario Evaluator** — 22 predefined scenarios with expected failure
   outcomes for testing the analysis engine. Supports external scenario files.
 - **Replay Engine** — Deterministic, pure replay engine with step forward/back,
   jump-to-event, and configurable playback speed. No timers or I/O.

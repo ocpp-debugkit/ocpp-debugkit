@@ -26,6 +26,7 @@ import refusedAuthorization from './__scenarios__/refused-authorization.js';
 import heartbeatTimeout from './__scenarios__/heartbeat-timeout.js';
 import repeatedBootNotification from './__scenarios__/repeated-boot-notification.js';
 import meterValueZero from './__scenarios__/meter-value-zero.js';
+import statusTransitionsLegal from './__scenarios__/status-transitions-legal.js';
 
 // ---------------------------------------------------------------------------
 // Scenarios derived from core fixtures
@@ -78,6 +79,7 @@ const refusedAuthorizationScenario: Scenario = refusedAuthorization as unknown a
 const heartbeatTimeoutScenario: Scenario = heartbeatTimeout as unknown as Scenario;
 const repeatedBootNotificationScenario: Scenario = repeatedBootNotification as unknown as Scenario;
 const meterValueZeroScenario: Scenario = meterValueZero as unknown as Scenario;
+const statusTransitionsLegalScenario: Scenario = statusTransitionsLegal as unknown as Scenario;
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -105,6 +107,7 @@ export const scenarios = [
   heartbeatTimeoutScenario,
   repeatedBootNotificationScenario,
   meterValueZeroScenario,
+  statusTransitionsLegalScenario,
 ] as const;
 
 export const scenarioNames = [
@@ -129,6 +132,7 @@ export const scenarioNames = [
   'heartbeat-timeout',
   'repeated-boot-notification',
   'meter-value-zero',
+  'status-transitions-legal',
 ] as const;
 
 export {
@@ -153,6 +157,7 @@ export {
   heartbeatTimeoutScenario,
   repeatedBootNotificationScenario,
   meterValueZeroScenario,
+  statusTransitionsLegalScenario,
 };
 
 export { compareScenarioReports } from './compare.js';
