@@ -8,13 +8,9 @@
 
 ## Current Version
 
-`0.4.6`, heartbeat-timeout scenario (published 2026-08-08). The v0.4.x interop and
-correctness milestone is complete; the line continues to take patch releases for
-scenario additions. Three of those patches each carry a `good-first-issue`
-completed by an outside contributor, `0.4.3` (Issue #104, PR #133), `0.4.4`
-(Issue #138, PR #147) and `0.4.6` (Issue #137, PR #161). With
-`REPEATED_BOOT_NOTIFICATION` (Issue #105, PR #114) in `0.3.1`, that is four
-external good-first contributions in total, from three different people.
+`0.4.8`, boot-outside-repeat-window and status-transitions-legal scenarios (published 2026-08-20). The v0.4.x interop and correctness milestone is complete; the line continues to take patch releases for scenario additions.
+
+Every v0.4.x patch from `0.4.3` onward carries at least one `good-first-issue` completed by an outside contributor: `0.4.3` (#104, PR #133), `0.4.4` (#138, PR #147), `0.4.6` (#137, PR #161), `0.4.7` (#108, PR #169 and #139, PR #170) and `0.4.8` (#173, PR #180 and #174, PR #179). With `REPEATED_BOOT_NOTIFICATION` (#105, PR #114) in `0.3.1`, that is eight external good-first contributions in total, from four different people: `Develop-KIM`, `YANGCHUNHONG3000` (four), `MayurK-cmd` (two) and `michal-skraburski`.
 
 ## Release Log
 
@@ -409,11 +405,7 @@ these fixes introduce is required across detection.
   only on negative or decreasing cumulative readings, and a flat series is
   neither.
 - ✅ Station IDs allocated per issue so parallel work cannot collide:
-  `CS-SYNTHETIC-016` shipped in #133, `018` in #161, `019` in #147, `020` in #170,
-  `021` in #169. `017` is NOT free: `refused-authorization.ts` took it in `0.4.5`,
-  which is why #108 moved off it. Live allocation is 004 through 021 in use, `022`
-  reserved for #173, `023` for #174 and `024` for #175, so the next free number is
-  025.
+  `CS-SYNTHETIC-016` shipped in #133, `018` in #161, `019` in #147, `020` in #170, `021` in #169, `022` in #180, `023` in #179. `017` is NOT free: `refused-authorization.ts` took it in `0.4.5`, which is why #108 moved off it. Live allocation is 004 through 023 all in use, `024` reserved for #175, `025` for #182 and `026` for #183, so the next free number is 027.
   The `021` move also needed the `idTag` and `transactionId` renumbered to match,
   which #108 still carried from before the move; caught in review of #169.
 - ✅ #140 landed (PR #148): the standing invariant that every detection rule
@@ -465,14 +457,11 @@ these fixes introduce is required across detection.
 - ✅ Both PRs also confirmed the review habit that keeps paying: neither touched the
   detection-rule count, the trap an earlier contribution fell into.
 
-Rule coverage: **complete**. All 16 detection rules now have a scenario exercising
-them, the invariant #140 put in `CONTRIBUTING.md`. Verified by iterating the
-registry rather than by reading: 16 of 16 codes appear in some scenario's
-`expectedFailures`.
+Rule coverage: **complete**. All 16 detection rules have a scenario exercising them, the invariant #140 put in `CONTRIBUTING.md`. Verified by iterating the registry rather than by reading: 16 of 16 codes appear in some scenario's `expectedFailures`.
 
-Scenario corpus: **21**, which clears the 20+ target in the v1.0 milestone
-(`ROADMAP.md` line 157). That exit criterion is met; the remaining v1.0 work is API
-stabilization, the docs overhaul and release hardening.
+Scenario corpus: **23**, well past the 20+ target in the v1.0 milestone (`ROADMAP.md` line 157). That exit criterion is met; the remaining v1.0 work is API stabilization, the docs overhaul and release hardening.
+
+Negative controls: **5 of 23**, up from 3, after `status-transitions-legal` (#180) and `boot-outside-repeat-window` (#179). That ratio is the one worth watching, since every correctness fix this project has shipped was a false positive or a spec mismatch rather than a missed detection.
 
 ### Newcomer Backlog Refill (2026-08-10)
 
@@ -509,6 +498,18 @@ The traces in #173, #174 and #175 were each built and run through the detection
 engine before publishing, and all three report no failures, so the specs are
 known-good rather than plausible. The good-first-issue backlog went from 2 unclaimed
 to 6.
+
+### Fourth Contributor and the 0.4.8 Cycle (2026-08-20)
+
+- ✅ A fourth external contributor arrived: `michal-skraburski` picked up #174 cold, claimed it and opened PR #179 half an hour later. Both #173 and #174 shipped in `0.4.8`, taking the corpus to 23 and the negative-control count to 5.
+- ✅ #173 (`status-transitions-legal`, PR #180) by `YANGCHUNHONG3000`, their fourth. This is the guard for the rule with the worst history here: `STATUS_TRANSITION_VIOLATION` was wrong in #128 and again in #155, where it flagged 22 transitions the section 4.9 table permits, with nothing in the corpus to notice.
+- ✅ #174 (`boot-outside-repeat-window`, PR #179) needed the branch repaired before it could land, and the failure mode is worth recording because it is the second time it has happened. The scenario count lives in four places and the branch moved one, so `tests/external-fixture/test.mjs` failed with `21 scenarios exported (got 22)` and both READMEs went stale. Only two of the four sites fail the suite when they drift, which is exactly what makes the other two easy to miss. Two files also needed Prettier.
+- ✅ A process cost worth naming: PR #179 sat three days with its CI in `action_required` because GitHub gates first-time-contributor workflow runs on maintainer approval. That is the second contributor to hit it, and from their side it looks like silence rather than a queue.
+- 🔜 Backlog refilled again to 6 unclaimed, chosen by measurement rather than enumeration. Three candidates were rejected on evidence: an accepted-authorization control is already implicitly covered by `meter-value-zero`, and controls for `SLOW_RESPONSE` and `UNRESPONSIVE_CSMS` are implicitly guarded by all 23 scenarios answering their calls within half a second.
+- 🔜 #182 `meter-value-negative` (`CS-SYNTHETIC-025`). `METER_VALUE_ANOMALY` has a negative branch and a decreasing branch; `meter-anomaly.ts` covers only the decreasing one, and no scenario has ever used a negative reading, so dropping the negative check would pass the whole suite. Validated to fire exactly `METER_VALUE_ANOMALY`.
+- 🔜 #183 `diagnostics-upload-success` (`026`). `diagnostics-failure.ts` is the only scenario that sends a `DiagnosticsStatusNotification` and it sends only a failing status, so the successful path is uncovered. Validated to report nothing.
+- 🔜 #184 `DIAGNOSTICS_FAILURE` gates the same status twice: a five-value "failure statuses" set, then an inner branch narrowing to two, so `Idle`, `Uploaded` and `NotImplemented` sit in the set and can never fire. The behaviour is correct and only the code misleads, which is worth stating because reading the constant alone suggests the rule reports successful uploads. Bundled with the question of whether `DiagnosisFailed` and `NotImplemented` are OCPP 1.6 vocabulary at all, the same family as #154.
+- 🔜 #185 the `>24h` branch of `SUSPICIOUS_SESSION_DURATION` has never run. Not a good-first-issue: a naive 30 hour trace also trips `TIMEOUT_NO_HEARTBEAT` and `METER_VALUE_GAP`, verified by probing, so covering it cleanly needs either a very large hand-written fixture or a decision that the scenario expects several codes. A unit test may suit it better than a corpus scenario.
 
 ### Release Log Automation (Issue #151, PR #152)
 
