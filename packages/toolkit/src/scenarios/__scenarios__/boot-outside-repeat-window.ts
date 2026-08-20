@@ -8,8 +8,7 @@ export default {
       stationId: 'CS-SYNTHETIC-023',
       ocppVersion: '1.6',
       source: 'synthetic-scenario',
-      description:
-        '2 BootNotifications 300+ seconds apart should not trigger failure',
+      description: '2 BootNotifications 300+ seconds apart should not trigger failure',
     },
     events: [
       {
