@@ -27,6 +27,7 @@ import heartbeatTimeout from './__scenarios__/heartbeat-timeout.js';
 import repeatedBootNotification from './__scenarios__/repeated-boot-notification.js';
 import meterValueZero from './__scenarios__/meter-value-zero.js';
 import statusTransitionsLegal from './__scenarios__/status-transitions-legal.js';
+import bootOutsideRepeatWindow from './__scenarios__/boot-outside-repeat-window.js';
 
 // ---------------------------------------------------------------------------
 // Scenarios derived from core fixtures
@@ -80,6 +81,7 @@ const heartbeatTimeoutScenario: Scenario = heartbeatTimeout as unknown as Scenar
 const repeatedBootNotificationScenario: Scenario = repeatedBootNotification as unknown as Scenario;
 const meterValueZeroScenario: Scenario = meterValueZero as unknown as Scenario;
 const statusTransitionsLegalScenario: Scenario = statusTransitionsLegal as unknown as Scenario;
+const bootOutsideRepeatWindowScenario: Scenario = bootOutsideRepeatWindow as unknown as Scenario;
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -108,6 +110,7 @@ export const scenarios = [
   repeatedBootNotificationScenario,
   meterValueZeroScenario,
   statusTransitionsLegalScenario,
+  bootOutsideRepeatWindowScenario,
 ] as const;
 
 export const scenarioNames = [
@@ -133,6 +136,7 @@ export const scenarioNames = [
   'repeated-boot-notification',
   'meter-value-zero',
   'status-transitions-legal',
+  'boot-outside-repeat-window',
 ] as const;
 
 export {
@@ -158,6 +162,7 @@ export {
   repeatedBootNotificationScenario,
   meterValueZeroScenario,
   statusTransitionsLegalScenario,
+  bootOutsideRepeatWindowScenario,
 };
 
 export { compareScenarioReports } from './compare.js';

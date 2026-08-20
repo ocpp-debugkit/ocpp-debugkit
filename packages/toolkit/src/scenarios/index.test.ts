@@ -25,6 +25,7 @@ import {
   repeatedBootNotificationScenario,
   meterValueZeroScenario,
   statusTransitionsLegalScenario,
+  bootOutsideRepeatWindowScenario,
 } from './index.js';
 import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.js';
 
@@ -33,8 +34,8 @@ import { parseTrace, buildSessionTimeline, detectFailures } from '../core/index.
 // ---------------------------------------------------------------------------
 
 describe('scenario registry', () => {
-  it('exports exactly 22 scenarios', () => {
-    expect(scenarios).toHaveLength(22);
+  it('exports exactly 23 scenarios', () => {
+    expect(scenarios).toHaveLength(23);
   });
 
   it('exports scenario names in order', () => {
@@ -61,6 +62,7 @@ describe('scenario registry', () => {
       'repeated-boot-notification',
       'meter-value-zero',
       'status-transitions-legal',
+      'boot-outside-repeat-window',
     ]);
   });
 
@@ -96,6 +98,7 @@ describe('scenario registry', () => {
     expect(getScenario('repeated-boot-notification')).toBe(repeatedBootNotificationScenario);
     expect(getScenario('meter-value-zero')).toBe(meterValueZeroScenario);
     expect(getScenario('status-transitions-legal')).toBe(statusTransitionsLegalScenario);
+    expect(getScenario('boot-outside-repeat-window')).toBe(bootOutsideRepeatWindowScenario);
   });
 
   it('getScenario returns undefined for unknown name', () => {
