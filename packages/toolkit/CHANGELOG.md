@@ -1,5 +1,12 @@
 # @ocpp-debugkit/toolkit
 
+## 0.4.8
+
+### Patch Changes
+
+- 15c9837: added a new scenario: boot-outside-repeat-window
+- c32cfa7: Add a status-transitions-legal scenario to ensure a fully legal OCPP 1.6 status path reports no failure.
+
 ## 0.4.7
 
 ### Patch Changes
