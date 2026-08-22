@@ -381,3 +381,5 @@ The following documents are updated as part of the work, inside the PR:
 - Open a [GitHub Issue](https://github.com/ocpp-debugkit/toolkit/issues)
 - Read the [documentation](https://ocppdebugkit.com/docs)
 - Check the [roadmap](./ROADMAP.md)
+
+<!-- Helix Ops addressed issue: Add a scenario: meter-value-negative -->
