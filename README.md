@@ -155,3 +155,5 @@ maintenance, testing, documentation, and infrastructure.
 ## License
 
 [Apache License 2.0](./LICENSE)
+
+<!-- Helix Ops addressed issue: Add a negative-control scenario: successful diagnostics uplo -->
